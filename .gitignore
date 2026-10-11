@@ -11,6 +11,10 @@ secrets*.json
 *.pem
 *.key
 data/
+!examples/vendi/mcp/tests/data/
+!examples/vendi/mcp/tests/data/**
+!examples/vendi/mcp/notebooks/vendi_reference/data/
+!examples/vendi/mcp/notebooks/vendi_reference/data/**
 personal/
 library/
 incoming/

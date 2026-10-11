@@ -1,0 +1,880 @@
+{
+  "cases": [
+    {
+      "id": "readme_q1",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Literal official README Usage 3x3 matrix; q=1 is the exact published default example; other q values are documented parameter variations.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_q1",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false
+      },
+      "provenance": "Synthetic valid probability weights applied to exact official README matrix; no learned-model data.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_q1",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three mutually orthogonal unit samples, no model outputs.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_q1",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three identical samples, no model outputs; positive numerical eigenvalue roundoff at q=0 may be counted by unmodified upstream.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_q1",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic supplied unit vectors, not pretrained or generated embeddings. README documents this API but supplies no literal X or expected value.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_q1",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Same synthetic already-normalized unit vectors; accepted normalize=False contract.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_q1",
+      "function": "score_dual",
+      "array": [
+        [
+          2,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic scaled provided vectors; upstream normalization removes magnitude changes.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_q1",
+      "function": "score_K",
+      "array": [
+        [
+          4,
+          5.4,
+          0
+        ],
+        [
+          5.4,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          16
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic congruence-scaled README kernel, diagonal scales 2,3,4; upstream diagonal normalization should recover README matrix.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "readme_q0",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "normalize": false
+      },
+      "provenance": "Literal official README Usage 3x3 matrix; q=1 is the exact published default example; other q values are documented parameter variations.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_q0",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false
+      },
+      "provenance": "Synthetic valid probability weights applied to exact official README matrix; no learned-model data.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_q0",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three mutually orthogonal unit samples, no model outputs.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_q0",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three identical samples, no model outputs; positive numerical eigenvalue roundoff at q=0 may be counted by unmodified upstream.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_q0",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic supplied unit vectors, not pretrained or generated embeddings. README documents this API but supplies no literal X or expected value.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_q0",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "normalize": false
+      },
+      "provenance": "Same synthetic already-normalized unit vectors; accepted normalize=False contract.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_q0",
+      "function": "score_dual",
+      "array": [
+        [
+          2,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic scaled provided vectors; upstream normalization removes magnitude changes.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_q0",
+      "function": "score_K",
+      "array": [
+        [
+          4,
+          5.4,
+          0
+        ],
+        [
+          5.4,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          16
+        ]
+      ],
+      "parameters": {
+        "q": 0,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic congruence-scaled README kernel, diagonal scales 2,3,4; upstream diagonal normalization should recover README matrix.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "readme_q2",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Literal official README Usage 3x3 matrix; q=1 is the exact published default example; other q values are documented parameter variations.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_q2",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false
+      },
+      "provenance": "Synthetic valid probability weights applied to exact official README matrix; no learned-model data.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_q2",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three mutually orthogonal unit samples, no model outputs.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_q2",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three identical samples, no model outputs; positive numerical eigenvalue roundoff at q=0 may be counted by unmodified upstream.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_q2",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic supplied unit vectors, not pretrained or generated embeddings. README documents this API but supplies no literal X or expected value.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_q2",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Same synthetic already-normalized unit vectors; accepted normalize=False contract.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_q2",
+      "function": "score_dual",
+      "array": [
+        [
+          2,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic scaled provided vectors; upstream normalization removes magnitude changes.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_q2",
+      "function": "score_K",
+      "array": [
+        [
+          4,
+          5.4,
+          0
+        ],
+        [
+          5.4,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          16
+        ]
+      ],
+      "parameters": {
+        "q": 2,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic congruence-scaled README kernel, diagonal scales 2,3,4; upstream diagonal normalization should recover README matrix.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "readme_qinf",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Literal official README Usage 3x3 matrix; q=1 is the exact published default example; other q values are documented parameter variations.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_qinf",
+      "function": "score_K",
+      "array": [
+        [
+          1,
+          0.9,
+          0
+        ],
+        [
+          0.9,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false
+      },
+      "provenance": "Synthetic valid probability weights applied to exact official README matrix; no learned-model data.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_qinf",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three mutually orthogonal unit samples, no model outputs.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_qinf",
+      "function": "score_K",
+      "array": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three identical samples, no model outputs; positive numerical eigenvalue roundoff at q=0 may be counted by unmodified upstream.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_qinf",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic supplied unit vectors, not pretrained or generated embeddings. README documents this API but supplies no literal X or expected value.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_qinf",
+      "function": "score_dual",
+      "array": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Same synthetic already-normalized unit vectors; accepted normalize=False contract.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_qinf",
+      "function": "score_dual",
+      "array": [
+        [
+          2,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic scaled provided vectors; upstream normalization removes magnitude changes.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_qinf",
+      "function": "score_K",
+      "array": [
+        [
+          4,
+          5.4,
+          0
+        ],
+        [
+          5.4,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          16
+        ]
+      ],
+      "parameters": {
+        "q": "inf",
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic congruence-scaled README kernel, diagonal scales 2,3,4; upstream diagonal normalization should recover README matrix.",
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "out_of_domain_magnitudes_without_normalization",
+      "function": "score_dual",
+      "array": [
+        [
+          2,
+          0
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          0,
+          4
+        ]
+      ],
+      "parameters": {
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Deliberately outside the selected tool scientific contract: nonunit vectors with normalize=False. Retained original numeric behavior only; not a valid effective-diversity benchmark.",
+      "scientific_domain_valid": false
+    }
+  ],
+  "seed": null,
+  "randomness": "No stochastic generation; every synthetic fixture is explicit.",
+  "dtype": "float64",
+  "orientation": "Kernel rows/columns are samples; embedding rows are samples and columns are features."
+}

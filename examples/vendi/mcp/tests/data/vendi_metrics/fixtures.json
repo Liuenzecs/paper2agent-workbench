@@ -1,0 +1,1449 @@
+{
+  "source_inputs": "notebooks\\vendi_reference\\data\\inputs.json",
+  "source_inputs_sha256": "3edde81a0038de5117948ef88c0baed08517e8cbbb1862136670338dcf99f67b",
+  "positive": [
+    {
+      "name": "readme_q1",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Literal official README Usage 3x3 matrix; q=1 is the exact published default example; other q values are documented parameter variations."
+    },
+    {
+      "name": "weighted_q1",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false
+      },
+      "provenance": "Synthetic valid probability weights applied to exact official README matrix; no learned-model data."
+    },
+    {
+      "name": "identity_q1",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three mutually orthogonal unit samples, no model outputs."
+    },
+    {
+      "name": "identical_q1",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three identical samples, no model outputs; positive numerical eigenvalue roundoff at q=0 may be counted by unmodified upstream."
+    },
+    {
+      "name": "vectors_q1",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic supplied unit vectors, not pretrained or generated embeddings. README documents this API but supplies no literal X or expected value."
+    },
+    {
+      "name": "unit_vectors_without_normalization_q1",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "normalize": false
+      },
+      "provenance": "Same synthetic already-normalized unit vectors; accepted normalize=False contract."
+    },
+    {
+      "name": "magnitude_vectors_q1",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        "q": 1,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic scaled provided vectors; upstream normalization removes magnitude changes."
+    },
+    {
+      "name": "scaled_kernel_q1",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            4,
+            5.4,
+            0
+          ],
+          [
+            5.4,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            16
+          ]
+        ],
+        "q": 1,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic congruence-scaled README kernel, diagonal scales 2,3,4; upstream diagonal normalization should recover README matrix."
+    },
+    {
+      "name": "readme_q2",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Literal official README Usage 3x3 matrix; q=1 is the exact published default example; other q values are documented parameter variations."
+    },
+    {
+      "name": "weighted_q2",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false
+      },
+      "provenance": "Synthetic valid probability weights applied to exact official README matrix; no learned-model data."
+    },
+    {
+      "name": "identity_q2",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three mutually orthogonal unit samples, no model outputs."
+    },
+    {
+      "name": "identical_q2",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three identical samples, no model outputs; positive numerical eigenvalue roundoff at q=0 may be counted by unmodified upstream."
+    },
+    {
+      "name": "vectors_q2",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic supplied unit vectors, not pretrained or generated embeddings. README documents this API but supplies no literal X or expected value."
+    },
+    {
+      "name": "unit_vectors_without_normalization_q2",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "normalize": false
+      },
+      "provenance": "Same synthetic already-normalized unit vectors; accepted normalize=False contract."
+    },
+    {
+      "name": "magnitude_vectors_q2",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        "q": 2,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic scaled provided vectors; upstream normalization removes magnitude changes."
+    },
+    {
+      "name": "scaled_kernel_q2",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            4,
+            5.4,
+            0
+          ],
+          [
+            5.4,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            16
+          ]
+        ],
+        "q": 2,
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic congruence-scaled README kernel, diagonal scales 2,3,4; upstream diagonal normalization should recover README matrix."
+    },
+    {
+      "name": "readme_qinf",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Literal official README Usage 3x3 matrix; q=1 is the exact published default example; other q values are documented parameter variations."
+    },
+    {
+      "name": "weighted_qinf",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": "inf",
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false
+      },
+      "provenance": "Synthetic valid probability weights applied to exact official README matrix; no learned-model data."
+    },
+    {
+      "name": "identity_qinf",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three mutually orthogonal unit samples, no model outputs."
+    },
+    {
+      "name": "identical_qinf",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Explicitly synthetic three identical samples, no model outputs; positive numerical eigenvalue roundoff at q=0 may be counted by unmodified upstream."
+    },
+    {
+      "name": "vectors_qinf",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": "inf",
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic supplied unit vectors, not pretrained or generated embeddings. README documents this API but supplies no literal X or expected value."
+    },
+    {
+      "name": "unit_vectors_without_normalization_qinf",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": "inf",
+        "normalize": false
+      },
+      "provenance": "Same synthetic already-normalized unit vectors; accepted normalize=False contract."
+    },
+    {
+      "name": "magnitude_vectors_qinf",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        "q": "inf",
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic scaled provided vectors; upstream normalization removes magnitude changes."
+    },
+    {
+      "name": "scaled_kernel_qinf",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            4,
+            5.4,
+            0
+          ],
+          [
+            5.4,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            16
+          ]
+        ],
+        "q": "inf",
+        "normalize": true
+      },
+      "provenance": "Explicitly synthetic congruence-scaled README kernel, diagonal scales 2,3,4; upstream diagonal normalization should recover README matrix."
+    },
+    {
+      "name": "kernel_default",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ]
+      },
+      "provenance": "Independent explicit synthetic numeric fixture; no local or remote model generated these values."
+    },
+    {
+      "name": "kernel_zero_probability",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          0,
+          0.5,
+          0.5
+        ]
+      },
+      "provenance": "Independent explicit synthetic numeric fixture; no local or remote model generated these values."
+    },
+    {
+      "name": "kernel_single_sample",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1
+          ]
+        ]
+      },
+      "provenance": "Independent explicit synthetic numeric fixture; no local or remote model generated these values."
+    },
+    {
+      "name": "kernel_fractional_order",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 0.5
+      },
+      "provenance": "Independent explicit synthetic numeric fixture; no local or remote model generated these values."
+    },
+    {
+      "name": "vectors_default",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ]
+      },
+      "provenance": "Independent explicit synthetic numeric fixture; no local or remote model generated these values."
+    },
+    {
+      "name": "vectors_single_sample",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            7,
+            2
+          ]
+        ]
+      },
+      "provenance": "Independent explicit synthetic numeric fixture; no local or remote model generated these values."
+    },
+    {
+      "name": "vectors_fractional_order",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 0.5
+      },
+      "provenance": "Independent explicit synthetic numeric fixture; no local or remote model generated these values."
+    }
+  ],
+  "negative": [
+    {
+      "name": "missing_matrix",
+      "tool": "vendi_score_similarity",
+      "arguments": {},
+      "error_contains": "K"
+    },
+    {
+      "name": "empty_matrix",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": []
+      },
+      "error_contains": "nonempty"
+    },
+    {
+      "name": "empty_rows",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          []
+        ]
+      },
+      "error_contains": "nonempty"
+    },
+    {
+      "name": "ragged_matrix",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "error_contains": "rectangular"
+    },
+    {
+      "name": "nonnumeric_matrix",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            "bad"
+          ]
+        ]
+      },
+      "error_contains": "float"
+    },
+    {
+      "name": "nonfinite_nan",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            NaN
+          ]
+        ]
+      },
+      "error_contains": "finite"
+    },
+    {
+      "name": "nonfinite_inf",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            Infinity
+          ]
+        ]
+      },
+      "error_contains": "finite"
+    },
+    {
+      "name": "q0_deferred",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 0
+      },
+      "error_contains": "q=0 is deferred"
+    },
+    {
+      "name": "q_negative",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": -1
+      },
+      "error_contains": "positive finite"
+    },
+    {
+      "name": "q_invalid_literal",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": "bad"
+      },
+      "error_contains": "q"
+    },
+    {
+      "name": "q_nan",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": NaN
+      },
+      "error_contains": "positive finite"
+    },
+    {
+      "name": "q_infinite_numeric",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": Infinity
+      },
+      "error_contains": "positive finite"
+    },
+    {
+      "name": "missing_matrix",
+      "tool": "vendi_score_embeddings",
+      "arguments": {},
+      "error_contains": "X"
+    },
+    {
+      "name": "empty_matrix",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": []
+      },
+      "error_contains": "nonempty"
+    },
+    {
+      "name": "empty_rows",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          []
+        ]
+      },
+      "error_contains": "nonempty"
+    },
+    {
+      "name": "ragged_matrix",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "error_contains": "rectangular"
+    },
+    {
+      "name": "nonnumeric_matrix",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            "bad"
+          ]
+        ]
+      },
+      "error_contains": "float"
+    },
+    {
+      "name": "nonfinite_nan",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            NaN
+          ]
+        ]
+      },
+      "error_contains": "finite"
+    },
+    {
+      "name": "nonfinite_inf",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            Infinity
+          ]
+        ]
+      },
+      "error_contains": "finite"
+    },
+    {
+      "name": "q0_deferred",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 0
+      },
+      "error_contains": "q=0 is deferred"
+    },
+    {
+      "name": "q_negative",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": -1
+      },
+      "error_contains": "positive finite"
+    },
+    {
+      "name": "q_invalid_literal",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": "bad"
+      },
+      "error_contains": "q"
+    },
+    {
+      "name": "q_nan",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": NaN
+      },
+      "error_contains": "positive finite"
+    },
+    {
+      "name": "q_infinite_numeric",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": Infinity
+      },
+      "error_contains": "positive finite"
+    },
+    {
+      "name": "nonsquare",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "error_contains": "square"
+    },
+    {
+      "name": "nonsymmetric",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.5
+          ],
+          [
+            0.2,
+            1
+          ]
+        ]
+      },
+      "error_contains": "symmetric"
+    },
+    {
+      "name": "non_psd",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      "error_contains": "positive semidefinite"
+    },
+    {
+      "name": "zero_diagonal",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            0,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "error_contains": "strictly positive diagonal"
+    },
+    {
+      "name": "negative_diagonal",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            -1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ]
+      },
+      "error_contains": "strictly positive diagonal"
+    },
+    {
+      "name": "nonunit_diagonal",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            4,
+            0
+          ],
+          [
+            0,
+            9
+          ]
+        ]
+      },
+      "error_contains": "unit diagonal"
+    },
+    {
+      "name": "weight_wrong_length",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          0.5,
+          0.5
+        ]
+      },
+      "error_contains": "one finite nonnegative"
+    },
+    {
+      "name": "negative_weight",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          -0.1,
+          0.6,
+          0.5
+        ]
+      },
+      "error_contains": "one finite nonnegative"
+    },
+    {
+      "name": "weight_nan",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          NaN,
+          0.5,
+          0.5
+        ]
+      },
+      "error_contains": "one finite nonnegative"
+    },
+    {
+      "name": "weight_sum",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          0.2,
+          0.2,
+          0.2
+        ]
+      },
+      "error_contains": "sum to one"
+    },
+    {
+      "name": "weight_nested",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          [
+            1
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ]
+      },
+      "error_contains": "p"
+    },
+    {
+      "name": "zero_vector",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "error_contains": "finite nonzero rows"
+    },
+    {
+      "name": "norm_overflow",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1e+308,
+            1e+308
+          ]
+        ]
+      },
+      "error_contains": "finite nonzero rows"
+    },
+    {
+      "name": "nonunit_no_normalization",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            2,
+            0
+          ],
+          [
+            0,
+            3
+          ]
+        ],
+        "normalize": false
+      },
+      "error_contains": "unit norm"
+    }
+  ]
+}
