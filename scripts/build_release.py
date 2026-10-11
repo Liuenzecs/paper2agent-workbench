@@ -7,7 +7,7 @@ import subprocess
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-NAME = 'Paper2Agent-Workbench-0.3.1'
+NAME = 'Paper2Agent-Workbench-0.3.2'
 raw_names = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-z']).decode().split('\0')
 names = sorted(filter(None, raw_names))
 if not names:
@@ -39,6 +39,6 @@ manifest = {'archive': target.name, 'sha256': digest, 'top_level': NAME,
             'files': {name: hashlib.sha256(raw).hexdigest() for name, raw in files.items()},
             'source_commit_at_build': subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD']).decode().strip(),
             'personal_documents_included': False, 'credentials_included': False}
-(ROOT / 'dist/package-manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
-(ROOT / 'dist/SHA256SUMS.txt').write_text(digest + '  ' + target.name + '\n', encoding='utf-8')
+(ROOT / 'dist/0.3.2-package-manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+(ROOT / 'dist/0.3.2-SHA256SUMS.txt').write_text(digest + '  ' + target.name + '\n', encoding='utf-8')
 print(json.dumps({'archive': str(target), 'sha256': digest, 'file_count': len(files)}))

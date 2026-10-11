@@ -365,3 +365,19 @@ $("select-all").addEventListener("click", () => {
 });
 $("refresh-history").addEventListener("click", () => refreshHistory().catch((error) => notice(error.message)));
 Promise.all([refreshStatus(), refreshPapers(), refreshHistory()]).catch((error) => notice(error.message));
+
+$("mannkendall-form").addEventListener("submit", async (event) => {
+  event.preventDefault(); $("mannkendall-button").disabled = true;
+  $("mannkendall-result").hidden = false;
+  $("mannkendall-result").replaceChildren(el("p", "", "正在通过真实 MCP 核对数值和错误输入，原始记录将保留…"));
+  try {
+    const result = await api("/api/examples/mannkendall", {python_executable: $("mannkendall-python").value.trim()});
+    $("mannkendall-result").replaceChildren(el("h3", "", result.success ? "十一项实测通过，已保留原始结果" : "存在未通过项目，请检查保存记录"));
+    for (const item of result.cases || []) {
+      $("mannkendall-result").append(el("p", "", `${item.case}：${item.passed ? "通过" : "未通过"}${item.expected_error ? " · 预期拒绝" : " · 九个字段与原函数一致"}`));
+      if (item.native_result) $("mannkendall-result").append(el("pre", "", JSON.stringify(item.native_result, null, 2)));
+    }
+    $("mannkendall-result").append(el("p", "", `完整记录：${result.report_path}`));
+  } catch (error) { $("mannkendall-result").replaceChildren(el("p", "", error.message)); }
+  finally { $("mannkendall-button").disabled = false; }
+});

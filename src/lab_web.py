@@ -243,10 +243,14 @@ def build_server(service, host="127.0.0.1", port=8765):
                 return
             try:
                 path = urlsplit(self.path).path
-                known = {"/api/settings", "/api/ask", "/api/upload", "/api/code/scan", "/api/code/build", "/api/code/test", "/api/code/fetch", "/api/examples/vendi"}
+                known = {"/api/settings", "/api/ask", "/api/upload", "/api/code/scan", "/api/code/build", "/api/code/test", "/api/code/fetch", "/api/examples/vendi", "/api/examples/mannkendall"}
                 if path not in known:
                     return self._error(404, "not_found", "操作不存在。")
                 data = self._body()
+                if path == "/api/examples/mannkendall":
+                    if set(data) != {"python_executable"} or not isinstance(data["python_executable"], str) or not data["python_executable"].strip():
+                        raise ValueError("Provide the installed Mann-Kendall Python executable")
+                    return self._json(200, service.run_mannkendall_example(data["python_executable"]))
                 if path == "/api/examples/vendi":
                     if set(data) != {"python_executable"} or not isinstance(data["python_executable"], str) or not data["python_executable"].strip():
                         raise ValueError("Provide the installed Vendi Python executable")

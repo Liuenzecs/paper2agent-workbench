@@ -11,6 +11,7 @@
 - 区分缺证据拒答、引用覆盖不足及服务故障；原始问答、重试记录与导出按唯一目录保留。
 - 获取公开 GitHub 源码，静态扫描适合的 Python 函数，生成绑定原函数的 MCP 项目，明确选择后进行真实测试与打包。
 - 运行内置 [Vendi 示例](examples/vendi/README.md)，验证“论文代码 → 原函数 → MCP → 实际调用”的完整链路，无需模型或 API 密钥。
+- 运行 [pyMannKendall 非 AI 统计示例](examples/mannkendall/README.md)，通过通用生成器和真实 MCP 核对趋势检验的全部九个字段及错误输入。
 
 ## 安装与打开
 

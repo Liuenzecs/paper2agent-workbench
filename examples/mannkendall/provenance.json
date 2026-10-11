@@ -1,0 +1,16 @@
+{
+  "paper": "https://doi.org/10.21105/joss.01556",
+  "repository": "https://github.com/mmhs013/pyMannKendall",
+  "tag": "v1.4.3",
+  "commit": "1ff32de4c4f4b50e1d922763ae88b3cb677c52b0",
+  "scientific_algorithm_modified": false,
+  "source_files": {
+    "COPYING": "1aa87fff0d0a5174f43259c320b7082de75698c6628bd5cdaa9c9fff533e126f",
+    "LICENSE": "7f906a01cb32cdbf437e09499f6a6c3d917fcd913761b18f5cc37227716e9f40",
+    "mannkendall_adapter.py": "742ae14d61f3566db8f7087a72bc14404a35cc467fe17a804ccff83c699a80df",
+    "NOTICE": "21cc4baa504e162141392676a7eb2e7b120a08d0517ce1cd9e4f9159914bb82f",
+    "pymannkendall.py": "537e3b1234a0de0297223729c8aa079978e0ec3d77401c5b8592794e512d5fd5",
+    "README.md": "3cbf5c9c7c0febc79e30d720a5d3c91aa15513164b0cf79daff90559ed6e3c70",
+    "requirements.txt": "6afb83d59515deb526c4879fe45c151289c53c8b2bd6c073dfcd3702132e51ac"
+  }
+}

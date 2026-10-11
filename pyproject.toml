@@ -1,6 +1,6 @@
 [project]
 name = "paper2agent-workbench"
-version = "0.3.1"
+version = "0.3.2"
 description = "Personal remote-only paper evidence and repository-to-MCP workbench"
 requires-python = ">=3.11,<3.12"
 license = "AGPL-3.0-only"

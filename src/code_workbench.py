@@ -475,7 +475,8 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(p, target)
         copied.append({'path': rel.as_posix(), 'sha256': _hash(target), 'bytes': target.stat().st_size})
-    server = _SERVER_HEADER + f'mcp = FastMCP(name={name!r})\n\n'
+    # Preserve the caller's JSON types: coercion can bypass scientific guards.
+    server = _SERVER_HEADER + f'mcp = FastMCP(name={name!r}, strict_input_validation=True)\n\n'
     tool_names = []
     for c in selected:
         tool_name = re.sub(r'[^a-zA-Z0-9_]', '_', c['module']) + '__' + c['function']
@@ -508,6 +509,7 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
                 'declared_dependencies': dependencies, 'dependency_warnings': dependency_warnings,
                 'server_sha256': _hash(project / 'server.py'), 'execution_performed': False,
                 'verification_status': 'generated_not_executed_or_independently_verified',
+                'input_validation': 'strict_json_types',
                 'algorithm_changes': False, 'local_model_execution_allowed': False,
                 'execution_policy': {'blocked_model_packages': sorted(MODEL_PACKAGES),
                                      'gpu_visibility': 'disabled', 'hf_offline': True,

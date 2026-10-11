@@ -31,6 +31,10 @@ class FakeService:
         self.calls.append(("vendi", python_executable))
         return {"success": True, "cases": [], "report_path": "personal/demo-result.json"}
 
+    def run_mannkendall_example(self, python_executable):
+        self.calls.append(("mannkendall", python_executable))
+        return {"success": True, "cases": [], "report_path": "personal/demo-result.json"}
+
     def inventory(self):
         return {"papers": [{"paper_id": "paper1", "title": "Paper", "page_count": 1}]}
 
@@ -138,6 +142,14 @@ class WebTests(unittest.TestCase):
         self.assertEqual(self.service.calls[-1], ("vendi", "python.exe"))
         for data in [{}, {"python_executable": ""}, {"python_executable": 1}, {"python_executable": "python.exe", "unexpected": True}]:
             self.assertEqual(self.request("POST", "/api/examples/vendi", data)[0], 400)
+
+    def test_explicit_mannkendall_example_route(self):
+        code, raw, _ = self.request("POST", "/api/examples/mannkendall", {"python_executable": "python.exe"})
+        self.assertEqual(code, 200)
+        self.assertTrue(json.loads(raw)["success"])
+        self.assertEqual(self.service.calls[-1], ("mannkendall", "python.exe"))
+        for data in [{}, {"python_executable": ""}, {"python_executable": 1}, {"python_executable": "python.exe", "unexpected": True}]:
+            self.assertEqual(self.request("POST", "/api/examples/mannkendall", data)[0], 400)
 
     def test_status_omits_key_and_provides_browser_token(self):
         code, raw, _ = self.request("GET", "/api/status")

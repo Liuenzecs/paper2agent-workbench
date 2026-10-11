@@ -38,3 +38,11 @@ jobs:
           if ($vendiTestExit -ne 0) { throw 'Vendi tests failed' }
           python -X utf8 src/lab_cli.py --data-dir "$env:RUNNER_TEMP/workbench-demo" example-vendi --python examples/vendi/mcp/.venv/Scripts/python.exe
           if ($LASTEXITCODE -ne 0) { throw 'Real MCP demo failed' }
+      - name: Verify non-AI statistics and strict MCP inputs
+        shell: pwsh
+        run: |
+          python -m venv "$env:RUNNER_TEMP/mannkendall-env"
+          & "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe" -m pip install -r examples/mannkendall/requirements-lock.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Mann-Kendall install failed' }
+          python -X utf8 src/lab_cli.py --data-dir "$env:RUNNER_TEMP/mannkendall-demo" example-mannkendall --python "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe"
+          if ($LASTEXITCODE -ne 0) { throw 'Mann-Kendall MCP demo failed' }

@@ -1,4 +1,4 @@
-# Paper2Agent Workbench 0.3.1
+# Paper2Agent Workbench 0.3.2
 
 把自己的论文变成可核对原文的问答库，并把论文关联的 Python 代码做成可测试的 MCP 工具。本机网页与 CLI 共用同一个个人工作区；问答及嵌入只使用远程 API。这个版本不调用本地模型或 GPU。
 
@@ -107,3 +107,9 @@ API 错误：检查账户权限、模型名、服务基础地址以及嵌入接�
 主程序 AGPL-3.0-only；Vendi 示例保持其 MIT 许可。源码和下载 ZIP 均不含个人数据。
 
 较深目录安装遇到 Windows 文件路径过长时，可给 install.ps1 追加 -EnvironmentDir 指定短的可写目录，例如 C:\P2A-env\workbench。安装成功后本机 runtime-path.txt 记录实际解释器，paper.cmd 与网页启动器均自动读取。此文件只包含本机路径，不含密钥，不进入开源仓库。Vendi 安装器支持同名选项。
+
+## 非 AI 统计示例与严格输入
+
+见 examples/mannkendall/README.md，安装独立统计环境后执行 `paper.cmd example-mannkendall --python <统计环境解释器>`，或在网页“论文代码”页运行非 AI 示例。两个入口均生成新 MCP，核对五组全部九字段结果并拒绝六组错误输入，保留每次原始记录。
+
+所有新生成 MCP 默认显式开启严格 JSON 类型校验：布尔值和数字字符串不能冒充数字；合法整数可用于浮点参数。领域条件仍由可信原函数或适配器检查。CLI code-test 在调用失败时返回非零退出码，并保留失败记录；网页显示失败。旧 MCP 项目需重新生成，原有项目和结果不会自动改写。代码复测无需调用任何模型。
