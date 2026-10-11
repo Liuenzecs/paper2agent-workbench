@@ -10,8 +10,6 @@
 - 配置自己的 OpenAI 兼容远程问答及嵌入 API；两种服务可独立配置。密钥不回显，可选 Windows 用户绑定的加密存储。
 - 区分缺证据拒答、引用覆盖不足及服务故障；原始问答、重试记录与导出按唯一目录保留。
 - 获取公开 GitHub 源码，静态扫描适合的 Python 函数，生成绑定原函数的 MCP 项目，明确选择后进行真实测试与打包。
-- 运行内置 [Vendi 示例](examples/vendi/README.md)，验证“论文代码 → 原函数 → MCP → 实际调用”的完整链路，无需模型或 API 密钥。
-- 运行 [pyMannKendall 非 AI 统计示例](examples/mannkendall/README.md)，通过通用生成器和真实 MCP 核对趋势检验的全部九个字段及错误输入。
 
 ## 安装与打开
 
@@ -23,7 +21,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Python "C:\你的Python3
 
 双击 `Start-Web.cmd` 打开本机网页；默认地址 `http://127.0.0.1:8765`。双击 `Stop-Web.cmd` 停止服务。关闭浏览器标签页不会停止后台服务。
 
-若解压目录较深、安装报 Windows 文件路径过长，可将环境单独放在较短的可写目录：在安装命令追加 `-EnvironmentDir "C:\P2A-env\workbench"`。安装器保存本机 `runtime-path.txt`，网页和 CLI 启动器会使用该环境；此路径文件不进入开源仓库。Vendi 安装器也支持 `-EnvironmentDir`，之后在演示表单或 CLI 中填写该环境的实际 Python 路径。
+若解压目录较深、安装报 Windows 文件路径过长，可将环境单独放在较短的可写目录：在安装命令追加 `-EnvironmentDir "C:\P2A-env\workbench"`。安装器保存本机 `runtime-path.txt`，网页和 CLI 启动器会使用该环境；此路径文件不进入开源仓库。
 
 CLI 入口：
 
@@ -42,17 +40,6 @@ CLI 入口：
 
 远程问答会向你配置的服务发送选中论文的文本片段和问题，并产生该服务的费用。不要把个人数据目录或 API 密钥提交到仓库。此发行版没有论文、个人数据、密钥、模型权重或可用的共享 API 账户。
 
-## 真实 Vendi 演示
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\examples\vendi\install.ps1 -Python "C:\你的Python311目录\python.exe"
-.\paper.cmd example-vendi --python ".\examples\vendi\mcp\.venv\Scripts\python.exe"
-```
-
-演示会在自己的工作区创建新项目，实际调用 `vendi_score_similarity` 和 `vendi_score_embeddings`，对照已保存原函数数值，验证 q=0 拒绝并保留每次原始记录。原函数期望值为 2.1573004833739833、1.9480519480519483、1.8898815748423097 和 1.7999999999999998。
-
-Vendi 官方函数缺少类型注解，现有静态扫描会拒绝直接自动封装；内置示例提供经过审阅的适配层。一般仓库仍受类型、依赖和可验证输入条件限制。当前不承诺一键复现任意论文。
-
 ## 验证与边界
 
 本次发行的验收记录见 [docs/VALIDATION.md](docs/VALIDATION.md)。测试使用合成 PDF、静态代码夹具和假的远程响应；这类离线测试验证软件行为，不证明论文答案事实正确。此前真实远程问答的独立原文审查包含成功、缺证据拒答及一次服务超时；公开版只分享审核摘要，不分享论文或私有 API 原始响应。
@@ -61,6 +48,6 @@ Vendi 官方函数缺少类型注解，现有静态扫描会拒绝直接自动�
 
 ## 开源许可
 
-主程序和文档：**AGPL-3.0-only**，见 [LICENSE](LICENSE)。PyMuPDF 使用其 AGPL 开源许可路径。独立 Vendi 示例及 HumanEval 测试来源保留 MIT 许可和上游通知；见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+主程序和文档：**AGPL-3.0-only**，见 [LICENSE](LICENSE)。PyMuPDF 使用其 AGPL 开源许可路径。开发验证资料保留原许可；见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
 开发与贡献见 [CONTRIBUTING.md](CONTRIBUTING.md)，本机使用与密钥说明见 [SECURITY.md](SECURITY.md)。

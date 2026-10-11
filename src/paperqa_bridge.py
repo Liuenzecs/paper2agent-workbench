@@ -205,7 +205,7 @@ async def ask_paperqa(library: PaperLibrary, question: str, settings_path: str, 
     if answer_language not in {"auto", "zh", "en"}:
         raise ValueError("answer_language must be auto, zh or en")
     if backend != "pymupdf":
-        raise ValueError("Lab trial supports pymupdf source text only; local parser models are disabled")
+        raise ValueError("Paper2Agent supports pymupdf source text only; local parser models are disabled")
     _validate_paper_ids(paper_ids, "paper_ids")
     _validate_paper_ids(required_paper_ids, "required_paper_ids")
     if not isinstance(use_cache, bool):

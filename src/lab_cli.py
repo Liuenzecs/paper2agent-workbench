@@ -10,7 +10,7 @@ from lab_service import LabService, default_data_dir
 def main(argv=None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    p = argparse.ArgumentParser(description="Paper2Agent 课题组试用版：论文证据与官方代码 MCP 工作台")
+    p = argparse.ArgumentParser(description="Paper2Agent：论文问答与代码工具")
     p.add_argument("--data-dir", default=str(default_data_dir()), help="Your own library/settings/results directory")
     commands = p.add_subparsers(dest="command", required=True)
     commands.add_parser("status"); commands.add_parser("list"); commands.add_parser("history")
@@ -31,10 +31,6 @@ def main(argv=None):
     inputs.add_argument("--arguments", help="JSON object passed to the selected original function")
     inputs.add_argument("--arguments-file", help="UTF-8 JSON file; recommended for Windows shells")
     test.add_argument("--python", default="")
-    example = commands.add_parser("example-vendi", help="Run the reviewed CPU MCP example; no model or API needed")
-    example.add_argument("--python", required=True, help="Python executable with the Vendi example pinned dependencies installed")
-    mannkendall = commands.add_parser("example-mannkendall", help="Run the non-AI statistics example with real MCP calls")
-    mannkendall.add_argument("--python", required=True, help="Python executable with the Mann-Kendall pinned dependencies installed")
     args = p.parse_args(argv)
     svc = LabService(args.data_dir)
     if args.command == "status": result = svc.status()
@@ -54,8 +50,6 @@ def main(argv=None):
     elif args.command == "code-test":
         raw_arguments = Path(args.arguments_file).read_text(encoding="utf-8-sig") if args.arguments_file else args.arguments
         result = svc.test_code_mcp(args.project, args.tool, json.loads(raw_arguments), args.python)
-    elif args.command == "example-vendi": result = svc.run_vendi_example(args.python)
-    elif args.command == "example-mannkendall": result = svc.run_mannkendall_example(args.python)
     elif args.command == "code-package":
         from code_workbench import package_mcp
         result = package_mcp(args.project)
@@ -64,8 +58,6 @@ def main(argv=None):
         serve(args.data_dir, args.port)
         return
     print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
-    if args.command in {"example-vendi", "example-mannkendall"} and not result["success"]:
-        sys.exit(1)
     if args.command == "code-test" and result.get("decision") != "completed":
         sys.exit(1)
 

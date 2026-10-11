@@ -135,21 +135,11 @@ class WebTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_server(self.service, host="0.0.0.0")
 
-    def test_explicit_vendi_example_route(self):
-        code, raw, _ = self.request("POST", "/api/examples/vendi", {"python_executable": "python.exe"})
-        self.assertEqual(code, 200)
-        self.assertTrue(json.loads(raw)["success"])
-        self.assertEqual(self.service.calls[-1], ("vendi", "python.exe"))
-        for data in [{}, {"python_executable": ""}, {"python_executable": 1}, {"python_executable": "python.exe", "unexpected": True}]:
-            self.assertEqual(self.request("POST", "/api/examples/vendi", data)[0], 400)
+    def test_vendi_demo_endpoint_removed(self):
+        self.assertEqual(self.request("POST", "/api/examples/vendi", {"python_executable": "python.exe"})[0], 404)
 
-    def test_explicit_mannkendall_example_route(self):
-        code, raw, _ = self.request("POST", "/api/examples/mannkendall", {"python_executable": "python.exe"})
-        self.assertEqual(code, 200)
-        self.assertTrue(json.loads(raw)["success"])
-        self.assertEqual(self.service.calls[-1], ("mannkendall", "python.exe"))
-        for data in [{}, {"python_executable": ""}, {"python_executable": 1}, {"python_executable": "python.exe", "unexpected": True}]:
-            self.assertEqual(self.request("POST", "/api/examples/mannkendall", data)[0], 400)
+    def test_mannkendall_demo_endpoint_removed(self):
+        self.assertEqual(self.request("POST", "/api/examples/mannkendall", {"python_executable": "python.exe"})[0], 404)
 
     def test_status_omits_key_and_provides_browser_token(self):
         code, raw, _ = self.request("GET", "/api/status")

@@ -7,9 +7,10 @@ import subprocess
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-NAME = 'Paper2Agent-Workbench-0.3.2'
+NAME = 'Paper2Agent-1.0.0'
 raw_names = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-z']).decode().split('\0')
-names = sorted(filter(None, raw_names))
+# Development references and tests stay in Git, not in the end-user package.
+names = sorted(n for n in raw_names if n and not n.startswith(('examples/', 'tests/', 'configs/providers/')) and n not in {'src/vendi_example.py', 'src/mannkendall_example.py', 'scripts/verify_examples.py'})
 if not names:
     raise ValueError('Stage the reviewed public source first')
 blocked_dirs = {'personal', 'library', 'incoming', 'outputs', 'verification', 'exports', 'code-projects', 'repositories', 'dist', 'tmp', '__pycache__', '.git'}
@@ -39,6 +40,6 @@ manifest = {'archive': target.name, 'sha256': digest, 'top_level': NAME,
             'files': {name: hashlib.sha256(raw).hexdigest() for name, raw in files.items()},
             'source_commit_at_build': subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD']).decode().strip(),
             'personal_documents_included': False, 'credentials_included': False}
-(ROOT / 'dist/0.3.2-package-manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
-(ROOT / 'dist/0.3.2-SHA256SUMS.txt').write_text(digest + '  ' + target.name + '\n', encoding='utf-8')
+(ROOT / 'dist/1.0.0-package-manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+(ROOT / 'dist/1.0.0-SHA256SUMS.txt').write_text(digest + '  ' + target.name + '\n', encoding='utf-8')
 print(json.dumps({'archive': str(target), 'sha256': digest, 'file_count': len(files)}))

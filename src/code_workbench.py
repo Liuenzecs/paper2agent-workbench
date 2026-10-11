@@ -359,13 +359,13 @@ import uuid
 from pathlib import Path
 from typing import Annotated, Literal
 
-# User constraint: this trial must never load a local model or use GPU execution.
+# Never load a local model or use GPU execution.
 BLOCKED_MODEL_PACKAGES = {'torch', 'tensorflow', 'transformers', 'jax', 'diffusers', 'ollama',
     'llama_cpp', 'onnxruntime', 'sentence_transformers', 'vllm', 'lmstudio', 'mlx'}
 class _NoLocalModels:
     def find_spec(self, fullname, path=None, target=None):
         if fullname.split('.')[0] in BLOCKED_MODEL_PACKAGES:
-            raise ImportError('Local model/framework imports are disabled in this trial: ' + fullname)
+            raise ImportError('Local model/framework imports are disabled in Paper2Agent: ' + fullname)
         return None
 sys.meta_path.insert(0, _NoLocalModels())
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
@@ -606,7 +606,7 @@ def test_mcp(project_path, python_executable, tool_name: str, arguments: dict) -
                 elif isinstance(node, ast.ImportFrom):
                     names = [node.module or '']
                 if any(n.split('.')[0] in MODEL_PACKAGES for n in names):
-                    raise WorkbenchError('源码涉及本地模型或加速框架；本试用版不执行，需人工另行审查。')
+                    raise WorkbenchError('源码涉及本地模型或加速框架；本程序不执行，需人工另行审查。')
     result_dir = project / 'verification' / uuid.uuid4().hex
     result_dir.mkdir(parents=True)
     (result_dir / 'arguments.json').write_text(serialized + '\n', encoding='utf-8')

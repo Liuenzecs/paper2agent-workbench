@@ -4,10 +4,10 @@ const $ = (id) => document.getElementById(id);
 const state = {token: "", papers: [], selected: new Set(), activeJob: null, polling: null, scanPath: "", scanned: [], generated: null};
 const decisions = {answered: "有证据的回答", refused: "缺少证据 · 已拒答", runtime_error: "远程服务故障", insufficient_source_coverage: "引用覆盖不足"};
 const explanations = {
-  answered: "引用已绑定到论文和页码。结论是否被原文完整支持，仍需结合原文检查。",
-  refused: "论文证据不足以回答该问题。模型拒答已单独记录，并非服务失败。",
-  runtime_error: "服务调用未正常完成，没有得到可评估的论文答案。请检查 API 配置或稍后重试。",
-  insufficient_source_coverage: "当前答案没有覆盖要求的所有论文。此结果暂不视为完整回答，请检查遗漏引用后再使用。"
+  answered: "",
+  refused: "论文证据不足。",
+  runtime_error: "请检查 API 配置或重试。",
+  insufficient_source_coverage: "未覆盖全部选中论文。"
 };
 
 function el(tag, className, text) {
@@ -46,7 +46,7 @@ async function api(path, payload) {
 function switchView(name) {
   for (const view of ["reading", "settings", "code"]) $(`${view}-view`).hidden = view !== name;
   document.querySelectorAll(".nav").forEach((button) => { const active = button.dataset.view === name; button.classList.toggle("active", active); button.setAttribute("aria-current", active ? "page" : "false"); });
-  $("view-title").textContent = {reading: "阅读论文，让答案有据可查。", settings: "你的论文库，你的远程服务。", code: "从现有代码，迈向可调用的工具。"}[name];
+  $("view-title").textContent = {reading: "论文问答", settings: "API 设置", code: "代码转 MCP"}[name];
   notice();
 }
 
@@ -63,7 +63,7 @@ async function refreshStatus() {
   const credentials = status.credential_available || config.credential_available || {};
   $("key-state").textContent = `问答密钥：${(chatKey ?? credentials.chat) ? "已配置" : "待配置"} · 嵌入密钥：${(embeddingKey ?? credentials.embedding) ? "已配置" : "待配置"}`;
   const ready = status.ready ?? status.remote_ready ?? config.ready ?? Boolean((chatKey ?? credentials.chat) && (embeddingKey ?? credentials.embedding));
-  $("connection-state").textContent = ready === false ? "本机论文库 · API 待配置" : "本机论文库 · 远程模型";
+  $("connection-state").textContent = ready === false ? "API 待配置" : "API 已配置";
 }
 
 async function refreshPapers() {
@@ -74,7 +74,7 @@ async function refreshPapers() {
   state.selected = new Set([...state.selected].filter((id) => current.has(id)));
   for (const id of current) if (!previous.has(id)) state.selected.add(id);
   $("papers").replaceChildren();
-  if (!state.papers.length) $("papers").append(el("p", "empty", "导入可提取文本的 PDF，开始建立自己的论文库。"));
+  if (!state.papers.length) $("papers").append(el("p", "empty", "暂无论文"));
   for (const paper of state.papers) {
     const row = el("label", "paper");
     const checkbox = el("input"); checkbox.type = "checkbox"; checkbox.checked = state.selected.has(paperId(paper));
@@ -89,7 +89,7 @@ async function refreshHistory() {
   const value = await api("/api/history");
   const items = listOf(value, "history", "items", "answers", "results");
   $("history").replaceChildren();
-  if (!items.length) $("history").append(el("p", "empty", "还没有问答记录。每次运行会独立保留结果。"));
+  if (!items.length) $("history").append(el("p", "empty", "暂无记录"));
   for (const item of items) {
     const id = String(item.answer_id || item.job_id || item.id || "");
     if (!validId(id)) continue;
@@ -235,14 +235,14 @@ $("settings-form").addEventListener("submit", async (event) => {
     settings[name] = String(value).trim();
   }
   settings.remember_keys = $("remember-keys").checked;
-  try { await api("/api/settings", settings); await refreshStatus(); notice("远程 API 配置已保存。现在可以返回论文问答开始验证。"); }
+  try { await api("/api/settings", settings); await refreshStatus(); notice("配置已保存。"); }
   catch (error) { notice(error.message); }
   finally { event.target.elements.chat_key.value = ""; event.target.elements.embedding_key.value = ""; button.disabled = false; }
 });
 
 $("code-fetch-form").addEventListener("submit", async (event) => {
   event.preventDefault(); notice(); $("fetch-button").disabled = true;
-  $("code-fetch-status").textContent = "正在下载公开仓库源码，最多等待约两分钟；不执行代码或下载模型权重…";
+  $("code-fetch-status").textContent = "正在获取代码…";
   try {
     const result = await api("/api/code/fetch", {repository_url: $("repository-url").value.trim(), ref: $("repository-ref").value.trim()});
     if (!result.repository_path) throw new Error("没有得到已下载的源码目录。");
@@ -260,7 +260,7 @@ function displayReason(item) {
 }
 $("code-scan-form").addEventListener("submit", async (event) => {
   event.preventDefault(); notice(); $("scan-button").disabled = true; $("code-build-form").hidden = true; $("code-result").hidden = true; $("code-test-form").hidden = true; state.generated = null;
-  $("code-scan-status").textContent = "正在静态扫描源码，不执行仓库…";
+  $("code-scan-status").textContent = "正在扫描…";
   state.scanPath = $("repository-path").value.trim();
   try {
     const scan = await api("/api/code/scan", {repository_path: state.scanPath});
@@ -277,7 +277,7 @@ $("code-scan-form").addEventListener("submit", async (event) => {
       row.append(checkbox, text); $("code-functions").append(row); count++;
     }
     $("code-count").textContent = `${count} 个函数条目`;
-    $("code-scan-status").textContent = count ? "扫描完成。请依据函数用途和环境要求选择工具。" : "没有找到可绑定的 Python 函数。请确认仓库目录或通过 CLI 查看扫描报告。";
+    $("code-scan-status").textContent = count ? "扫描完成" : "没有可用函数。";
     $("code-build-form").hidden = !count;
   } catch (error) { $("code-scan-status").textContent = "扫描未完成。"; notice(error.message); }
   finally { $("scan-button").disabled = false; }
@@ -298,7 +298,6 @@ $("code-build-form").addEventListener("submit", async (event) => {
     const commands = result.commands || result.test_commands || result.next_steps || [];
     if (Array.isArray(commands)) for (const command of commands) $("code-result").append(el("pre", "", typeof command === "string" ? command : JSON.stringify(command, null, 2)));
     else if (typeof commands === "object") for (const [label, command] of Object.entries(commands)) { $("code-result").append(el("p", "", label), el("pre", "", Array.isArray(command) ? command.join("\n") : command)); }
-    $("code-result").append(el("p", "", "生成阶段没有执行仓库函数、安装依赖或运行模型。请按生成项目的使用说明进行环境与真实输入验证。"));
     $("code-result").hidden = false;
     const tools = listOf(result, "selected_tools", "tools").filter((tool) => typeof tool.tool_name === "string");
     if (directory && tools.length) {
@@ -318,7 +317,7 @@ function showTestParameters() {
   let info = $("test-parameter-info");
   if (!info) { info = el("p", "hint"); info.id = "test-parameter-info"; $("test-arguments").parentElement.after(info); }
   const parameters = tool?.parameters || [];
-  info.textContent = parameters.length ? `源码参数：${parameters.map((p) => `${p.name}${p.required ? "（必填）" : "（可选）"}${p.annotation ? ` : ${p.annotation}` : ""}`).join("；")}。请自行提供真实输入。` : "该工具没有参数。";
+  info.textContent = parameters.length ? `源码参数：${parameters.map((p) => `${p.name}${p.required ? "（必填）" : "（可选）"}${p.annotation ? ` : ${p.annotation}` : ""}`).join("；")}。` : "该工具没有参数。";
 }
 $("test-tool").addEventListener("change", showTestParameters);
 $("code-test-form").addEventListener("submit", async (event) => {
@@ -328,40 +327,24 @@ $("code-test-form").addEventListener("submit", async (event) => {
   try {
     testArguments = JSON.parse($("test-arguments").value);
     if (!testArguments || Array.isArray(testArguments) || typeof testArguments !== "object") throw new Error();
-  } catch { notice("测试参数需要是合法 JSON 对象，例如 {\"x\": 2}。请根据原函数填写真实输入。"); return; }
+  } catch { notice("请输入合法 JSON 对象。"); return; }
   $("test-button").disabled = true; $("test-result").hidden = false;
-  $("test-result").replaceChildren(el("p", "", "正在运行所选原函数测试…最多等待约 30 秒。"));
+  $("test-result").replaceChildren(el("p", "", "正在运行…"));
   try {
     const result = await api("/api/code/test", {project_path: state.generated.project_path, tool_name: $("test-tool").value,
       arguments: testArguments, python_executable: $("test-python").value.trim()});
-    const labels = {completed: "真实 MCP 调用完成", execution_error: "执行失败 · 已保留记录", timeout: "调用超时 · 未计成功"};
+    const labels = {completed: "调用成功", execution_error: "调用失败", timeout: "调用超时"};
     $("test-result").replaceChildren(el("h3", "", labels[result.decision] || "测试状态待核对"));
-    if (result.result) $("test-result").append(el("pre", "", JSON.stringify(result.result, null, 2)));
+    if (result.result) $("test-result").append(el("pre", "", JSON.stringify(result.result.data?.native_result ?? result.result.data ?? result.result, null, 2)));
     if (result.error) {
       const inputRejected = result.error.includes("validation error for call[");
       $("test-result").append(el("p", "", inputRejected
-        ? "参数类型校验未通过：数字输入不能使用布尔值或数字字符串。请核对输入参数；详细错误已保存在本机记录。"
-        : "工具调用未成功。请核对参数、原函数要求和运行环境；详细错误已保存在本机记录。"));
+        ? "参数类型错误。数值参数不能使用布尔值或字符串。"
+        : "调用失败，请检查参数或运行环境。"));
     }
     if (result.report_path) $("test-result").append(el("p", "", `记录位置：${result.report_path}`));
-    $("test-result").append(el("p", "", result.decision === "completed"
-      ? "原函数调用完成；结果是否符合论文，需要与上游直接运行的参考结果独立比较。"
-      : "本次没有通过调用验收，不计为科学结果。原始输入与失败记录均保留。"));
   } catch (error) { $("test-result").replaceChildren(el("p", "", error.message)); }
   finally { $("test-button").disabled = false; }
-});
-
-$("vendi-form").addEventListener("submit", async (event) => {
-  event.preventDefault(); $("vendi-button").disabled = true;
-  $("vendi-result").hidden = false;
-  $("vendi-result").replaceChildren(el("p", "", "正在实际调用两个 Vendi 工具，结果会保存在你的工作区…"));
-  try {
-    const result = await api("/api/examples/vendi", {python_executable: $("vendi-python").value.trim()});
-    $("vendi-result").replaceChildren(el("h3", "", result.success ? "五项实测通过，已保留原始结果" : "存在未通过项目，请检查保存记录"));
-    for (const item of result.cases || []) $("vendi-result").append(el("p", "", `${item.case}：${item.passed ? "通过" : "未通过"}${item.score === null ? " · 预期拒绝" : ` · 分数 ${item.score}`}`));
-    $("vendi-result").append(el("p", "", `完整记录：${result.report_path}`));
-  } catch (error) { $("vendi-result").replaceChildren(el("p", "", error.message)); }
-  finally { $("vendi-button").disabled = false; }
 });
 
 document.querySelectorAll(".nav").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
@@ -372,19 +355,3 @@ $("select-all").addEventListener("click", () => {
 });
 $("refresh-history").addEventListener("click", () => refreshHistory().catch((error) => notice(error.message)));
 Promise.all([refreshStatus(), refreshPapers(), refreshHistory()]).catch((error) => notice(error.message));
-
-$("mannkendall-form").addEventListener("submit", async (event) => {
-  event.preventDefault(); $("mannkendall-button").disabled = true;
-  $("mannkendall-result").hidden = false;
-  $("mannkendall-result").replaceChildren(el("p", "", "正在通过真实 MCP 核对数值和错误输入，原始记录将保留…"));
-  try {
-    const result = await api("/api/examples/mannkendall", {python_executable: $("mannkendall-python").value.trim()});
-    $("mannkendall-result").replaceChildren(el("h3", "", result.success ? "十一项实测通过，已保留原始结果" : "存在未通过项目，请检查保存记录"));
-    for (const item of result.cases || []) {
-      $("mannkendall-result").append(el("p", "", `${item.case}：${item.passed ? "通过" : "未通过"}${item.expected_error ? " · 预期拒绝" : " · 九个字段与原函数一致"}`));
-      if (item.native_result) $("mannkendall-result").append(el("pre", "", JSON.stringify(item.native_result, null, 2)));
-    }
-    $("mannkendall-result").append(el("p", "", `完整记录：${result.report_path}`));
-  } catch (error) { $("mannkendall-result").replaceChildren(el("p", "", error.message)); }
-  finally { $("mannkendall-button").disabled = false; }
-});

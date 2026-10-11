@@ -40,7 +40,7 @@ SAFE_ERRORS = {
     "Unknown question task": (404, "没有找到该问答任务。"),
     "Unknown answer": (404, "没有找到该问答结果。"),
     "Unknown paper": (404, "没有找到该论文。"),
-    "源码涉及本地模型或加速框架；本试用版不执行，需人工另行审查。": (400, "所选源码涉及本地模型或加速框架，当前试用版不执行。请改选符合 CPU 环境的工具。"),
+    "源码涉及本地模型或加速框架；本程序不执行，需人工另行审查。": (400, "所选源码涉及本地模型或加速框架，当前程序不执行。请改选符合 CPU 环境的工具。"),
     "研究代码目录不存在。": (400, "研究代码目录不存在，请检查本机仓库路径。"),
     "未找到 LICENSE / COPYING / NOTICE；请先核实分发许可，再生成包。": (400, "仓库缺少许可文件，请先核实分发许可再生成项目。"),
     "Choose a code project generated in your personal workspace": (400, "只能测试当前个人工作区中生成的 MCP 项目。"),
@@ -90,7 +90,7 @@ def build_server(service, host="127.0.0.1", port=8765):
             return page_cache[key]
 
     class Handler(BaseHTTPRequestHandler):
-        server_version = "Paper2AgentLab/1"
+        server_version = "Paper2Agent/1"
 
         def log_message(self, format, *args):
             # Body, question, API key and query strings never enter access logs.
@@ -243,18 +243,10 @@ def build_server(service, host="127.0.0.1", port=8765):
                 return
             try:
                 path = urlsplit(self.path).path
-                known = {"/api/settings", "/api/ask", "/api/upload", "/api/code/scan", "/api/code/build", "/api/code/test", "/api/code/fetch", "/api/examples/vendi", "/api/examples/mannkendall"}
+                known = {"/api/settings", "/api/ask", "/api/upload", "/api/code/scan", "/api/code/build", "/api/code/test", "/api/code/fetch"}
                 if path not in known:
                     return self._error(404, "not_found", "操作不存在。")
                 data = self._body()
-                if path == "/api/examples/mannkendall":
-                    if set(data) != {"python_executable"} or not isinstance(data["python_executable"], str) or not data["python_executable"].strip():
-                        raise ValueError("Provide the installed Mann-Kendall Python executable")
-                    return self._json(200, service.run_mannkendall_example(data["python_executable"]))
-                if path == "/api/examples/vendi":
-                    if set(data) != {"python_executable"} or not isinstance(data["python_executable"], str) or not data["python_executable"].strip():
-                        raise ValueError("Provide the installed Vendi Python executable")
-                    return self._json(200, service.run_vendi_example(data["python_executable"]))
                 if path == "/api/settings":
                     allowed = {"api_base", "chat_model", "embedding_model", "embedding_api_base", "chat_key", "embedding_key", "remember_keys"}
                     if (set(data) - allowed or any(not isinstance(v, str) for k, v in data.items() if k != "remember_keys")
