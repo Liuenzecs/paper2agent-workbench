@@ -1,9 +1,25 @@
-# Local use and credentials
+# 安全与数据管理
 
-The web service binds to 127.0.0.1. Each person should use their own OS account, data directory and remote API credentials. Do not expose this service to a LAN or public internet; it is a personal desktop workbench, not a multi-user hosted service.
+## 运行范围
 
-API keys are supplied through hidden CLI input or password fields. Optional Windows DPAPI storage is tied to the same Windows account. Keys are not displayed again. Settings contain environment-variable names rather than plaintext keys. Paper excerpts and questions are sent to the remote provider explicitly configured by the user.
+网页服务绑定 `127.0.0.1`，供当前计算机使用。工作区由系统用户管理，论文库、配置和结果保存在指定的数据目录。网络部署需要单独设计访问控制、身份认证和用户隔离。
 
-Downloaded research code is statically scanned without import. Explicit test calls run trusted reviewed code in a subprocess. Model-package blocking is a scope guard, not a general security sandbox.
+## 数据传输
 
-If a key is accidentally shared, revoke it with the provider. Do not post keys, personal documents or unredacted private results in GitHub issues.
+论文解析、文件管理和代码扫描在本机完成。问答与文本嵌入将论文片段和问题发送至配置的远程 API；服务的数据处理政策与调用费用由对应提供方规定。
+
+## 凭据存储
+
+API 密钥通过网页密码字段或 CLI 隐藏输入设置。配置文件记录环境变量名称，密钥可保留在进程内，或使用 Windows DPAPI 加密存储。DPAPI 密文与当前 Windows 用户绑定。重新打开设置时，密码字段保持为空。
+
+更换服务地址后，需要重新提供对应服务的凭据。共享工作区或迁移数据前，应核对论文授权、问答内容和凭据文件的访问范围。
+
+## 研究代码执行
+
+源码扫描静态读取 Python 文件。工具测试通过子进程执行选中的原函数，使用当前系统用户的权限。源代码及依赖应在执行前审阅；静态扫描和依赖检查不能替代代码运行沙箱。
+
+MCP 项目保留源码校验值与上游许可。程序会校验所选项目的来源清单，并为每次调用保存独立记录。
+
+## 问题反馈
+
+安全问题可通过 [GitHub Security](https://github.com/Liuenzecs/paper2agent-workbench/security) 页面查询可用的报告渠道。公开 Issue 使用合成输入和脱敏日志；API 密钥泄露时，应先在服务提供方撤销密钥，再更新工作区配置。

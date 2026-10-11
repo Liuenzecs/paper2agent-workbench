@@ -1,20 +1,26 @@
-# pyMannKendall：非 AI 统计示例
+# Mann–Kendall 数值回归
 
-[JOSS 2019 论文](https://joss.theoj.org/papers/10.21105/joss.01556)研究有序时间序列的非参数趋势检验，可用于水文、气候等领域。保留[官方源码 v1.4.3](https://github.com/mmhs013/pyMannKendall/tree/1ff32de4c4f4b50e1d922763ae88b3cb677c52b0)及 MIT 原许可，未修改统计公式。2019 论文归档版本是 v1.1，本例使用后续维护版。来源和文件哈希见 [provenance.json](provenance.json)。科学源码保留 MIT；新适配器和工作台采用根目录 AGPL-3.0-only。
+此目录保存 pyMannKendall 趋势检验的类型适配器、依赖配置和科学回归资料。论文为 [pyMannKendall，JOSS 2019](https://joss.theoj.org/papers/10.21105/joss.01556)，源码固定为 v1.4.3；版本、提交和原文件校验值见 [provenance.json](provenance.json)。
 
-先安装工作台，再安装独立 CPU 统计环境：
+## 环境与运行
+
+在主仓库根目录安装工作台环境，再安装统计依赖并运行检查：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\examples\mannkendall\install.ps1 -Python "C:\你的Python311目录\python.exe" -EnvironmentDir "C:\P2A-env\mannkendall"
-.\paper.cmd example-mannkendall --python "C:\P2A-env\mannkendall\Scripts\python.exe"
+powershell -ExecutionPolicy Bypass -File .\examples\mannkendall\install.ps1 -Python "C:\Python311\python.exe" -EnvironmentDir "C:\P2A-env\mannkendall"
+.\.venv\Scripts\python.exe -X utf8 scripts\verify_examples.py mannkendall --data-dir "C:\P2A-data\mannkendall" --python "C:\P2A-env\mannkendall\Scripts\python.exe"
 ```
 
-网页“论文代码”页的“运行非 AI 示例”填同一个解释器即可。两种入口均通过通用生成器创建新 MCP，真实调用两个工具。五项成功输入对照全部九个原生字段，六项错误输入明确拒绝。每次生成、输入、响应或失败与汇总均保存在个人 `code-projects` 中；重复运行不覆盖。不需要论文、API 密钥或模型。
+验证脚本通过通用 MCP 生成器创建新项目，实际调用 `original_trend` 和 `seasonal_trend`。五项正常输入对照全部九个返回字段，六项无效输入验证拒绝行为。输入、响应、失败信息和汇总保存于指定工作区的独立目录。
 
-也可扫描 `examples/mannkendall/source`，开放 `mannkendall_adapter:original_trend` 和 `mannkendall_adapter:seasonal_trend`。`{"x":[1,null,3]}` 的原始斜率为 1，`null` 保留时间位置，不能删成 `[1,3]`。
+## 参数与结果
 
-新生成 MCP 显式开启严格 JSON 类型校验，不依赖环境变量。`true`、`"1"` 不会被当作数字；整数仍可用于浮点参数。适配器另检查 `0 < alpha < 1`、正整数周期和有效观测配对。旧项目需重新生成，历史包和结果不改写。
+可在代码工作台扫描 `examples/mannkendall/source`，选择 `mannkendall_adapter:original_trend` 和 `mannkendall_adapter:seasonal_trend`。
 
-原始检验斜率是每个观测位置，季节检验是每个完整周期。原始检验不修正自相关或季节性，季节检验也未添加自相关修正。参数、假设和九个字段含义见 [source/README.md](source/README.md)。仅验收两个工具，不声称整篇论文或所有方法已复现。
+缺失观测使用 `null` 保留原时间位置。`alpha` 取值范围为 `0 < alpha < 1`，季节周期为正整数。严格类型校验拒绝布尔值和数字字符串。参数条件、统计假设与九个字段含义见 [source/README.md](source/README.md)。
 
-[reference.json](reference.json) 保存直接官方 API 参考：输入为合成数组，包含缺失位置、周期变化、反向序列与常量序列，并非实测气候数据，容差 `1e-12`。固定依赖见 `requirements-lock.txt`。不分发论文、个人数据或密钥。
+[reference.json](reference.json) 使用合成数组直接调用原 API，覆盖缺失位置、周期变化、反向序列与常量序列，对照容差为 `1e-12`。依赖版本锁定于 `requirements-lock.txt`。
+
+## 来源与许可
+
+论文归档版本为 v1.1，统计库固定版本为后续维护版 v1.4.3。原始趋势检验和季节趋势检验的科学实现采用 MIT；类型适配器与工作台采用 AGPL-3.0-only。许可正文保存在 `source/LICENSE` 和 `source/COPYING`。

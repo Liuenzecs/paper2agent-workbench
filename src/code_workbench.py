@@ -520,14 +520,8 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
                            'Generated source runs with caller permissions only on explicit MCP invocation; static review is not a sandbox.',
                            'No claim of scientific correctness until upstream comparison and independent acceptance.']}
     (project / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    (project / 'USAGE.md').write_text(
-        '# ' + name + '\n\n本包直接调用 vendor/repo 中保留的研究代码，不重写算法。来源、SHA256、参数假设和限制见 manifest.json。上游许可原文保留在 vendor/repo。\n\n'
-        '## 安装与启动\n\n在本目录内创建独立环境，然后人工审阅 requirements.txt 和源码，再执行：\n\n'
-        '```powershell\npython -m venv .venv\n.\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt\n.\\.venv\\Scripts\\python.exe server.py\n```\n\n'
-        '自动生成阶段未导入研究代码、未安装依赖、未运行模型。MCP 调用会执行原始函数及其模块导入；只使用可信、已审阅的代码。\n\n'
-        '该生成包尚未通过独立验收；安装成功或工具列表可见不等于科学结果已核实。请保存原实现直接运行的参考结果，然后运行 example_call.py，与 native_result 对比。不能调用本地模型。\n\n'
-        '## 测试入口\n\n`python example_call.py module__function arguments.json` 使用 FastMCP 真实客户端调用服务器；参数 JSON 需自行准备，不提供虚构科学数据。每次调用的原生结果保存在 outputs/ 的独立目录。\n\n'
-        '外部数据文件、动态依赖、未知类型、实例方法、异步函数及变长参数需人工适配。\n', encoding='utf-8')
+    usage_template = (Path(__file__).resolve().parents[1] / 'docs/MCP_USAGE.md').read_text(encoding='utf-8')
+    (project / 'USAGE.md').write_text(usage_template.replace('# MCP 工具使用指南', '# ' + name, 1), encoding='utf-8')
     (project / 'example_call.py').write_text(
         "\"\"\"Explicit recipient acceptance entry point, never run during conversion.\"\"\"\n"
         "import asyncio, json, sys\nfrom pathlib import Path\nfrom fastmcp import Client\n"

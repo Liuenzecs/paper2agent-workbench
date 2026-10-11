@@ -1,6 +1,8 @@
-Paper2Agent Workbench
+Paper2Agent
 Copyright (c) 2026 Liuenzecs
 
 The workbench source and documentation are licensed under AGPL-3.0-only.
-Separately attributed MIT source under examples/vendi/mcp and
-tests/fixtures/humaneval retains its original license and copyright.
+Separately attributed source under examples/vendi/mcp,
+examples/mannkendall/source/pymannkendall.py and tests/fixtures/humaneval
+retains its original MIT license and copyright notices.
+The pyMannKendall typed adapter is licensed under AGPL-3.0-only.

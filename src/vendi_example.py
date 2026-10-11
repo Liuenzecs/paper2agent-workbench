@@ -13,6 +13,9 @@ def import_example(data_root):
     inventory = json.loads((source / 'reports/publication-provenance.json').read_text(encoding='utf-8'))['runtime_files_byte_identical_to_validated_zip']
     verified = {}
     for relative, expected in inventory.items():
+        if relative == 'USAGE.md':
+            documentation = json.loads((APP_ROOT / 'examples/documentation.json').read_text(encoding='utf-8'))
+            expected = documentation['file_sha256']['vendi/mcp/USAGE.md']
         path = source / relative
         if path.is_symlink() or not path.resolve().is_relative_to(source.resolve()):
             raise ValueError('Invalid Vendi example path')

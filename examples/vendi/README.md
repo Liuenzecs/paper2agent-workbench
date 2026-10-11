@@ -1,25 +1,24 @@
-# Vendi：无需论文、模型或 API 密钥的真实 MCP 演示
+# Vendi Score 数值回归
 
-本示例使用 AISTATS 2024 论文 [Cousins Of The Vendi Score](https://proceedings.mlr.press/v238/pasarkar24a.html) 的官方 Vendi-Score 数值核心。原函数未经修改，薄适配层已经独立审阅和真实 MCP 验收。向量是明确给定的合成数值，没有使用模型生成。
+此目录保存 Vendi Score 的 MCP 适配器、依赖配置与科学回归资料。来源为 AISTATS 2024 论文 [Cousins Of The Vendi Score](https://proceedings.mlr.press/v238/pasarkar24a.html) 的官方实现，固定提交见 [第三方说明](mcp/THIRD_PARTY_NOTICES.md)。
 
-从主程序根目录安装独立 CPU 环境，并运行演示：
+## 环境与运行
+
+在主仓库根目录安装独立环境并运行回归检查：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\examples\vendi\install.ps1 -Python "C:\你的Python311目录\python.exe"
-.\paper.cmd --data-dir "D:\我的研究资料\Paper2Agent" example-vendi --python ".\examples\vendi\mcp\.venv\Scripts\python.exe"
+powershell -ExecutionPolicy Bypass -File .\examples\vendi\install.ps1 -Python "C:\Python311\python.exe"
+.\.venv\Scripts\python.exe -X utf8 scripts\verify_examples.py vendi --data-dir "C:\P2A-data\vendi" --python ".\examples\vendi\mcp\.venv\Scripts\python.exe"
 ```
 
-也可省略 `--data-dir`，使用自己的默认个人工作区。每次演示创建新的 `code-projects/vendi-<唯一ID>`，校验源文件哈希，实际调用两个工具；四项数值与保存的原函数结果比较，第五项验证 q=0 被明确拒绝。全部原始 MCP 响应、警告、输入与输出文件保存在个人工作区，不覆盖前一次演示。
+主程序的开发环境由根目录 `install.ps1` 或 `requirements-dev.txt` 安装。回归脚本在指定工作区创建独立项目，保存每次输入、MCP 响应和对照记录。
 
-| 输入 | 原函数期望值 |
-| --- | ---: |
-| 官方 README 相似度矩阵，q=1 | 2.1573004833739833 |
-| 同一矩阵，q=2 | 1.9480519480519483 |
-| `[[1,0],[1,0],[0,1]]`，q=1 | 1.8898815748423097 |
-| 同一向量，q=2 | 1.7999999999999998 |
+## 验证内容
 
-直接接入其他 MCP 客户端及完整参数说明见 [mcp/USAGE.md](mcp/USAGE.md)。独立示例仓库：[Liuenzecs/vendi-score-mcp](https://github.com/Liuenzecs/vendi-score-mcp)。
+检查包括相似度矩阵与数值向量的四项原函数对照，以及 `q=0` 的预期拒绝。输入采用明确的合成数据，参考结果见 `mcp/notebooks/vendi_reference/reference.json`。
 
-范围为两个 CPU 数值函数。q=0 的原实现受浮点误差影响，因此封装明确拒绝；完整原始异常数值仍在参考记录中。非常小的正 q 也需注意数值敏感性。本示例未执行训练、特征提取或论文全量实验。
+`q=0` 对微小正特征值敏感，接口采用正 `q` 或字符串 `"inf"`。两种工具的参数、数值条件与客户端连接方法见 [mcp/USAGE.md](mcp/USAGE.md)。
 
-`mcp/` 保持其 MIT 许可、上游 Princeton Vertaix Lab MIT 通知及已经公开的路径脱敏验证记录。主程序的 AGPL 许可不改变这些独立示例的原许可。
+## 许可
+
+Vendi MCP 适配器及文档采用 MIT，原科学源码保留 Princeton Vertaix Lab 的 MIT 版权声明。独立项目见 [vendi-score-mcp](https://github.com/Liuenzecs/vendi-score-mcp)。

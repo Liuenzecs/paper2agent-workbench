@@ -1,15 +1,21 @@
-# Third-party software and source
+# 第三方组件与许可
 
-The workbench is an independent project inspired by [Paper2Agent](https://github.com/jmiao24/Paper2Agent). It uses [PaperQA](https://github.com/Future-House/paper-qa), LMI, LiteLLM, FastMCP, PyMuPDF and other installed dependencies. Exact runtime versions are pinned in requirements-lock.txt; dependency binaries are not bundled.
+## 运行依赖
 
-PyMuPDF is available under GNU AGPL v3 or a commercial license: https://pymupdf.io/licensing . This open-source workbench uses the AGPL path and publishes its corresponding source under AGPL-3.0-only. See LICENSE and NOTICE. Installed dependencies retain their own notices; this statement does not relicense them.
+Paper2Agent 使用 PaperQA、LMI、LiteLLM、FastMCP、PyMuPDF 等组件。运行版本锁定于 `requirements-lock.txt`，各组件适用其自身许可。
 
-`examples/vendi/mcp` is the separately MIT-licensed Vendi MCP project. Its unmodified scientific implementation is from Princeton Vertaix Lab's Vendi-Score, commit `ff1dfdbe6356b98a6087540f215b9a9db6db7c11`; source and license notices are retained there. The Vendi example uses provided numeric vectors and does not generate embeddings.
+PyMuPDF 提供 AGPL 与商业许可路径，见 [官方许可说明](https://pymupdf.io/licensing)。本项目采用 AGPL-3.0-only，并公开对应源码；许可正文见 [LICENSE](LICENSE)。
 
-`tests/fixtures/humaneval` contains only OpenAI HumanEval evaluation source and its MIT license, for static scan regression testing. No HumanEval dataset, generated program execution or personal papers are bundled.
+## 研究代码来源
 
-No research PDFs, model weights, API keys, individual libraries, or paid service access are included. Users supply their own papers and remote services.
+| 组件 | 来源与固定版本 | 许可与保留位置 |
+| --- | --- | --- |
+| Vendi Score | Princeton Vertaix Lab，[vertaix/Vendi-Score](https://github.com/vertaix/Vendi-Score)，提交 `ff1dfdbe6356b98a6087540f215b9a9db6db7c11` | MIT；原版权声明保存在 `examples/vendi/mcp/vendor/repo/LICENSE` |
+| pyMannKendall | [mmhs013/pyMannKendall](https://github.com/mmhs013/pyMannKendall)，v1.4.3，提交 `1ff32de4c4f4b50e1d922763ae88b3cb677c52b0` | 科学源码 MIT，见 `examples/mannkendall/source/LICENSE`；类型适配器 AGPL-3.0-only |
+| HumanEval 评估函数 | [OpenAI HumanEval](https://github.com/openai/human-eval) | MIT，见 `tests/fixtures/humaneval/LICENSE` |
 
-## pyMannKendall 非 AI 示例
+研究代码用于开发回归验证，原科学实现及许可保留在对应目录。Vendi MCP 适配器与其独立文档采用 MIT；工作台和 pyMannKendall 类型适配器采用 AGPL-3.0-only。
 
-examples/mannkendall/source/pymannkendall.py 来自 mmhs013/pyMannKendall v1.4.3，提交 1ff32de4c4f4b50e1d922763ae88b3cb677c52b0，科学源码未修改；MIT 原许可保存在 source/LICENSE。新类型适配器使用主程序 AGPL-3.0-only。示例只含明确的合成数组，不含论文 PDF 或私人观测数据。
+## 项目致谢
+
+项目受到 [Paper2Agent](https://github.com/jmiao24/Paper2Agent) 启发，论文证据问答基于 [PaperQA](https://github.com/Future-House/paper-qa)。第三方组件的引用与许可不改变其原有版权归属。

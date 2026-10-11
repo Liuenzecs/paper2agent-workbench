@@ -1,11 +1,7 @@
-# Third-party source
+# 第三方源码与许可
 
-Vendi Score scientific implementation: https://github.com/vertaix/Vendi-Score
+Vendi Score 科学实现来自 [vertaix/Vendi-Score](https://github.com/vertaix/Vendi-Score)，固定提交 `ff1dfdbe6356b98a6087540f215b9a9db6db7c11`。
 
-Pinned commit: `ff1dfdbe6356b98a6087540f215b9a9db6db7c11`.
-Copyright (c) 2022 Princeton Vertaix Lab, MIT.
-Original notices are retained in `vendor/repo/LICENSE` and `repo/Vendi-Score/LICENSE`.
-The scientific source is unchanged. The separate `repo/` copy supports independently loaded test oracles.
-The MCP adapter and project documentation are licensed under the root MIT license.
-Installed dependencies remain subject to their own licenses; no dependency binaries are bundled.
-The paper is linked for attribution; its PDF is not redistributed.
+Copyright (c) 2022 Princeton Vertaix Lab，MIT。原版权与许可声明保存在 `vendor/repo/LICENSE` 和 `repo/Vendi-Score/LICENSE`。独立的 `repo/` 副本用于原函数对照验证。
+
+MCP 适配器与项目文档采用根目录 MIT 许可。安装依赖适用其各自许可。论文链接用于来源引用，相关记录见 `reports/publication-provenance.json`。

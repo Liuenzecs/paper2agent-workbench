@@ -11,6 +11,9 @@ def build_example(service):
     source = APP_ROOT / 'examples/mannkendall/source'
     provenance = json.loads((source.parent / 'provenance.json').read_text(encoding='utf-8'))
     for relative, expected in provenance['source_files'].items():
+        if relative == 'README.md':
+            documentation = json.loads((APP_ROOT / 'examples/documentation.json').read_text(encoding='utf-8'))
+            expected = documentation['file_sha256']['mannkendall/source/README.md']
         path = source / relative
         if path.is_symlink() or not path.resolve().is_relative_to(source.resolve()):
             raise ValueError('Invalid Mann-Kendall source path')

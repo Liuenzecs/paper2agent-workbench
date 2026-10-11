@@ -1,96 +1,138 @@
-# Paper2Agent Workbench 1.0.0
+# 使用指南
 
-把自己的论文变成可核对原文的问答库，并把论文关联的 Python 代码做成可测试的 MCP 工具。本机网页与 CLI 共用同一个个人工作区；问答及嵌入只使用远程 API。这个版本不调用本地模型或 GPU。
+Paper2Agent 提供本机网页和 CLI，共用论文库、API 配置、问答记录与 MCP 项目。本指南介绍安装、配置和日常操作。
 
-## 安装、打开与关闭
+## 安装与启动
 
-已测试环境为 Windows x64、Python 3.11。首次安装需要联网获取依赖；源码下载功能另需 Git。建议解压到较短的目录，例如 `C:\Paper2Agent`，可包含空格；过深目录可能触发 Windows 路径长度限制。在该目录打开 PowerShell：
+运行环境为 Windows x64、Python 3.11。首次安装需要联网；获取 GitHub 源码需要 Git。
+
+从 [最新发行版](https://github.com/Liuenzecs/paper2agent-workbench/releases/latest) 下载 ZIP 并解压，在程序根目录打开 PowerShell：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
 
-如果没有 `py -3.11`，可指定已安装的 Python 3.11：
+指定解释器和独立环境目录：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\install.ps1 -Python "C:\你的Python目录\python.exe"
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -Python "C:\Python311\python.exe" -EnvironmentDir "C:\P2A-env\workbench"
 ```
 
-安装完双击 `Start-Web.cmd`。网页默认地址为 `http://127.0.0.1:8765`，服务在后台运行。双击 `Stop-Web.cmd` 关闭后台服务；关闭网页标签页不会停止服务。
+双击 `Start-Web.cmd` 启动网页，默认地址为 `http://127.0.0.1:8765`。双击 `Stop-Web.cmd` 停止后台服务。关闭浏览器标签页后，服务仍会继续运行。
 
-每个人的默认数据目录为 `%LOCALAPPDATA%\Paper2AgentLab`，论文、API 配置、缓存、问答原始结果和 MCP 项目都存放在这里，与程序目录分离。可同时给不同任务配置独立目录和端口：
+## 工作区
+
+默认数据目录为 `%LOCALAPPDATA%\Paper2AgentLab`。论文、设置、缓存、问答记录和 MCP 项目存放在数据目录中，与程序文件分离。
+
+指定工作区和网页端口：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\start-web.ps1 -DataDir "D:\我的研究资料\Paper2Agent" -Port 8767
-powershell -ExecutionPolicy Bypass -File .\stop-web.ps1 -DataDir "D:\我的研究资料\Paper2Agent"
-.\paper.cmd --data-dir "D:\我的研究资料\Paper2Agent" status
+powershell -ExecutionPolicy Bypass -File .\start-web.ps1 -DataDir "D:\Paper2Agent-data" -Port 8767
+powershell -ExecutionPolicy Bypass -File .\stop-web.ps1 -DataDir "D:\Paper2Agent-data"
+.\paper.cmd --data-dir "D:\Paper2Agent-data" status
 ```
 
-## 配置自己的远程 API
+同一任务的网页和 CLI 使用相同的数据目录；并行任务可使用不同目录与端口。
 
-首次打开「API 设置」填写以下信息：问答服务 HTTPS 基础地址、问答模型名、嵌入模型名、两类 API 密钥。嵌入服务与问答服务不同时，还要填独立的嵌入 API 地址。模型名填写服务支持的实际名称，不加 `openai/` 前缀。本版要求 OpenAI 兼容的 chat completions 和 embeddings 接口；默认配置为待填写模板，必须设置自己的服务。
+## API 配置
 
-密钥默认只留在服务进程内，重启后需重新填写。勾选「加密保存密钥」会用 Windows DPAPI 保存密文，只能由同一 Windows 用户解密。密钥字段再次打开时为空，不会回显。更换服务地址后，需重新提供对应密钥，程序不把原服务密钥发送给新服务。此公开版不会把已有全局密钥自动绑定到未配置的模板。请通过网页密钥字段或 CLI 的 `--enter-keys` 设置当前工作区凭据。不要把个人数据目录、加密密钥文件或环境变量一起分享给别人。
+在「API 设置」填写问答 API 地址、问答模型、嵌入模型和对应密钥。两类服务使用不同地址时，填写独立的嵌入 API 地址。地址使用 HTTPS，模型名称填写服务提供方支持的实际名称。
 
-CLI 可使用隐藏输入配置密钥：
+接口需兼容 OpenAI `chat completions` 和 `embeddings`。问答与嵌入通过配置的远程服务完成，论文片段与问题会发送至对应服务，费用按服务提供方的规则计算。
+
+密钥可通过网页密码字段或 CLI 隐藏输入设置。勾选「加密保存密钥」或使用 `--remember-keys`，可由 Windows DPAPI 保存与当前系统用户绑定的密文。未加密保存的密钥仅保留在服务进程中；更换服务地址后需重新提供对应凭据。
 
 ```powershell
-.\paper.cmd configure --api-base "https://服务地址/v1" --chat-model "问答模型名" --embedding-model "嵌入模型名" --enter-keys --remember-keys
+.\paper.cmd configure --api-base "https://api.provider.com/v1" --chat-model "CHAT_MODEL" --embedding-model "EMBEDDING_MODEL" --enter-keys --remember-keys
 ```
 
-请求会把所选论文的文本发送到你配置的远程服务，并产生该服务的费用。当前服务返回动态模型别名时，无法精确计算费用，也无法保证下次请求使用同一组模型权重。
+独立嵌入服务可追加 `--embedding-api-base "https://embedding.provider.com/v1"`。命令中的地址与模型名称应替换为实际配置。
 
 ## 论文问答
 
-1. 导入可搜索文本 PDF，勾选要使用的论文，再输入问题。当前支持 1–500 页、网页单份不超过 64 MB 的 PDF；扫描件需先自行 OCR。
-2. 跨论文比较时，勾选要求引用所选论文。系统检查实际引用覆盖；缺少指定论文时最多扩展检索再答一次，仍缺失就不显示未经充分支持的结论，两次原始结果都保留。
-3. 结果卡显示引用原文、论文标题和 PDF 页码，可打开对应页。页码是 PDF 页序号，未必等于论文印刷页码。
-4. 导出 Markdown 或 JSON。每次导出及问答都创建独立目录，保留以前的记录。服务错误单独标为错误，不记作缺证据拒答。
+### 导入论文
 
-CLI 用法（Windows PowerShell 5.1 先设置下列 UTF-8 显示选项，避免中文路径输出乱码）：
+点击「导入论文」添加 PDF，或通过 CLI 导入：
 
 ```powershell
-[Console]::OutputEncoding = [Text.UTF8Encoding]::new()
-.\paper.cmd ingest "D:\论文\paper.pdf" --title "我的论文" --url "https://论文来源"
+.\paper.cmd ingest "D:\Papers\paper.pdf" --title "论文标题"
 .\paper.cmd list
-.\paper.cmd ask "这篇论文的方法在什么条件下成立？" --paper-id <list输出的paper_id> --language zh
-.\paper.cmd ask "比较两篇论文" --paper-id <ID1> --paper-id <ID2> --require-paper-id <ID1> --require-paper-id <ID2>
-.\paper.cmd history
-.\paper.cmd export <历史中的answer_id>
 ```
 
-尖括号表示需要替换的值，不能直接照抄。CLI 的 `ask` 输出保留较详细的审计及原始结果路径；网页展示过滤后的答案。每个原始结果保存于个人目录 `library\paperqa-answers\<唯一ID>`。
+支持可搜索文本的 PDF，页数范围为 1–500 页，网页单份文件上限为 64 MB。扫描件需先完成 OCR。导入后会记录源文件校验值；文件内容变化时，重新导入可建立新的记录。
 
-引用定位成功表示能找到对应原文，不代表每句话已经通过专家判断。本版的验收使用固定版本论文和指定问题，实际研究中仍应核对重要数字、公式、条件及附加推论。
+### 提问与引用
 
-远程嵌入缓存在 `library\embedding-cache`，配置、文本或源文件变化会产生新缓存键。若服务在相同模型别名下更换权重，程序不能自动识别。可使用版本明确的嵌入模型；需强制重建时，先关闭网页服务及其它问答进程，将此文件夹改名备份后重新问答。不要删除 `paperqa-answers`，其中是历史原始结果。
+勾选论文，输入问题并选择回答语言。跨论文比较可勾选「引用全部选中论文」。系统检查引用覆盖，必要时扩展检索；结果区分别显示答案、证据不足、引用覆盖不足与服务错误。
 
-## 论文代码 → 测试 → MCP
+引用卡提供原文、论文标题和 PDF 页码。页码采用 PDF 页序号，便于打开对应页面核对方法条件、数值与结论。
 
-在「代码转 MCP」中填论文公开 GitHub 仓库链接，点「获取代码」，或直接选择本机已有仓库。下载只获取源码，不安装依赖、不执行仓库代码，不下载 Git LFS 模型内容。当前仅提供公开 GitHub HTTPS 仓库下载，私有仓库请自行准备本机源码。
+```powershell
+.\paper.cmd ask "这篇论文的方法在什么条件下成立？" --paper-id PAPER_ID --language zh
+.\paper.cmd ask "比较两篇论文的方法" --paper-id PAPER_ID_1 --paper-id PAPER_ID_2 --require-paper-id PAPER_ID_1 --require-paper-id PAPER_ID_2
+```
 
-扫描会列出原函数、参数、来源位置和不能自动转换的原因。选择适合的函数生成 MCP 项目：服务器直接绑定保留的原函数，不自行编造论文算法。项目记录上游 commit（存在时）、原文件 SHA256、所选参数假设，并保留许可文件。
+将 `PAPER_ID` 等字段替换为 `list` 返回的论文 ID。`--language` 支持 `auto`、`zh` 和 `en`。Windows PowerShell 5.1 显示中文时，可设置 `[Console]::OutputEncoding = [Text.UTF8Encoding]::new()`。
 
-当前支持公开同步 Python 函数及可表达为 JSON 的基础参数。类方法、异步函数、复杂未注明类型、训练流水线或模型加载通常需要人工适配。候选函数能生成包，不代表整个仓库已复现。没有可用代码的论文需要另行实现和比对，当前不承诺自动写出等价算法。
+### 历史与导出
 
-明确选择工具、填写 JSON 参数后，点「运行测试」，才会通过真实 MCP 调用原代码。默认使用程序的 Python 环境；其它依赖请先审阅并安装到独立环境，再在测试表单指定该解释器。程序不自动安装研究代码依赖。涉及本地模型或加速框架的代码会阻止执行。模型保护不是通用安全沙箱，仅测试可信且已审阅的代码。
+从「问答历史」重新打开结果，使用 Markdown 或 JSON 按钮导出。CLI 对应命令：
 
-CLI 对应命令为 `code-fetch`、`code-scan`、`code-mcp`、`code-test` 和 `code-package`；各命令的必填参数见 `paper.cmd <命令> --help`。测试记录保存输入、MCP 响应、原函数结果和错误。
+```powershell
+.\paper.cmd history
+.\paper.cmd export ANSWER_ID
+```
 
-生成的 MCP 包内 `USAGE.md` 给出独立安装和启动方法。可以把通过测试的包给 MCP 客户端使用，启动入口为包内 `server.py`。本程序不会自动修改你的客户端注册配置。
+`ANSWER_ID` 为历史记录中的结果 ID。每次问答、重试和导出使用独立目录，原始结果保存在 `library\paperqa-answers`。
+
+远程嵌入缓存位于 `library\embedding-cache`。文本、源文件或配置变化会产生新的缓存键。服务采用动态模型别名时，使用版本明确的模型有助于复现；需要强制重建缓存时，可停止工作区进程、重命名缓存目录后重新提问。
+
+## 代码转 MCP
+
+### 获取与扫描
+
+在「代码转 MCP」填写公开 GitHub HTTPS 仓库地址并点击「获取代码」，或直接填写已准备好的本机代码目录。版本字段可指定分支、标签或提交。获取阶段下载源码，扫描阶段静态读取函数定义。
+
+```powershell
+.\paper.cmd code-fetch REPOSITORY_URL
+.\paper.cmd code-scan "REPOSITORY_PATH"
+```
+
+扫描结果列出函数 ID、参数、源文件位置、依赖和转换条件。本机源码可用于已自行获取的私有仓库。
+
+### 生成与测试
+
+选择函数，填写 MCP 名称并生成项目。服务器绑定原函数，项目保留源文件 SHA256、上游提交信息和许可文件。
+
+```powershell
+.\paper.cmd code-mcp "REPOSITORY_PATH" --function MODULE:FUNCTION --name paper-tools
+.\paper.cmd code-test "PROJECT_PATH" --tool TOOL_NAME --arguments-file arguments.json
+```
+
+将大写字段替换为扫描和生成结果中的实际值。`arguments.json` 是传给工具的 UTF-8 JSON 对象。网页中选择工具、填写 JSON 参数，再点击「运行测试」。默认使用程序环境；独立依赖环境可填写「Python 路径」或通过 CLI 的 `--python` 指定。
+
+代码转换支持具有明确参数类型的同步 Python 函数及 JSON 可表达的输入。复杂类型、动态依赖和其他语言需要单独适配。工具调用会执行研究代码，应结合源代码审阅与原函数结果进行验证。
+
+生成服务器启用严格 JSON 类型校验：布尔值和数字字符串不能替代数值，整数可用于浮点参数。领域约束由原函数或适配器检查。调用记录包含输入、MCP 响应、原生结果和错误；CLI 调用失败时返回非零退出码。
+
+### 打包与客户端连接
+
+```powershell
+.\paper.cmd code-package "PROJECT_PATH"
+```
+
+生成包包含 `server.py`、依赖声明、使用指南、来源清单及原源码。按包内 `USAGE.md` 安装独立环境，在支持 stdio 的 MCP 客户端中配置解释器和 `server.py` 的绝对路径。
 
 ## 故障处理
 
-API 错误：检查账户权限、模型名、服务基础地址以及嵌入接口是否可用。单次检索与远程问答设置 5 分钟总等待上限；超时归为服务错误，不算缺证据拒答。原始结果或失败任务保留；错误和模型拒答分别显示。
+| 情况 | 处理方法 |
+| --- | --- |
+| API 请求失败 | 核对地址、模型名称、账户权限、密钥和嵌入接口；查看保存的任务状态 |
+| 问答超时 | 单次检索与问答等待上限为 5 分钟；检查服务状态后重试 |
+| PDF 导入失败 | 检查文件是否损坏、加密、仅含扫描图像或超过大小与页数范围 |
+| 端口占用 | 为工作区指定其他端口 |
+| Windows 路径过长 | 使用较短的程序、环境和数据目录，或指定 `-EnvironmentDir` |
+| 工具生成或调用失败 | 查看函数扫描条件、参数类型、领域约束及解释器依赖 |
+| 加密密钥不可用 | 在当前 Windows 用户下重新配置服务凭据 |
 
-端口被占用：给自己的工作区指定其它端口。停止服务仅停止与记录路径相符的 Paper2Agent 进程。
-
-论文导入失败：检查是否密码保护、扫描件、超过页数上限或损坏。源 PDF 后续被改动时校验会失败，需重新导入。
-
-源码不能测试：查看函数限制与依赖。本版针对 CPU 可执行、可追溯的 Python 工具，不覆盖所有语言或完整训练复现。论文、API 账户、研究仓库均由使用者自行提供；程序安装需要网络，问答需要可用的远程 API。
-
-## 输入校验
-
-所有新生成 MCP 默认显式开启严格 JSON 类型校验：布尔值和数字字符串不能冒充数字；合法整数可用于浮点参数。领域条件仍由可信原函数或适配器检查。CLI code-test 在调用失败时返回非零退出码，并保留失败记录；网页显示失败。旧 MCP 项目需重新生成，原有项目和结果不会自动改写。代码复测无需调用任何模型。
-
-Windows 安装环境及个人结果路径应保持简短。若遇 `WinError 206` 路径过长，保留失败目录，改用例如 `paper.cmd --data-dir C:\P2A-data\me web`；无需修改科学源码或删除旧结果。
+更多数据与凭据管理说明见 [SECURITY.md](SECURITY.md)。
