@@ -337,9 +337,16 @@ $("code-test-form").addEventListener("submit", async (event) => {
     const labels = {completed: "真实 MCP 调用完成", execution_error: "执行失败 · 已保留记录", timeout: "调用超时 · 未计成功"};
     $("test-result").replaceChildren(el("h3", "", labels[result.decision] || "测试状态待核对"));
     if (result.result) $("test-result").append(el("pre", "", JSON.stringify(result.result, null, 2)));
-    if (result.error) $("test-result").append(el("pre", "", result.error));
+    if (result.error) {
+      const inputRejected = result.error.includes("validation error for call[");
+      $("test-result").append(el("p", "", inputRejected
+        ? "参数类型校验未通过：数字输入不能使用布尔值或数字字符串。请核对输入参数；详细错误已保存在本机记录。"
+        : "工具调用未成功。请核对参数、原函数要求和运行环境；详细错误已保存在本机记录。"));
+    }
     if (result.report_path) $("test-result").append(el("p", "", `记录位置：${result.report_path}`));
-    $("test-result").append(el("p", "", "这次调用验证工具能够接收输入并执行原函数；结果是否符合论文，需要与上游直接运行的参考结果独立比较。"));
+    $("test-result").append(el("p", "", result.decision === "completed"
+      ? "原函数调用完成；结果是否符合论文，需要与上游直接运行的参考结果独立比较。"
+      : "本次没有通过调用验收，不计为科学结果。原始输入与失败记录均保留。"));
   } catch (error) { $("test-result").replaceChildren(el("p", "", error.message)); }
   finally { $("test-button").disabled = false; }
 });
