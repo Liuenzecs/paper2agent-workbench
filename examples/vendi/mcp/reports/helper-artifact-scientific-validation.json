@@ -1,0 +1,300 @@
+{
+  "success": true,
+  "artifact_count": 26,
+  "source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+  "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+  "tolerance": {
+    "rtol": 1e-12,
+    "atol": 1e-12
+  },
+  "results": [
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\09ca9053c0be43b88ebedd5f7e47cca5\\result.json",
+      "artifact_sha256": "fe8512bdec21f2ca24465148f4d9ce4edfc53f8ce187b57fe905b0437cb1e26f",
+      "function": "score_K",
+      "original_score": 1.9999999999999998,
+      "mcp_score": 1.9999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\1a3e395009d6409db8a70b0d47e0c8ca\\result.json",
+      "artifact_sha256": "d3e0f7da7c684d89ecd0309471443875fcb8898966c442781f221feb0fae88c2",
+      "function": "score_K",
+      "original_score": 2.1573004833739833,
+      "mcp_score": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\2546db6f986040f086ffa4a85c0b9e83\\result.json",
+      "artifact_sha256": "96a053edd1f09895e133df95d7b6560d0ef42f4c74c4a53cedc91e75ec69ead4",
+      "function": "score_dual",
+      "original_score": 1.8898815748423097,
+      "mcp_score": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\2883ec8917fa49d7994b4cd9f9955eba\\result.json",
+      "artifact_sha256": "b92a4c80d270457c06582c75eea3fa5a87817b02414120d4de58b5d67808fdfc",
+      "function": "score_K",
+      "original_score": 1.9480519480519483,
+      "mcp_score": 1.9480519480519483,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\2976135682a8431eaa3f85bc8aa98f32\\result.json",
+      "artifact_sha256": "020ad90f92262314d015e71142327e3c050e37fea9cb23f45ba5fab3b9894d82",
+      "function": "score_dual",
+      "original_score": 1.8898815748423097,
+      "mcp_score": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\31a0cc36046244bf822f084cecc7a702\\result.json",
+      "artifact_sha256": "afad5dce6a8c74bbb41561c39b0966653d38d2d0bea87b9efd1008363bbd1c96",
+      "function": "score_dual",
+      "original_score": 1.7999999999999998,
+      "mcp_score": 1.7999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\3c36558212734007961d4f66197e1700\\result.json",
+      "artifact_sha256": "d3e0f7da7c684d89ecd0309471443875fcb8898966c442781f221feb0fae88c2",
+      "function": "score_K",
+      "original_score": 2.1573004833739833,
+      "mcp_score": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\3d4eb08e40b34de8be0763bee39fad51\\result.json",
+      "artifact_sha256": "afad5dce6a8c74bbb41561c39b0966653d38d2d0bea87b9efd1008363bbd1c96",
+      "function": "score_dual",
+      "original_score": 1.7999999999999998,
+      "mcp_score": 1.7999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\3fceaec5b84645d888c39fbe555ea8a8\\result.json",
+      "artifact_sha256": "f4a54cce8bd1dd6d4bdb2682f3915a31e15bb8a310703831831382a53f39988c",
+      "function": "score_dual",
+      "original_score": 1.5,
+      "mcp_score": 1.5,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\4b6b504a80f04823bf68ddb1a1693fb5\\result.json",
+      "artifact_sha256": "addb6c0c5994a1895b2afb07d5465edce7c78f86f70f0da7d5a7fdd05cc6650f",
+      "function": "score_K",
+      "original_score": 1.5789473684210527,
+      "mcp_score": 1.5789473684210527,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\4f38263a48bb4bf4ac40d61998292232\\result.json",
+      "artifact_sha256": "1eb53a05252ee796c591c55fe526face2ddbfcc64b95741a3b04ffd104421559",
+      "function": "score_dual",
+      "original_score": 1.7999999999999998,
+      "mcp_score": 1.7999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\4f68474243bc4886913fe015a420a3a4\\result.json",
+      "artifact_sha256": "1eb53a05252ee796c591c55fe526face2ddbfcc64b95741a3b04ffd104421559",
+      "function": "score_dual",
+      "original_score": 1.7999999999999998,
+      "mcp_score": 1.7999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\50a4883d23da44c0af53e50ae8d77a4d\\result.json",
+      "artifact_sha256": "fe8512bdec21f2ca24465148f4d9ce4edfc53f8ce187b57fe905b0437cb1e26f",
+      "function": "score_K",
+      "original_score": 1.9999999999999998,
+      "mcp_score": 1.9999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\5c7832e3abf8407cb9d8703a2b58200a\\result.json",
+      "artifact_sha256": "96a053edd1f09895e133df95d7b6560d0ef42f4c74c4a53cedc91e75ec69ead4",
+      "function": "score_dual",
+      "original_score": 1.8898815748423097,
+      "mcp_score": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\77a0cad972f343bc94cc258cb14f847c\\result.json",
+      "artifact_sha256": "46bab9021ffde43e872e8be444312477e82d99cbcf010ea821e4e6cdf58edb14",
+      "function": "score_K",
+      "original_score": 2.099737532808399,
+      "mcp_score": 2.099737532808399,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\7f009f5ed9414a2eb9a6056a943af5aa\\result.json",
+      "artifact_sha256": "776a5619e980c08a8c2c013fdfc6933cc5a8ea8a50d235a11c4046f89519f91e",
+      "function": "score_K",
+      "original_score": 2.1573004833739833,
+      "mcp_score": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\809c3f159c0f4d46ba4b360455abbc4b\\result.json",
+      "artifact_sha256": "d3e0f7da7c684d89ecd0309471443875fcb8898966c442781f221feb0fae88c2",
+      "function": "score_K",
+      "original_score": 2.1573004833739833,
+      "mcp_score": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\817c10e291634b8aa354d02964aefa6d\\result.json",
+      "artifact_sha256": "d3e0f7da7c684d89ecd0309471443875fcb8898966c442781f221feb0fae88c2",
+      "function": "score_K",
+      "original_score": 2.1573004833739833,
+      "mcp_score": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\82b6583c50a74d0c96079b8b65806299\\result.json",
+      "artifact_sha256": "776a5619e980c08a8c2c013fdfc6933cc5a8ea8a50d235a11c4046f89519f91e",
+      "function": "score_K",
+      "original_score": 2.1573004833739833,
+      "mcp_score": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\a27071b84cf044a5a934c13f1b015132\\result.json",
+      "artifact_sha256": "96a053edd1f09895e133df95d7b6560d0ef42f4c74c4a53cedc91e75ec69ead4",
+      "function": "score_dual",
+      "original_score": 1.8898815748423097,
+      "mcp_score": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\b0915f0b570d413899e8076e4e8bbb93\\result.json",
+      "artifact_sha256": "020ad90f92262314d015e71142327e3c050e37fea9cb23f45ba5fab3b9894d82",
+      "function": "score_dual",
+      "original_score": 1.8898815748423097,
+      "mcp_score": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\bfcd23cd66414c328315eea11cd5e7e1\\result.json",
+      "artifact_sha256": "b92a4c80d270457c06582c75eea3fa5a87817b02414120d4de58b5d67808fdfc",
+      "function": "score_K",
+      "original_score": 1.9480519480519483,
+      "mcp_score": 1.9480519480519483,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\e976c78c54b94507a816dae715fb5291\\result.json",
+      "artifact_sha256": "addb6c0c5994a1895b2afb07d5465edce7c78f86f70f0da7d5a7fdd05cc6650f",
+      "function": "score_K",
+      "original_score": 1.5789473684210527,
+      "mcp_score": 1.5789473684210527,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\f4d11497cc934e2a98bc96bdfe8eb415\\result.json",
+      "artifact_sha256": "96a053edd1f09895e133df95d7b6560d0ef42f4c74c4a53cedc91e75ec69ead4",
+      "function": "score_dual",
+      "original_score": 1.8898815748423097,
+      "mcp_score": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\f5404e50536b4cd8baed2004abf0f612\\result.json",
+      "artifact_sha256": "f4a54cce8bd1dd6d4bdb2682f3915a31e15bb8a310703831831382a53f39988c",
+      "function": "score_dual",
+      "original_score": 1.5,
+      "mcp_score": 1.5,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": []
+    },
+    {
+      "artifact": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\tmp\\outputs\\acceptance\\fe12757c7f784430b7eba5d63797e2cf\\result.json",
+      "artifact_sha256": "46bab9021ffde43e872e8be444312477e82d99cbcf010ea821e4e6cdf58edb14",
+      "function": "score_K",
+      "original_score": 2.099737532808399,
+      "mcp_score": 2.099737532808399,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "original_warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    }
+  ]
+}

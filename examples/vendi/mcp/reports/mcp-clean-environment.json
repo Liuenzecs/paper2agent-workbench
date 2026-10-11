@@ -1,0 +1,252 @@
+{
+  "success": true,
+  "mode": "calls",
+  "require_all_tools": true,
+  "server": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\src\\Vendi-Score_mcp.py",
+  "cwd": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011",
+  "python": "<VALIDATION_RUNTIME>\\vendi-clean-env\\Scripts\\python.exe",
+  "python_version": "3.11.16",
+  "fastmcp": "4.0.3",
+  "expected": [
+    "vendi_score_embeddings",
+    "vendi_score_similarity"
+  ],
+  "actual": [
+    "vendi_score_embeddings",
+    "vendi_score_similarity"
+  ],
+  "missing": [],
+  "unexpected": [],
+  "schemas": {
+    "vendi_score_similarity": {
+      "input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "K": {
+            "description": "Finite symmetric positive-semidefinite sample similarity matrix; unit diagonal unless normalize=true",
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "q": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "const": "inf",
+                "type": "string"
+              }
+            ],
+            "default": 1,
+            "description": "Positive diversity order, or inf; q=0 is deferred for an upstream numerical rank issue"
+          },
+          "p": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional nonnegative sample probabilities in matrix order, summing to one; null gives equal weights"
+          },
+          "normalize": {
+            "default": false,
+            "description": "Forward original diagonal normalization; false requires a unit-diagonal kernel",
+            "type": "boolean"
+          },
+          "output_dir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Base directory for a fresh per-call result artifact; null uses this package outputs"
+          }
+        },
+        "required": [
+          "K"
+        ]
+      },
+      "output": {
+        "additionalProperties": true,
+        "type": "object"
+      }
+    },
+    "vendi_score_embeddings": {
+      "input": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "X": {
+            "description": "Already supplied finite sample vectors; nonzero rows, with unit norm required when normalize=false",
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array"
+          },
+          "q": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "const": "inf",
+                "type": "string"
+              }
+            ],
+            "default": 1,
+            "description": "Positive diversity order, or inf; q=0 is deferred for an upstream numerical rank issue"
+          },
+          "normalize": {
+            "default": true,
+            "description": "Forward original row normalization; true retains the score_dual API default",
+            "type": "boolean"
+          },
+          "output_dir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Base directory for a fresh per-call result artifact; null uses this package outputs"
+          }
+        },
+        "required": [
+          "X"
+        ]
+      },
+      "output": {
+        "additionalProperties": true,
+        "type": "object"
+      }
+    }
+  },
+  "cases": [
+    {
+      "name": "readme_q1-0",
+      "tool": "vendi_score_similarity",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "vectors_q1-1",
+      "tool": "vendi_score_embeddings",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "magnitude_vectors_q1-2",
+      "tool": "vendi_score_embeddings",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "scaled_kernel_q1-3",
+      "tool": "vendi_score_similarity",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "readme_q2-4",
+      "tool": "vendi_score_similarity",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "weighted_q2-5",
+      "tool": "vendi_score_similarity",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "vectors_q2-6",
+      "tool": "vendi_score_embeddings",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "unit_vectors_without_normalization_q2-7",
+      "tool": "vendi_score_embeddings",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "readme_qinf-8",
+      "tool": "vendi_score_similarity",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "vectors_qinf-9",
+      "tool": "vendi_score_embeddings",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "kernel_zero_probability-10",
+      "tool": "vendi_score_similarity",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "readme_q1-11",
+      "tool": "vendi_score_similarity",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "vectors_q1-12",
+      "tool": "vendi_score_embeddings",
+      "success": true,
+      "artifacts_checked": 1
+    },
+    {
+      "name": "vendi_score_similarity-q0_deferred",
+      "tool": "vendi_score_similarity",
+      "success": true
+    },
+    {
+      "name": "vendi_score_embeddings-q0_deferred",
+      "tool": "vendi_score_embeddings",
+      "success": true
+    },
+    {
+      "name": "vendi_score_similarity-non_psd",
+      "tool": "vendi_score_similarity",
+      "success": true
+    },
+    {
+      "name": "vendi_score_similarity-weight_sum",
+      "tool": "vendi_score_similarity",
+      "success": true
+    },
+    {
+      "name": "vendi_score_embeddings-zero_vector",
+      "tool": "vendi_score_embeddings",
+      "success": true
+    }
+  ]
+}

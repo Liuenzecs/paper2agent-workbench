@@ -1,0 +1,40 @@
+name: Verify remote-only workbench
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      CUDA_VISIBLE_DEVICES: '-1'
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.11'
+      - name: Install workbench and run offline tests
+        shell: pwsh
+        run: |
+          python -m pip install -r requirements-dev.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Install failed' }
+          python -X utf8 -m pytest -q
+          if ($LASTEXITCODE -ne 0) { throw 'Tests failed' }
+      - name: Verify Vendi core and real MCP calls
+        shell: pwsh
+        run: |
+          python -m venv examples/vendi/mcp/.venv
+          & examples/vendi/mcp/.venv/Scripts/python.exe -m pip install -r examples/vendi/mcp/requirements-dev.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Vendi install failed' }
+          $env:VENDI_VERIFICATION_OUTPUT = Join-Path $env:RUNNER_TEMP 'vendi-scientific-tests'
+          Push-Location examples/vendi/mcp
+          & .venv/Scripts/python.exe -X utf8 -m pytest tests/code/vendi_metrics -q
+          $vendiTestExit = $LASTEXITCODE
+          Pop-Location
+          if ($vendiTestExit -ne 0) { throw 'Vendi tests failed' }
+          python -X utf8 src/lab_cli.py --data-dir "$env:RUNNER_TEMP/workbench-demo" example-vendi --python examples/vendi/mcp/.venv/Scripts/python.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Real MCP demo failed' }

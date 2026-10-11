@@ -1,0 +1,7 @@
+pymupdf==1.28.2
+rank-bm25==0.2.2
+paper-qa==2026.8.12
+fhlmi==1.0.7
+litellm==1.84.1
+fastmcp==4.0.3
+truststore==0.10.4

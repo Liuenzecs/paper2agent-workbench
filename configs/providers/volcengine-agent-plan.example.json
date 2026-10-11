@@ -1,0 +1,77 @@
+{
+  "credential_envs": {
+    "chat": "PAPERQA_CHAT_API_KEY",
+    "embedding": "PAPERQA_EMBEDDING_API_KEY"
+  },
+  "llm": "remote-answer",
+  "summary_llm": "remote-answer",
+  "embedding": "openai/doubao-embedding-vision",
+  "llm_config": {
+    "model_list": [
+      {
+        "model_name": "remote-answer",
+        "litellm_params": {
+          "model": "openai/ark-code-latest",
+          "api_base": "https://ark.cn-beijing.volces.com/api/plan/v3",
+          "temperature": 0,
+          "max_tokens": 4096,
+          "timeout": 120,
+          "max_retries": 0
+        }
+      }
+    ]
+  },
+  "summary_llm_config": {
+    "model_list": [
+      {
+        "model_name": "remote-answer",
+        "litellm_params": {
+          "model": "openai/ark-code-latest",
+          "api_base": "https://ark.cn-beijing.volces.com/api/plan/v3",
+          "temperature": 0,
+          "max_tokens": 2048,
+          "timeout": 120,
+          "max_retries": 0
+        }
+      }
+    ]
+  },
+  "embedding_config": {
+    "batch_size": 8,
+    "kwargs": {
+      "api_base": "https://ark.cn-beijing.volces.com/api/plan/v3",
+      "timeout": 120,
+      "num_retries": 0
+    }
+  },
+  "temperature": 0,
+  "parsing": {
+    "defer_embedding": true,
+    "use_doc_details": false,
+    "multimodal": 0
+  },
+  "answer": {
+    "evidence_k": 6,
+    "evidence_relevance_score_cutoff": 3,
+    "answer_max_sources": 6,
+    "max_concurrent_requests": 1,
+    "evidence_summary_length": "about 60 words",
+    "answer_length": "about 150 words; do not omit essential conditions to shorten the answer",
+    "answer_filter_extra_background": true,
+    "evidence_skip_summary": true
+  },
+  "prompts": {
+    "summary": "Summarize the excerpt below to help answer a question.\n\nExcerpt from {citation}\n\n---\n\n{text}\n\n---\n\nQuestion: {question}\n\nDo not directly answer the question, instead summarize to give evidence to help answer the question. Stay detailed; report specific numbers, equations, or direct quotes (marked with quotation marks). Reply \"Not applicable\" if the excerpt is irrelevant. At the end of your response, provide an integer score from 1-10 on a newline indicating relevance to question. Do not explain your score.\n\nRelevant Information Summary ({summary_length}):",
+    "qa": "Answer the question below with the context.\n\nContext:\n\n{context}\n\n---\n\nQuestion: {question}\n\nWrite an answer based exclusively on the original excerpts in the context. Preserve quantified nouns and every condition of any conclusion you include. Preserve the logical direction: never turn a stated when/under regime into only when or a necessary/unique condition without explicit evidence. Omit unrequested deductions. If the context provides insufficient information reply \"I cannot answer.\" For each part of your answer, indicate which sources most support it via citation keys at the end of sentences, like {example_citation}. Only cite from the context above and only use the citation keys from the context.\n\n## Valid citation examples, only use comma/space delimited parentheticals:\n- (pqac-d79ef6fa, pqac-0f650d59)\n- (pqac-d79ef6fa)\n## Invalid citation examples:\n- (pqac-d79ef6fa and pqac-0f650d59)\n- (pqac-d79ef6fa;pqac-0f650d59)\n- (pqac-d79ef6fa-pqac-0f650d59)\n- pqac-d79ef6fa and pqac-0f650d59\n- Example's work (pqac-d79ef6fa)\n- (pages pqac-d79ef6fa)\n- Author et al. (2023)\n\nDo not concatenate citation keys, just use them as is. Write in the style of a scientific article, with concise sentences and coherent paragraphs. This answer will be used directly, so do not add any extraneous information.\n\n{prior_answer_prompt}Answer ({answer_length}):",
+    "answer_iteration_prompt": "You are iterating on a prior answer, with a potentially different context:\n\n{prior_answer}\n\nCreate a new answer only using context keys and data from the included context. You can not use context keys from the prior answer which are not also included in the above context.\n\n",
+    "select": "Select papers that may help answer the question below. Papers are listed as $KEY: $PAPER_INFO. Return a list of keys, separated by commas. Return \"None\", if no papers are applicable. Choose papers that are relevant, from reputable sources, and timely (if the question requires timely information).\n\nQuestion: {question}\n\nPapers: {papers}\n\nSelected keys:",
+    "pre": null,
+    "post": null,
+    "system": "Answer in a direct and concise tone. Your audience is an expert, so be highly specific. If there are ambiguous terms or acronyms, first define them. Answer only the requested question. Omit unrelated background and solution-step headings. Every substantive claim must be explicitly supported by the supplied evidence. Preserve its scope and uncertainty; do not generalize a method-specific claim.\nEVIDENCE FIDELITY RULES:\nThe context consists of original paper excerpts rather than generated summaries. Answer only what the question asks. Check every substantive sentence against these excerpts before returning it.\nPreserve the noun being quantified: an expected count or NUMBER of values in a bin is not the numerical expectation/mean of those values. For such statements, use the original short phrase when paraphrasing could change the meaning. Do not shorten a statement about a number of values to a statement about expected values.\nFor conditional conclusions or equivalence/expressiveness claims, preserve ALL stated assumptions in the same sentence, including parameter subsets, bias conditions, rank conditions, and qualifiers such as roughly. If the conditions are unavailable or the conclusion is unrequested, omit it rather than broadening it.\nDistinguish an unscaled matrix product from a scaled effective weight update. If you show both a weight equation and a forward equation, use consistent definitions and retain any explicit scaling factor.\nDo not add background claims merely because a retrieved excerpt discusses them. Cite the original supporting excerpt at the end of every substantive sentence. Do not present a suggestion as a proof.\nPreserve logical direction and modality exactly. A source statement of the form \"when these conditions hold, a result follows\" establishes that stated regime; it does NOT by itself establish that the conditions are necessary or unique. Never add \"only when\", \"only if\", \"if and only if\", \"must\", or a uniqueness/necessity claim unless the original excerpt explicitly supports it. Describe a stated sufficient regime using \"when\", \"under the stated conditions\", or \"the paper states that under ...\". Preserve qualifiers such as \"roughly\".",
+    "use_json": true,
+    "summary_json": "Excerpt from {citation}\n\n---\n\n{text}\n\n---\n\nQuestion: {question}",
+    "summary_json_system": "Provide a summary of the relevant information that could help answer the question based on the excerpt. Your summary, combined with many others, will be given to the model to generate an answer. Respond with the following JSON format:\n\n{{\n  \"summary\": \"...\",\n  \"relevance_score\": 0-10\n}}\n\nwhere `summary` is relevant information from the text - {summary_length}. `relevance_score` is an integer 0-10 for the relevance of `summary` to the question.\n\nThe excerpt may or may not contain relevant information. If not, leave `summary` empty, and make `relevance_score` be 0.\nSummarize only explicit statements relevant to the question. Preserve the exact subject, assumptions, distribution, units, quantifiers and uncertainty. Do not assign a general methodological statement to a named method unless the excerpt explicitly makes that link. Distinguish a number of values from their numerical values or means. Do not invent a rationale when the excerpt omits it. Do not introduce outside knowledge.",
+    "context_outer": "{context_str}\n\nValid Keys: {valid_keys}",
+    "context_inner": "{name}: {text}\nFrom {citation}"
+  }
+}

@@ -1,0 +1,717 @@
+{
+  "execution_id": "vendi_reference",
+  "status": "completed",
+  "started_at_utc": "2026-10-11T11:26:12.629918+00:00",
+  "ended_at_utc": "2026-10-11T11:26:12.666559+00:00",
+  "source": {
+    "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+    "readme_sha256": "daa5d822d80c376ea03f127c2a80c28689863e02fef58dee6c3aabb231d341ae",
+    "module_path": "<VALIDATION_RUNTIME>\\vendi-demo-env\\Lib\\site-packages\\vendi_score\\vendi.py",
+    "module_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+    "distribution": "vendi-score",
+    "version": "0.0.3"
+  },
+  "input_path": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\notebooks\\vendi_reference\\data\\inputs.json",
+  "input_sha256": "3edde81a0038de5117948ef88c0baed08517e8cbbb1862136670338dcf99f67b",
+  "runtime": {
+    "interpreter": "<VALIDATION_RUNTIME>\\vendi-demo-env\\Scripts\\python.exe",
+    "python": "3.11.16",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "scikit_learn": "1.9.1"
+  },
+  "results": [
+    {
+      "id": "readme_q1",
+      "value": 2.1573004833739833,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_q1",
+      "value": 2.208701535214001,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_q1",
+      "value": 2.9999999999999996,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_q1",
+      "value": 1.0000000000000013,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_q1",
+      "value": 1.8898815748423097,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_q1",
+      "value": 1.8898815748423097,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_q1",
+      "value": 1.8898815748423097,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_q1",
+      "value": 2.1573004833739833,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "readme_q0",
+      "value": 3.0000000000000004,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_q0",
+      "value": 3.0000000000000004,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_q0",
+      "value": 3.0000000000000004,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_q0",
+      "value": 2.0,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_q0",
+      "value": 2.0,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_q0",
+      "value": 2.0,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_q0",
+      "value": 2.0,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_q0",
+      "value": 3.0000000000000004,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "readme_q2",
+      "value": 1.9480519480519483,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_q2",
+      "value": 2.099737532808399,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_q2",
+      "value": 3.0000000000000004,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_q2",
+      "value": 1.0000000000000004,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_q2",
+      "value": 1.7999999999999998,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_q2",
+      "value": 1.7999999999999998,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_q2",
+      "value": 1.7999999999999998,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_q2",
+      "value": 1.9480519480519483,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "readme_qinf",
+      "value": 1.5789473684210527,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "weighted_qinf",
+      "value": 1.9999999999999996,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identity_qinf",
+      "value": 3.0000000000000004,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "identical_qinf",
+      "value": 1.0000000000000002,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "vectors_qinf",
+      "value": 1.5,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "unit_vectors_without_normalization_qinf",
+      "value": 1.5,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "magnitude_vectors_qinf",
+      "value": 1.5,
+      "warnings": [],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "scaled_kernel_qinf",
+      "value": 1.5789473684210527,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "scientific_domain_valid": true
+    },
+    {
+      "id": "out_of_domain_magnitudes_without_normalization",
+      "value": 2.307336987981901e-07,
+      "warnings": [],
+      "scientific_domain_valid": false
+    }
+  ],
+  "replay_checks": [
+    {
+      "id": "readme_q1",
+      "initial_value": 2.1573004833739833,
+      "replay_value": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "weighted_q1",
+      "initial_value": 2.208701535214001,
+      "replay_value": 2.208701535214001,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identity_q1",
+      "initial_value": 2.9999999999999996,
+      "replay_value": 2.9999999999999996,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identical_q1",
+      "initial_value": 1.0000000000000013,
+      "replay_value": 1.0000000000000013,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "vectors_q1",
+      "initial_value": 1.8898815748423097,
+      "replay_value": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "unit_vectors_without_normalization_q1",
+      "initial_value": 1.8898815748423097,
+      "replay_value": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "magnitude_vectors_q1",
+      "initial_value": 1.8898815748423097,
+      "replay_value": 1.8898815748423097,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "scaled_kernel_q1",
+      "initial_value": 2.1573004833739833,
+      "replay_value": 2.1573004833739833,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "readme_q0",
+      "initial_value": 3.0000000000000004,
+      "replay_value": 3.0000000000000004,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "weighted_q0",
+      "initial_value": 3.0000000000000004,
+      "replay_value": 3.0000000000000004,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identity_q0",
+      "initial_value": 3.0000000000000004,
+      "replay_value": 3.0000000000000004,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identical_q0",
+      "initial_value": 2.0,
+      "replay_value": 2.0,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "vectors_q0",
+      "initial_value": 2.0,
+      "replay_value": 2.0,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "unit_vectors_without_normalization_q0",
+      "initial_value": 2.0,
+      "replay_value": 2.0,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "magnitude_vectors_q0",
+      "initial_value": 2.0,
+      "replay_value": 2.0,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "scaled_kernel_q0",
+      "initial_value": 3.0000000000000004,
+      "replay_value": 3.0000000000000004,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "readme_q2",
+      "initial_value": 1.9480519480519483,
+      "replay_value": 1.9480519480519483,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "weighted_q2",
+      "initial_value": 2.099737532808399,
+      "replay_value": 2.099737532808399,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identity_q2",
+      "initial_value": 3.0000000000000004,
+      "replay_value": 3.0000000000000004,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identical_q2",
+      "initial_value": 1.0000000000000004,
+      "replay_value": 1.0000000000000004,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "vectors_q2",
+      "initial_value": 1.7999999999999998,
+      "replay_value": 1.7999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "unit_vectors_without_normalization_q2",
+      "initial_value": 1.7999999999999998,
+      "replay_value": 1.7999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "magnitude_vectors_q2",
+      "initial_value": 1.7999999999999998,
+      "replay_value": 1.7999999999999998,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "scaled_kernel_q2",
+      "initial_value": 1.9480519480519483,
+      "replay_value": 1.9480519480519483,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "readme_qinf",
+      "initial_value": 1.5789473684210527,
+      "replay_value": 1.5789473684210527,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "weighted_qinf",
+      "initial_value": 1.9999999999999996,
+      "replay_value": 1.9999999999999996,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identity_qinf",
+      "initial_value": 3.0000000000000004,
+      "replay_value": 3.0000000000000004,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "identical_qinf",
+      "initial_value": 1.0000000000000002,
+      "replay_value": 1.0000000000000002,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "vectors_qinf",
+      "initial_value": 1.5,
+      "replay_value": 1.5,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "unit_vectors_without_normalization_qinf",
+      "initial_value": 1.5,
+      "replay_value": 1.5,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "magnitude_vectors_qinf",
+      "initial_value": 1.5,
+      "replay_value": 1.5,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    },
+    {
+      "id": "scaled_kernel_qinf",
+      "initial_value": 1.5789473684210527,
+      "replay_value": 1.5789473684210527,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ]
+    },
+    {
+      "id": "out_of_domain_magnitudes_without_normalization",
+      "initial_value": 2.307336987981901e-07,
+      "replay_value": 2.307336987981901e-07,
+      "absolute_difference": 0.0,
+      "passed": true,
+      "warnings": []
+    }
+  ],
+  "equivalence_checks": [
+    {
+      "check": "dual_versus_kernel_q1",
+      "dual_value": 1.8898815748423097,
+      "gram_value": 1.8898815748423097,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "note": null
+    },
+    {
+      "check": "scaled_kernel_q1_equals_readme_q1",
+      "first_value": 2.1573004833739833,
+      "second_value": 2.1573004833739833,
+      "passed": true
+    },
+    {
+      "check": "magnitude_vectors_q1_equals_vectors_q1",
+      "first_value": 1.8898815748423097,
+      "second_value": 1.8898815748423097,
+      "passed": true
+    },
+    {
+      "check": "unit_vectors_without_normalization_q1_equals_vectors_q1",
+      "first_value": 1.8898815748423097,
+      "second_value": 1.8898815748423097,
+      "passed": true
+    },
+    {
+      "check": "dual_versus_kernel_q0",
+      "dual_value": 2.0,
+      "gram_value": 2.0,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "note": null
+    },
+    {
+      "check": "scaled_kernel_q0_equals_readme_q0",
+      "first_value": 3.0000000000000004,
+      "second_value": 3.0000000000000004,
+      "passed": true
+    },
+    {
+      "check": "magnitude_vectors_q0_equals_vectors_q0",
+      "first_value": 2.0,
+      "second_value": 2.0,
+      "passed": true
+    },
+    {
+      "check": "unit_vectors_without_normalization_q0_equals_vectors_q0",
+      "first_value": 2.0,
+      "second_value": 2.0,
+      "passed": true
+    },
+    {
+      "check": "dual_versus_kernel_q2",
+      "dual_value": 1.7999999999999998,
+      "gram_value": 1.7999999999999998,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "note": null
+    },
+    {
+      "check": "scaled_kernel_q2_equals_readme_q2",
+      "first_value": 1.9480519480519483,
+      "second_value": 1.9480519480519483,
+      "passed": true
+    },
+    {
+      "check": "magnitude_vectors_q2_equals_vectors_q2",
+      "first_value": 1.7999999999999998,
+      "second_value": 1.7999999999999998,
+      "passed": true
+    },
+    {
+      "check": "unit_vectors_without_normalization_q2_equals_vectors_q2",
+      "first_value": 1.7999999999999998,
+      "second_value": 1.7999999999999998,
+      "passed": true
+    },
+    {
+      "check": "dual_versus_kernel_qinf",
+      "dual_value": 1.5,
+      "gram_value": 1.5,
+      "passed": true,
+      "warnings": [
+        "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+      ],
+      "note": null
+    },
+    {
+      "check": "scaled_kernel_qinf_equals_readme_qinf",
+      "first_value": 1.5789473684210527,
+      "second_value": 1.5789473684210527,
+      "passed": true
+    },
+    {
+      "check": "magnitude_vectors_qinf_equals_vectors_qinf",
+      "first_value": 1.5,
+      "second_value": 1.5,
+      "passed": true
+    },
+    {
+      "check": "unit_vectors_without_normalization_qinf_equals_vectors_qinf",
+      "first_value": 1.5,
+      "second_value": 1.5,
+      "passed": true
+    }
+  ],
+  "readme_four_decimal_comparison_passed": true,
+  "upstream_invalid_input_observations": [
+    {
+      "id": "nonsquare_kernel",
+      "upstream_error": "ValueError",
+      "message": "expected square \"a\" matrix"
+    },
+    {
+      "id": "ragged_vectors",
+      "upstream_error": "ValueError",
+      "message": "setting an array element with a sequence. The requested array has an inhomogeneous shape after 1 dimensions. The detected shape was (2,) + inhomogeneous part."
+    },
+    {
+      "id": "nonfinite_kernel",
+      "upstream_error": "ValueError",
+      "message": "array must not contain infs or NaNs"
+    }
+  ],
+  "tolerance": {
+    "atol": 1e-12,
+    "rtol": 1e-12,
+    "justification": "Small deterministic dense float64 matrices; 1e-12 bounds ordinary eigenvalue and entropy roundoff, while q=0 rank sensitivity is recorded separately rather than masked."
+  },
+  "limitations": [
+    "Synthetic vectors are explicit numerical fixtures, never pretrained model output.",
+    "README has no literal score_dual X or numeric reference; these are original-function references on synthetic inputs.",
+    "q=0 uses upstream positive-eigenvalue filtering with no rank tolerance; near-zero positive eigenvalues can be counted.",
+    "The final deliberately invalid normalize=False case is an upstream behavior observation only.",
+    "Invalid-input observations do not establish comprehensive upstream domain validation.",
+    "No plots are generated by these scalar metric calls; figures are not applicable.",
+    "This is core-metric verification, not a full-paper/model benchmark reproduction."
+  ],
+  "local_models_called": false,
+  "gpu_called": false
+}

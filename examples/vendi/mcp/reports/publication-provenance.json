@@ -1,0 +1,66 @@
+{
+  "release_archive_sha256": "8f59d9e584ae7203b6bc5f151303f16187cfc60ee645f3c0466e1707ee5ab878",
+  "runtime_files_byte_identical_to_validated_zip": {
+    "USAGE.md": "5cf6507a56375b7a7a73474f0e6f603ee0ff06853891690c171ad1ea4f743d75",
+    "manifest.json": "a7c4fc3f69e6d1df42c007a95389a55d4c863f0c7f247358ac19d6a380525200",
+    "server.py": "681df683b1de3498f3872e1a50961a6c4103d2baeabf06fe4d249ae19286f065",
+    "src/requirements.txt": "1db4d0afafa687517fbc9b4ad7e5b7fd7905071efe8ed8c6843691e006f16547",
+    "src/Vendi-Score_mcp.py": "96bedaf5200465e2793fb5e8564d0e1750cd6c5f80681ab786c86e9498385703",
+    "src/tools/__init__.py": "5bed1ee8caa66fc3cbf8ddc71a4f93a7252fa260193f0e34e5b9bf3023b9fba1",
+    "src/tools/vendi_metrics.py": "f517126bd4023e7065e1b9baeb71681c3db981b9a3a1ba99a7f4582061fbe2d6",
+    "vendor/repo/LICENSE": "af958366ff2570ae84c9f49c363b3fd8cef13d04b46d5a4347f432c08f333e2b",
+    "vendor/repo/vendi_score/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vendor/repo/vendi_score/vendi.py": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6"
+  },
+  "evidence_copies": [
+    {
+      "path": "notebooks/vendi_reference/reference.json",
+      "local_original_sha256": "063abdb08fe01533578beb1bd3bd3044f77115a45fddf98801f988cad851b255",
+      "public_copy_sha256": "85382a521d62d0c0015932d2b13983671e3050c8bb60762b879c7976f20d3b6d",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    },
+    {
+      "path": "reports/verification-vendi_metrics.json",
+      "local_original_sha256": "701a94390a8632fbc14cb21a470adfed58e536090418507a63de7844aca64da5",
+      "public_copy_sha256": "75b3ba05fb677be9e91d0d4a602cf88d892429df2bb4a747061a59fc5d9e84b0",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    },
+    {
+      "path": "reports/mcp-project-environment.json",
+      "local_original_sha256": "40fa167d70a1e08cdaafc9680a710e64c4793ecf3f4d7a07afd2785032f2d591",
+      "public_copy_sha256": "2329b65ed05f18a56b2ec8a0947018ed10c24acd455f3fa54e0400e15f100cd8",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    },
+    {
+      "path": "reports/mcp-clean-environment.json",
+      "local_original_sha256": "c2c6b3362a3df23ae3dbda6bf673a02c80f086da59ccab2d9820ba4f3a7c4a49",
+      "public_copy_sha256": "962bba72c5064269333126fc9eb33098afa3ba6b2f3fd167f395b9b9029adc02",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    },
+    {
+      "path": "reports/mcp-extracted-environment.json",
+      "local_original_sha256": "45e58ddff7c4985592e1b24200d85c41736b55fbedfa81011a125fa16eadd12e",
+      "public_copy_sha256": "2d0119f5b52241d48095bbe03836e1c1893ed49108dd61294a2251d388c6c0bd",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    },
+    {
+      "path": "reports/delivery-validation.json",
+      "local_original_sha256": "3e553013d42c986da0e683498b4d45b2423beb2bf9f3209502210b21b668bcd1",
+      "public_copy_sha256": "910211a3fa66a9f6d50c06b6df1f6f9ed8f5f6d3a43db0f3fe888afceb2394be",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    },
+    {
+      "path": "reports/product-cli-validation.json",
+      "local_original_sha256": "569f9ad65a9fe342c284807766550e662b5c654a65b8e55fca696daddc3be185",
+      "public_copy_sha256": "ec546f60868d5ceac64d703733e753e9d9ad21748a3657c48fd2bb43948eed1b",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    },
+    {
+      "path": "reports/helper-artifact-scientific-validation.json",
+      "local_original_sha256": "257dded03565ec611a2aafdeb73ca5e290e67f7a2b43c0002b7aafe9aa085af6",
+      "public_copy_sha256": "026cb72099c59095668cdb8b1a8391d1cf259c5f62a0933251e34f93e930b1df",
+      "transformation": "redact workstation path strings only; numeric results unchanged"
+    }
+  ],
+  "original_local_results_preserved": true
+}

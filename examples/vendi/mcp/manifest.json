@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "name": "Vendi-Score CPU diversity MCP",
+  "repository_identity": {
+    "url": "https://github.com/vertaix/Vendi-Score",
+    "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11"
+  },
+  "paper": {
+    "title": "Cousins Of The Vendi Score: A Family Of Similarity-Based Diversity Metrics For Science And Machine Learning",
+    "year": 2024,
+    "url": "https://arxiv.org/abs/2310.12952"
+  },
+  "license_files": [
+    "LICENSE"
+  ],
+  "selected_tools": [
+    {
+      "tool_name": "vendi_score_similarity",
+      "source_path": "vendi_score/vendi.py",
+      "symbol": "vendi_score.vendi.score_K",
+      "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+      "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+      "defaults": {
+        "q": 1,
+        "p": null,
+        "normalize": false
+      }
+    },
+    {
+      "tool_name": "vendi_score_embeddings",
+      "source_path": "vendi_score/vendi.py",
+      "symbol": "vendi_score.vendi.score_dual",
+      "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+      "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+      "defaults": {
+        "q": 1,
+        "normalize": true
+      }
+    }
+  ],
+  "copied_source_files": [
+    {
+      "path": "vendi_score/vendi.py",
+      "sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6"
+    },
+    {
+      "path": "vendi_score/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "af958366ff2570ae84c9f49c363b3fd8cef13d04b46d5a4347f432c08f333e2b"
+    }
+  ],
+  "runtime_files": [
+    {
+      "path": "src/tools/vendi_metrics.py",
+      "sha256": "f517126bd4023e7065e1b9baeb71681c3db981b9a3a1ba99a7f4582061fbe2d6"
+    },
+    {
+      "path": "src/tools/__init__.py",
+      "sha256": "5bed1ee8caa66fc3cbf8ddc71a4f93a7252fa260193f0e34e5b9bf3023b9fba1"
+    },
+    {
+      "path": "src/Vendi-Score_mcp.py",
+      "sha256": "96bedaf5200465e2793fb5e8564d0e1750cd6c5f80681ab786c86e9498385703"
+    },
+    {
+      "path": "server.py",
+      "sha256": "681df683b1de3498f3872e1a50961a6c4103d2baeabf06fe4d249ae19286f065"
+    }
+  ],
+  "server_sha256": "681df683b1de3498f3872e1a50961a6c4103d2baeabf06fe4d249ae19286f065",
+  "execution_performed": false,
+  "verification_status": "implemented_pending_independent_verification",
+  "algorithm_changes": false,
+  "local_model_execution_allowed": false,
+  "execution_policy": {
+    "blocked_model_packages": [
+      "torch",
+      "torchvision",
+      "tensorflow",
+      "transformers",
+      "jax",
+      "sentence_transformers",
+      "ollama",
+      "llama_cpp",
+      "diffusers"
+    ],
+    "gpu_visibility": "disabled",
+    "hf_offline": true,
+    "not_a_security_sandbox": true
+  },
+  "limits": [
+    "Only positive finite diversity orders or upstream literal inf are exposed. q=0 is deferred because original rank counting miscounts tiny positive roundoff; native evidence retained.",
+    "Dense finite symmetric positive-semidefinite kernels and valid provided vectors only; no embedding generation, local models, GPU, datasets, or full paper benchmark reproduction.",
+    "Symmetry/unit norms/probability sums use absolute tolerance 1e-10. PSD guard uses tolerance 1e-10*max(1,n*maxabs(K)) and validation-only Cholesky shift; original kernel is never repaired.",
+    "Original scientific source is unchanged. Import blocking is a scope guard, not a general security sandbox."
+  ]
+}

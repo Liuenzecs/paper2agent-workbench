@@ -1,0 +1,1602 @@
+{
+  "agent_id": "/root/vendi_verify",
+  "role": "independent_final_zip_verifier",
+  "started_at": "2026-10-11T11:44:52.022234+00:00",
+  "archive_path": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\dist\\Vendi-Score-mcp.zip",
+  "archive_sha256": "8f59d9e584ae7203b6bc5f151303f16187cfc60ee645f3c0466e1707ee5ab878",
+  "extracted_directory": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp",
+  "interpreter": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\.venv\\Scripts\\python.exe",
+  "success": true,
+  "scientific_cases": [
+    {
+      "name": "readme_q1-0",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "normalize": false,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\7d879acf7d71442c8be11a9289bfebe9\\result.json"
+          }
+        ],
+        "score": 2.1573004833739833,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          3
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ]
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 2.1573004833739833,
+      "absolute_error": 0.0,
+      "artifact_sha256": "d3e0f7da7c684d89ecd0309471443875fcb8898966c442781f221feb0fae88c2",
+      "raw_artifact": {
+        "tool_name": "vendi_score_similarity",
+        "inputs": {
+          "K": [
+            [
+              1.0,
+              0.9,
+              0.0
+            ],
+            [
+              0.9,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 1.0,
+          "p": null,
+          "normalize": false
+        },
+        "native_result": 2.1573004833739833,
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "vectors_q1-1",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "normalize": true,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\d7ea223f0ff84f26afb4435999e0da6c\\result.json"
+          }
+        ],
+        "score": 1.8898815748423097,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          2
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "warnings": []
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.8898815748423097,
+      "absolute_error": 0.0,
+      "artifact_sha256": "96a053edd1f09895e133df95d7b6560d0ef42f4c74c4a53cedc91e75ec69ead4",
+      "raw_artifact": {
+        "tool_name": "vendi_score_embeddings",
+        "inputs": {
+          "X": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 1.0,
+          "normalize": true
+        },
+        "native_result": 1.8898815748423097,
+        "warnings": [],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "magnitude_vectors_q1-2",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            2,
+            0
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        "q": 1,
+        "normalize": true,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\631903c288f34622b8fcc5e121209f5a\\result.json"
+          }
+        ],
+        "score": 1.8898815748423097,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          2
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "warnings": []
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.8898815748423097,
+      "absolute_error": 0.0,
+      "artifact_sha256": "020ad90f92262314d015e71142327e3c050e37fea9cb23f45ba5fab3b9894d82",
+      "raw_artifact": {
+        "tool_name": "vendi_score_embeddings",
+        "inputs": {
+          "X": [
+            [
+              2.0,
+              0.0
+            ],
+            [
+              3.0,
+              0.0
+            ],
+            [
+              0.0,
+              4.0
+            ]
+          ],
+          "q": 1.0,
+          "normalize": true
+        },
+        "native_result": 1.8898815748423097,
+        "warnings": [],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "scaled_kernel_q1-3",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            4,
+            5.4,
+            0
+          ],
+          [
+            5.4,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            16
+          ]
+        ],
+        "q": 1,
+        "normalize": true,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\610af499cf9d40d28b2766c4295781f6\\result.json"
+          }
+        ],
+        "score": 2.1573004833739833,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          3
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ]
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 2.1573004833739833,
+      "absolute_error": 0.0,
+      "artifact_sha256": "776a5619e980c08a8c2c013fdfc6933cc5a8ea8a50d235a11c4046f89519f91e",
+      "raw_artifact": {
+        "tool_name": "vendi_score_similarity",
+        "inputs": {
+          "K": [
+            [
+              4.0,
+              5.4,
+              0.0
+            ],
+            [
+              5.4,
+              9.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              16.0
+            ]
+          ],
+          "q": 1.0,
+          "p": null,
+          "normalize": true
+        },
+        "native_result": 2.1573004833739833,
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "readme_q2-4",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "normalize": false,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\c162646e263440c287921966ea4a9acf\\result.json"
+          }
+        ],
+        "score": 1.9480519480519483,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          3
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ]
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.9480519480519483,
+      "absolute_error": 0.0,
+      "artifact_sha256": "b92a4c80d270457c06582c75eea3fa5a87817b02414120d4de58b5d67808fdfc",
+      "raw_artifact": {
+        "tool_name": "vendi_score_similarity",
+        "inputs": {
+          "K": [
+            [
+              1.0,
+              0.9,
+              0.0
+            ],
+            [
+              0.9,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 2.0,
+          "p": null,
+          "normalize": false
+        },
+        "native_result": 1.9480519480519483,
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "weighted_q2-5",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "p": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "normalize": false,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\2283b979747240dc868ad3c62b97ee17\\result.json"
+          }
+        ],
+        "score": 2.099737532808399,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          3
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ]
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 2.099737532808399,
+      "absolute_error": 0.0,
+      "artifact_sha256": "46bab9021ffde43e872e8be444312477e82d99cbcf010ea821e4e6cdf58edb14",
+      "raw_artifact": {
+        "tool_name": "vendi_score_similarity",
+        "inputs": {
+          "K": [
+            [
+              1.0,
+              0.9,
+              0.0
+            ],
+            [
+              0.9,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 2.0,
+          "p": [
+            0.25,
+            0.25,
+            0.5
+          ],
+          "normalize": false
+        },
+        "native_result": 2.099737532808399,
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "vectors_q2-6",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "normalize": true,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\906e9bce516747c0b72c2a03d3c7552b\\result.json"
+          }
+        ],
+        "score": 1.7999999999999998,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          2
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "warnings": []
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.7999999999999998,
+      "absolute_error": 0.0,
+      "artifact_sha256": "afad5dce6a8c74bbb41561c39b0966653d38d2d0bea87b9efd1008363bbd1c96",
+      "raw_artifact": {
+        "tool_name": "vendi_score_embeddings",
+        "inputs": {
+          "X": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 2.0,
+          "normalize": true
+        },
+        "native_result": 1.7999999999999998,
+        "warnings": [],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "unit_vectors_without_normalization_q2-7",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 2,
+        "normalize": false,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\99c59419d15c4d86ae59d2750bcbfb2b\\result.json"
+          }
+        ],
+        "score": 1.7999999999999998,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          2
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "warnings": []
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.7999999999999998,
+      "absolute_error": 0.0,
+      "artifact_sha256": "1eb53a05252ee796c591c55fe526face2ddbfcc64b95741a3b04ffd104421559",
+      "raw_artifact": {
+        "tool_name": "vendi_score_embeddings",
+        "inputs": {
+          "X": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 2.0,
+          "normalize": false
+        },
+        "native_result": 1.7999999999999998,
+        "warnings": [],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "readme_qinf-8",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": "inf",
+        "normalize": false,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\d6407bcc4c8d420a9f4c2f86a7857209\\result.json"
+          }
+        ],
+        "score": 1.5789473684210527,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          3
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ]
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.5789473684210527,
+      "absolute_error": 0.0,
+      "artifact_sha256": "addb6c0c5994a1895b2afb07d5465edce7c78f86f70f0da7d5a7fdd05cc6650f",
+      "raw_artifact": {
+        "tool_name": "vendi_score_similarity",
+        "inputs": {
+          "K": [
+            [
+              1.0,
+              0.9,
+              0.0
+            ],
+            [
+              0.9,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "q": "inf",
+          "p": null,
+          "normalize": false
+        },
+        "native_result": 1.5789473684210527,
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "vectors_qinf-9",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": "inf",
+        "normalize": true,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\43b0d199508d468f8f7dbfae333e76ec\\result.json"
+          }
+        ],
+        "score": 1.5,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          2
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "warnings": []
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.5,
+      "absolute_error": 0.0,
+      "artifact_sha256": "f4a54cce8bd1dd6d4bdb2682f3915a31e15bb8a310703831831382a53f39988c",
+      "raw_artifact": {
+        "tool_name": "vendi_score_embeddings",
+        "inputs": {
+          "X": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          "q": "inf",
+          "normalize": true
+        },
+        "native_result": 1.5,
+        "warnings": [],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "kernel_zero_probability-10",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          0,
+          0.5,
+          0.5
+        ],
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\90ee15ccbd5f4420957db904905418c1\\result.json"
+          }
+        ],
+        "score": 1.9999999999999998,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          3
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ]
+      },
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.9999999999999998,
+      "absolute_error": 0.0,
+      "artifact_sha256": "fe8512bdec21f2ca24465148f4d9ce4edfc53f8ce187b57fe905b0437cb1e26f",
+      "raw_artifact": {
+        "tool_name": "vendi_score_similarity",
+        "inputs": {
+          "K": [
+            [
+              1.0,
+              0.9,
+              0.0
+            ],
+            [
+              0.9,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 1,
+          "p": [
+            0.0,
+            0.5,
+            0.5
+          ],
+          "normalize": false
+        },
+        "native_result": 1.9999999999999998,
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "readme_q1-11",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "normalize": false,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\ab207e9261414b6a968132195cdea90d\\result.json"
+          }
+        ],
+        "score": 2.1573004833739833,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          3
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ]
+      },
+      "repeat_exact_contents_passed": true,
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 2.1573004833739833,
+      "absolute_error": 0.0,
+      "artifact_sha256": "d3e0f7da7c684d89ecd0309471443875fcb8898966c442781f221feb0fae88c2",
+      "raw_artifact": {
+        "tool_name": "vendi_score_similarity",
+        "inputs": {
+          "K": [
+            [
+              1.0,
+              0.9,
+              0.0
+            ],
+            [
+              0.9,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 1.0,
+          "p": null,
+          "normalize": false
+        },
+        "native_result": 2.1573004833739833,
+        "warnings": [
+          "Please import `csr_matrix` from the `scipy.sparse` namespace; the `scipy.sparse.csr` namespace is deprecated and will be removed in SciPy 2.0.0."
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_K",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "vectors_q1-12",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 1,
+        "normalize": true,
+        "output_dir": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science"
+      },
+      "is_error": false,
+      "passed": true,
+      "native_mcp_result": {
+        "message": "Vendi diversity computed by the pinned original CPU implementation.",
+        "reference": "https://github.com/vertaix/Vendi-Score/blob/ff1dfdbe6356b98a6087540f215b9a9db6db7c11/README.md",
+        "artifacts": [
+          {
+            "description": "Original scalar result, complete numeric inputs and source provenance",
+            "path": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\outputs\\independent-science\\ce3dddf1074d4b51b9fb99179f7f1b4f\\result.json"
+          }
+        ],
+        "score": 1.8898815748423097,
+        "num_samples": 3,
+        "input_shape": [
+          3,
+          2
+        ],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "warnings": []
+      },
+      "repeat_exact_contents_passed": true,
+      "independent_upstream_source": "<WORKSPACE_PARENT>\\paper2agent-vendi-demo-20261011\\repo\\Vendi-Score\\vendi_score\\vendi.py",
+      "independent_native_score": 1.8898815748423097,
+      "absolute_error": 0.0,
+      "artifact_sha256": "96a053edd1f09895e133df95d7b6560d0ef42f4c74c4a53cedc91e75ec69ead4",
+      "raw_artifact": {
+        "tool_name": "vendi_score_embeddings",
+        "inputs": {
+          "X": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          "q": 1.0,
+          "normalize": true
+        },
+        "native_result": 1.8898815748423097,
+        "warnings": [],
+        "provenance": {
+          "repository": "https://github.com/vertaix/Vendi-Score",
+          "commit": "ff1dfdbe6356b98a6087540f215b9a9db6db7c11",
+          "source_path": "vendi_score/vendi.py",
+          "source_sha256": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6",
+          "upstream_function": "vendi_score.vendi.score_dual",
+          "algorithm_changes": false
+        },
+        "local_models_called": false,
+        "gpu_called": false
+      }
+    },
+    {
+      "name": "vendi_score_similarity-q0_deferred",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "q": 0
+      },
+      "is_error": true,
+      "passed": true,
+      "native_error": "Error calling tool 'vendi_score_similarity': q must be a positive finite number or the string inf. q=0 is deferred because upstream counts positive eigenvalue roundoff as rank."
+    },
+    {
+      "name": "vendi_score_embeddings-q0_deferred",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            1,
+            0
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "q": 0
+      },
+      "is_error": true,
+      "passed": true,
+      "native_error": "Error calling tool 'vendi_score_embeddings': q must be a positive finite number or the string inf. q=0 is deferred because upstream counts positive eigenvalue roundoff as rank."
+    },
+    {
+      "name": "vendi_score_similarity-non_psd",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ]
+        ]
+      },
+      "is_error": true,
+      "passed": true,
+      "native_error": "Error calling tool 'vendi_score_similarity': K must be positive semidefinite within the documented numerical tolerance."
+    },
+    {
+      "name": "vendi_score_similarity-weight_sum",
+      "tool": "vendi_score_similarity",
+      "arguments": {
+        "K": [
+          [
+            1,
+            0.9,
+            0
+          ],
+          [
+            0.9,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1
+          ]
+        ],
+        "p": [
+          0.2,
+          0.2,
+          0.2
+        ]
+      },
+      "is_error": true,
+      "passed": true,
+      "native_error": "Error calling tool 'vendi_score_similarity': p probabilities must sum to one (absolute tolerance 1e-10)."
+    },
+    {
+      "name": "vendi_score_embeddings-zero_vector",
+      "tool": "vendi_score_embeddings",
+      "arguments": {
+        "X": [
+          [
+            0,
+            0
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      },
+      "is_error": true,
+      "passed": true,
+      "native_error": "Error calling tool 'vendi_score_embeddings': X must contain finite nonzero rows with finite norms."
+    }
+  ],
+  "extracted_file_hashes": {
+    "USAGE.md": "5cf6507a56375b7a7a73474f0e6f603ee0ff06853891690c171ad1ea4f743d75",
+    "manifest.json": "a7c4fc3f69e6d1df42c007a95389a55d4c863f0c7f247358ac19d6a380525200",
+    "server.py": "681df683b1de3498f3872e1a50961a6c4103d2baeabf06fe4d249ae19286f065",
+    "src/requirements.txt": "1db4d0afafa687517fbc9b4ad7e5b7fd7905071efe8ed8c6843691e006f16547",
+    "src/Vendi-Score_mcp.py": "96bedaf5200465e2793fb5e8564d0e1750cd6c5f80681ab786c86e9498385703",
+    "src/tools/__init__.py": "5bed1ee8caa66fc3cbf8ddc71a4f93a7252fa260193f0e34e5b9bf3023b9fba1",
+    "src/tools/vendi_metrics.py": "f517126bd4023e7065e1b9baeb71681c3db981b9a3a1ba99a7f4582061fbe2d6",
+    "vendor/repo/LICENSE": "af958366ff2570ae84c9f49c363b3fd8cef13d04b46d5a4347f432c08f333e2b",
+    "vendor/repo/vendi_score/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vendor/repo/vendi_score/vendi.py": "8ee71e09e475c82f65262174505c88a2a119da5fb62a9e0ef4f2c12864441ac6"
+  },
+  "independent_installation_report": "reports/extracted-installation.json",
+  "independent_installation_report_sha256": "b9387b6f0317c3994c9a90ebd371aaa13913165da4afafc1c60e02258b4ae047",
+  "formal_stdio_acceptance_report": "reports/mcp-extracted-environment.json",
+  "formal_stdio_acceptance_report_sha256": "45e58ddff7c4985592e1b24200d85c41736b55fbedfa81011a125fa16eadd12e",
+  "formal_helper_cases_passed": 18,
+  "local_models_called": false,
+  "gpu_called": false,
+  "api_calls": false,
+  "source_origin_probe": {
+    "bound_source": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\vendor\\repo\\vendi_score\\vendi.py",
+    "numpy_origin": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\.venv\\Lib\\site-packages\\numpy\\__init__.py",
+    "fastmcp_origin": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\.venv\\Lib\\site-packages\\fastmcp\\__init__.py",
+    "blocked_frameworks_loaded": []
+  },
+  "source_origin_log": "tests/logs/delivery-source-origin-v1.log",
+  "tool_schemas": {
+    "vendi_score_similarity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "K": {
+          "description": "Finite symmetric positive-semidefinite sample similarity matrix; unit diagonal unless normalize=true",
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "type": "array"
+        },
+        "q": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "const": "inf",
+              "type": "string"
+            }
+          ],
+          "default": 1,
+          "description": "Positive diversity order, or inf; q=0 is deferred for an upstream numerical rank issue"
+        },
+        "p": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional nonnegative sample probabilities in matrix order, summing to one; null gives equal weights"
+        },
+        "normalize": {
+          "default": false,
+          "description": "Forward original diagonal normalization; false requires a unit-diagonal kernel",
+          "type": "boolean"
+        },
+        "output_dir": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Base directory for a fresh per-call result artifact; null uses this package outputs"
+        }
+      },
+      "required": [
+        "K"
+      ]
+    },
+    "vendi_score_embeddings": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "X": {
+          "description": "Already supplied finite sample vectors; nonzero rows, with unit norm required when normalize=false",
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "type": "array"
+        },
+        "q": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "const": "inf",
+              "type": "string"
+            }
+          ],
+          "default": 1,
+          "description": "Positive diversity order, or inf; q=0 is deferred for an upstream numerical rank issue"
+        },
+        "normalize": {
+          "default": true,
+          "description": "Forward original row normalization; true retains the score_dual API default",
+          "type": "boolean"
+        },
+        "output_dir": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Base directory for a fresh per-call result artifact; null uses this package outputs"
+        }
+      },
+      "required": [
+        "X"
+      ]
+    }
+  },
+  "unique_artifacts_checked": 13,
+  "repeat_artifact_contents_and_previous_bytes_unchanged": true,
+  "native_stdio_log": "tests/logs/delivery-science-native-stdio-v1.log",
+  "max_absolute_difference": 0.0,
+  "post_call_packaged_bytes_unchanged": true,
+  "installed_packages_count": 80,
+  "locked_packages_count": 78,
+  "all_locked_versions_match": true,
+  "pip_check_passed": true,
+  "setup_logs": [
+    {
+      "argv": [
+        "<VALIDATION_RUNTIME>\\vendi-demo-env\\Scripts\\python.exe",
+        "-m",
+        "venv",
+        ".venv"
+      ],
+      "cwd": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp",
+      "started_at": "2026-10-11T11:42:59.491701+00:00",
+      "completed_at": "2026-10-11T11:43:02.746306+00:00",
+      "exit_code": 0,
+      "log": "tests/logs/delivery-venv-create-v1.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "install",
+        "--use-feature=truststore",
+        "-r",
+        "src/requirements.txt"
+      ],
+      "cwd": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp",
+      "started_at": "2026-10-11T11:43:02.747306+00:00",
+      "completed_at": "2026-10-11T11:43:35.768865+00:00",
+      "exit_code": 0,
+      "log": "tests/logs/delivery-pip-install-v1.log",
+      "log_sha256": "3182f3c3309eb61b752cc898d02a4e284ba17ecf6e18587e98b020b01c522076"
+    },
+    {
+      "argv": [
+        "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "cwd": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp",
+      "started_at": "2026-10-11T11:43:35.769376+00:00",
+      "completed_at": "2026-10-11T11:43:36.768174+00:00",
+      "exit_code": 0,
+      "log": "tests/logs/delivery-pip-check-v1.log",
+      "log_sha256": "672aec65a45bed50e70229c70934a7eebf0462595c459b83023027645d57cccf"
+    },
+    {
+      "argv": [
+        "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\.venv\\Scripts\\python.exe",
+        "-m",
+        "pip",
+        "list",
+        "--format=json",
+        "--disable-pip-version-check"
+      ],
+      "cwd": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp",
+      "started_at": "2026-10-11T11:43:36.768174+00:00",
+      "completed_at": "2026-10-11T11:43:37.465253+00:00",
+      "exit_code": 0,
+      "log": "tests/logs/delivery-pip-list-v1.json",
+      "log_sha256": "9aee3b549ff068adfe28989895c35a716ae9c66e3ca573839508c295398f8f8b"
+    },
+    {
+      "argv": [
+        "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp\\.venv\\Scripts\\python.exe",
+        "-c",
+        "import importlib.util,json,sys; print(json.dumps({\"python\":sys.version,\"prefix\":sys.prefix,\"external_vendi_importable\":importlib.util.find_spec(\"vendi_score\") is not None}))"
+      ],
+      "cwd": "<VALIDATION_RUNTIME>\\Vendi MCP recipient 01\\Vendi-Score-mcp",
+      "started_at": "2026-10-11T11:43:37.466255+00:00",
+      "completed_at": "2026-10-11T11:43:37.532022+00:00",
+      "exit_code": 0,
+      "log": "tests/logs/delivery-import-origin-before-server-v1.log",
+      "log_sha256": "0877ba91b259f40134ae19a84f8831f5f829c05a1b9bb91ac7aace2a7dcfc0a5"
+    }
+  ],
+  "scientific_positive_calls": 13,
+  "expected_error_calls": 5,
+  "prior_independent_science_report": {
+    "path": "reports/verification-vendi_metrics.json",
+    "sha256": "701a94390a8632fbc14cb21a470adfed58e536090418507a63de7844aca64da5",
+    "pytest_passed": 81,
+    "development_stdio_positive_calls": 33,
+    "development_stdio_expected_errors": 38
+  },
+  "known_limits": [
+    "Selected official numerical functions only, not whole-paper benchmarks or model training.",
+    "Provided vectors are explicit synthetic tests, not generated model embeddings.",
+    "q=0 explicitly deferred for the preserved upstream numerical-rank issue; no source algorithm repair.",
+    "Requires Windows x64 Python 3.11 and network for initial pinned dependency installation; subsequent numerical computation needs no API.",
+    "No local model packages installed/called, no GPU use; import guard is not a general security sandbox."
+  ],
+  "completed_at": "2026-10-11T11:44:55.545641+00:00"
+}
