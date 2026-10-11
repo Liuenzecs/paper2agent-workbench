@@ -7,7 +7,7 @@ import subprocess
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-NAME = 'Paper2Agent-Workbench-0.3.0'
+NAME = 'Paper2Agent-Workbench-0.3.1'
 raw_names = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-z']).decode().split('\0')
 names = sorted(filter(None, raw_names))
 if not names:

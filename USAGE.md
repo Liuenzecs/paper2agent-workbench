@@ -1,4 +1,4 @@
-# Paper2Agent Workbench 0.3.0
+# Paper2Agent Workbench 0.3.1
 
 把自己的论文变成可核对原文的问答库，并把论文关联的 Python 代码做成可测试的 MCP 工具。本机网页与 CLI 共用同一个个人工作区；问答及嵌入只使用远程 API。这个版本不调用本地模型或 GPU。
 

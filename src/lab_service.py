@@ -113,7 +113,7 @@ class LabService:
                 "embedding_api_base": raw["embedding_config"]["kwargs"]["api_base"],
                 "provider_configured": is_remote_configured(raw),
                 "ready": is_remote_configured(raw) and all(available.values()),
-                "knowledge_status": "unreviewed", "version": "0.3.0-workbench"}
+                "knowledge_status": "unreviewed", "version": "0.3.1-workbench"}
 
     def save_settings(self, data):
         with self.lock:

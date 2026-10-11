@@ -93,8 +93,17 @@ def test_repeated_calls_artifact_isolation():
 
 
 def test_native_q0_issue_is_preserved_not_replaced():
-    native = float(ORACLE.score_K(np.ones((3, 3)), q=0))
-    assert native == pytest.approx(2, abs=1e-12)
-    error = call(TOOL, {'K': np.ones((3, 3)).tolist(), 'q': 0})
+    kernel = np.ones((3, 3))
+    native = float(ORACLE.score_K(kernel, q=0))
+    eigenvalues = ORACLE.scipy.linalg.eigvalsh(kernel / 3)
+    # q=0 counts every strictly positive eigenvalue, including roundoff.
+    # The historical local observation was 2; GitHub Windows observed 3.
+    # Check the unchanged upstream behavior without imposing one BLAS result.
+    np.testing.assert_allclose(eigenvalues, [0, 0, 1], atol=1e-12, rtol=1e-12)
+    assert np.linalg.matrix_rank(kernel) == 1
+    assert native == pytest.approx(int(np.count_nonzero(eigenvalues > 0)), abs=1e-12)
+    error = call(TOOL, {'K': kernel.tolist(), 'q': 0})
     assert 'q=0 is deferred' in error
-    persist({'review': 'upstream numerical rank issue explicit exclusion', 'original_q0_identical_3_score': native, 'mathematical_rank': 1, 'mcp_error': error})
+    persist({'review': 'upstream numerical rank issue explicit exclusion', 'original_q0_identical_3_score': native,
+             'observed_eigenvalues': eigenvalues.tolist(), 'historical_local_score': 2,
+             'historical_github_windows_score': 3.0000000000000004, 'mathematical_rank': 1, 'mcp_error': error})
