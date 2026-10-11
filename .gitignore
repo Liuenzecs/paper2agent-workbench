@@ -6,6 +6,7 @@ __pycache__/
 .env
 .env.*
 settings.json
+runtime-path.txt
 secrets*.json
 *.dpapi.json
 *.pem

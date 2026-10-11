@@ -1,7 +1,7 @@
-param([Parameter(Mandatory=$true)][string]$Python)
+param([Parameter(Mandatory=$true)][string]$Python, [string]$EnvironmentDir = '')
 $ErrorActionPreference = 'Stop'
 $exampleRoot = Join-Path $PSScriptRoot 'mcp'
-$exampleEnv = Join-Path $exampleRoot '.venv'
+$exampleEnv = if ($EnvironmentDir) { [IO.Path]::GetFullPath($EnvironmentDir) } else { Join-Path $exampleRoot '.venv' }
 if (-not (Test-Path -LiteralPath (Join-Path $exampleEnv 'Scripts\python.exe'))) {
     & $Python -m venv $exampleEnv
     if ($LASTEXITCODE -ne 0) { throw 'Vendi environment creation failed.' }

@@ -22,6 +22,8 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Python "C:\你的Python3
 
 双击 `Start-Web.cmd` 打开本机网页；默认地址 `http://127.0.0.1:8765`。双击 `Stop-Web.cmd` 停止服务。关闭浏览器标签页不会停止后台服务。
 
+若解压目录较深、安装报 Windows 文件路径过长，可将环境单独放在较短的可写目录：在安装命令追加 `-EnvironmentDir "C:\P2A-env\workbench"`。安装器保存本机 `runtime-path.txt`，网页和 CLI 启动器会使用该环境；此路径文件不进入开源仓库。Vendi 安装器也支持 `-EnvironmentDir`，之后在演示表单或 CLI 中填写该环境的实际 Python 路径。
+
 CLI 入口：
 
 ```powershell

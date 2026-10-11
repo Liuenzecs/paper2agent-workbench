@@ -105,3 +105,5 @@ API 错误：检查账户权限、模型名、服务基础地址以及嵌入接�
 此仓库包含已验收的 Vendi MCP 源码、固定依赖、MIT 许可及验证记录，见 [examples/vendi/README.md](examples/vendi/README.md)。安装该示例的独立 CPU 环境后，运行 `paper.cmd example-vendi --python <示例环境解释器>`，会在自己的个人工作区复制新的项目、实际调用两个工具并保存原始结果。此演示不需要论文或 API 密钥。
 
 主程序 AGPL-3.0-only；Vendi 示例保持其 MIT 许可。源码和下载 ZIP 均不含个人数据。
+
+较深目录安装遇到 Windows 文件路径过长时，可给 install.ps1 追加 -EnvironmentDir 指定短的可写目录，例如 C:\P2A-env\workbench。安装成功后本机 runtime-path.txt 记录实际解释器，paper.cmd 与网页启动器均自动读取。此文件只包含本机路径，不含密钥，不进入开源仓库。Vendi 安装器支持同名选项。

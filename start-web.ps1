@@ -2,6 +2,8 @@ param([int]$Port = 8765, [string]$DataDir = "")
 $ErrorActionPreference = "Stop"
 $trialRoot = $PSScriptRoot
 $trialPython = Join-Path $trialRoot ".venv\Scripts\python.exe"
+$runtimePathFile = Join-Path $trialRoot 'runtime-path.txt'
+if (Test-Path -LiteralPath $runtimePathFile) { $trialPython = (Get-Content -LiteralPath $runtimePathFile -Raw -Encoding UTF8).Trim() }
 if (-not (Test-Path -LiteralPath $trialPython)) { throw "Run install.ps1 first." }
 if (-not $DataDir) {
     if ($env:PAPER2AGENT_DATA_DIR) { $DataDir = $env:PAPER2AGENT_DATA_DIR }

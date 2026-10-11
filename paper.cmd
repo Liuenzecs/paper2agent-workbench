@@ -1,2 +1,2 @@
 @echo off
-"%~dp0.venv\Scripts\python.exe" "%~dp0src\lab_cli.py" %*
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0paper-cli.ps1" %*
