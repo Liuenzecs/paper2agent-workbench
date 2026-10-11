@@ -165,7 +165,7 @@ def test_explicit_dynamic_code_and_pretrained_loader_are_not_runnable(repo, tmp_
     for identifier in ['danger:evaluate_code', 'danger:load_checkpoint']:
         assert not candidates[identifier]['runnable']
         assert candidates[identifier]['execution_restrictions']
-        with pytest.raises(WorkbenchError, match='本轮不执行'):
+        with pytest.raises(WorkbenchError, match='函数需要人工适配'):
             build_mcp(repo, [identifier], 'blocked', tmp_path / 'generated')
 
 
@@ -176,4 +176,4 @@ def test_generated_import_guard_blocks_dynamic_model_import_without_importing_mo
     command = [sys.executable, '-c', "import runpy,importlib,os; d=runpy.run_path(" + repr(built['server_path']) + "); assert os.environ['CUDA_VISIBLE_DEVICES']==''; assert os.environ['HF_HUB_OFFLINE']=='1'; importlib.import_module('transformers')"]
     result = subprocess.run(command, capture_output=True, text=True, check=False, timeout=15)
     assert result.returncode != 0
-    assert 'Local model/framework imports are disabled' in result.stderr
+    assert 'Unsupported runtime dependency' in result.stderr

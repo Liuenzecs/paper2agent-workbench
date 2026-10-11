@@ -132,7 +132,7 @@ function showAnswer(raw) {
   const missingTitles = missing.map((paper) => state.papers.find((p) => paperId(p) === paper)?.title || paper);
   $("answer-explanation").textContent = (explanations[decision] || explanations.runtime_error) + (missingTitles.length ? ` 尚未引用：${missingTitles.join("、")}。` : "");
   // Render native content only as text. Raw HTML, markdown scripts and COT are never interpreted.
-  $("answer-text").textContent = result.answer || result.raw_answer || result.native_session?.answer || result.native_session?.raw_answer || result.message || "本次运行未返回可展示的答案。";
+  $("answer-text").textContent = result.answer || result.raw_answer || result.native_session?.answer || result.native_session?.raw_answer || result.message || "未返回答案。";
   for (const [element, format] of [["export-md", "markdown"], ["export-json", "json"]]) {
     $(element).hidden = !validId(id);
     if (validId(id)) $(element).href = `/api/exports/${encodeURIComponent(id)}?format=${format}`;
@@ -157,7 +157,7 @@ function showAnswer(raw) {
     if (ref.context_id) card.append(el("span", "citation-id", ref.context_id));
     $("citations").append(card);
   }
-  if (!references.length) $("citations").append(el("p", "empty", "本次没有可定位的引用。请勿把服务故障或缺证据结果当作论文结论。"));
+  if (!references.length) $("citations").append(el("p", "empty", "暂无可定位的引用。"));
 }
 
 async function watchJob(jobId) {
@@ -173,14 +173,14 @@ async function watchJob(jobId) {
         state.activeJob = null; $("job-status").hidden = true; $("ask-button").disabled = false;
         if (job.result && typeof job.result === "object") showAnswer(job.result);
         else if (validId(String(job.answer_id || job.result_id || ""))) showAnswer(await api(`/api/answers/${encodeURIComponent(job.answer_id || job.result_id)}`));
-        else if (job.status === "failed") { showFailure(job, $("question").value.trim()); notice("问答未能完成。这是运行故障，不是缺证据拒答；请检查远程 API 配置。失败记录已保留。"); }
+        else if (job.status === "failed") { showFailure(job, $("question").value.trim()); notice("问答失败，请检查 API 配置。记录已保存。"); }
         else notice("任务结束，但没有可读取的答案记录。请查看历史或重试。");
         await refreshHistory(); return;
       }
       state.polling = setTimeout(poll, 1400);
     } catch (error) {
       state.activeJob = null; $("job-status").hidden = true; $("ask-button").disabled = false;
-      notice(`${error.message} 本次任务可能仍在后台运行；请稍后刷新历史。`);
+      notice(`${error.message} 任务可能仍在运行，请稍后刷新历史。`);
     }
   };
   await poll();

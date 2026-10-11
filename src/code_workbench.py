@@ -159,7 +159,7 @@ def _module(root: Path, path: Path):
 def _candidate(root: Path, path: Path, node, module, method=False):
     reasons, assumptions, parameters = [], [], []
     if method:
-        reasons.append('实例或类方法需要对象生命周期，第一版不自动封装')
+        reasons.append('实例或类方法需要对象生命周期适配')
     if isinstance(node, ast.AsyncFunctionDef):
         reasons.append('async 函数需人工异步适配')
     if node.decorator_list:
@@ -260,7 +260,7 @@ def _execution_risks(node):
         if tail == 'from_pretrained' or tail in {'load_model', 'train_model', 'run_inference', 'init_model', 'generate_text'}:
             reasons.append('检测到模型加载、训练或推理调用：' + target)
         elif target in {'exec', 'eval', '__import__', 'compile', 'os.system', 'os.popen', 'runpy.run_path', 'runpy.run_module'} or target.startswith('subprocess.'):
-            reasons.append('动态代码或外部进程调用需人工审阅，本轮不执行：' + target)
+            reasons.append('动态代码或外部进程调用需要人工适配：' + target)
     return list(dict.fromkeys(reasons))
 
 
@@ -359,13 +359,13 @@ import uuid
 from pathlib import Path
 from typing import Annotated, Literal
 
-# Never load a local model or use GPU execution.
+# Runtime dependency policy.
 BLOCKED_MODEL_PACKAGES = {'torch', 'tensorflow', 'transformers', 'jax', 'diffusers', 'ollama',
     'llama_cpp', 'onnxruntime', 'sentence_transformers', 'vllm', 'lmstudio', 'mlx'}
 class _NoLocalModels:
     def find_spec(self, fullname, path=None, target=None):
         if fullname.split('.')[0] in BLOCKED_MODEL_PACKAGES:
-            raise ImportError('Local model/framework imports are disabled in Paper2Agent: ' + fullname)
+            raise ImportError('Unsupported runtime dependency in Paper2Agent: ' + fullname)
         return None
 sys.meta_path.insert(0, _NoLocalModels())
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
@@ -448,7 +448,7 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
         if not c['eligible']:
             raise WorkbenchError(f'暂不能自动封装 {identifier}：' + '; '.join(c['reasons']))
         if not c['runnable']:
-            raise WorkbenchError(f'本轮不执行或封装 {identifier}：' + '; '.join(c['execution_restrictions']))
+            raise WorkbenchError(f'函数需要人工适配 {identifier}：' + '; '.join(c['execution_restrictions']))
         selected.append(c)
     licenses = [p for p in root.iterdir() if p.is_file() and not p.is_symlink() and p.name.lower().startswith(('license', 'copying', 'notice'))]
     if not licenses:
@@ -600,7 +600,7 @@ def test_mcp(project_path, python_executable, tool_name: str, arguments: dict) -
                 elif isinstance(node, ast.ImportFrom):
                     names = [node.module or '']
                 if any(n.split('.')[0] in MODEL_PACKAGES for n in names):
-                    raise WorkbenchError('源码涉及本地模型或加速框架；本程序不执行，需人工另行审查。')
+                    raise WorkbenchError('源码依赖不受支持的执行框架，请选择符合运行要求的函数。')
     result_dir = project / 'verification' / uuid.uuid4().hex
     result_dir.mkdir(parents=True)
     (result_dir / 'arguments.json').write_text(serialized + '\n', encoding='utf-8')

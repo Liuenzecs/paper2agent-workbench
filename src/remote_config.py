@@ -23,7 +23,7 @@ def check_url(value):
     if parsed.scheme != "https" or not host or parsed.username or parsed.password or parsed.query or parsed.fragment:
         raise ValueError("Remote API base must be an HTTPS URL without embedded credentials")
     if host in {"localhost", "local", "lan"} or host.endswith((".localhost", ".local", ".lan")):
-        raise ValueError("Local model endpoints are disabled")
+        raise ValueError("Remote API base must use a public service address")
     try:
         address = ipaddress.ip_address(host)
     except ValueError:
@@ -33,7 +33,7 @@ def check_url(value):
         # Explicit addresses must be publicly routable; private LANs can host
         # local model servers just as loopback can. DNS aliases are not resolved.
         if not address.is_global:
-            raise ValueError("Local model endpoints are disabled")
+            raise ValueError("Remote API base must use a public service address")
 
 
 def check_remote_targets(raw):

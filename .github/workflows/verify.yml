@@ -1,4 +1,4 @@
-name: Verify remote-only workbench
+name: Verify Paper2Agent
 on:
   push:
   pull_request:
@@ -36,13 +36,13 @@ jobs:
           $vendiTestExit = $LASTEXITCODE
           Pop-Location
           if ($vendiTestExit -ne 0) { throw 'Vendi tests failed' }
-          python -X utf8 scripts/verify_examples.py vendi --data-dir "$env:RUNNER_TEMP/workbench-demo" --python examples/vendi/mcp/.venv/Scripts/python.exe
-          if ($LASTEXITCODE -ne 0) { throw 'Real MCP demo failed' }
+          python -X utf8 scripts/verify_examples.py vendi --data-dir "$env:RUNNER_TEMP/vendi-verification" --python examples/vendi/mcp/.venv/Scripts/python.exe
+          if ($LASTEXITCODE -ne 0) { throw 'Vendi MCP verification failed' }
       - name: Verify non-AI statistics and strict MCP inputs
         shell: pwsh
         run: |
           python -m venv "$env:RUNNER_TEMP/mannkendall-env"
           & "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe" -m pip install -r examples/mannkendall/requirements-lock.txt
           if ($LASTEXITCODE -ne 0) { throw 'Mann-Kendall install failed' }
-          python -X utf8 scripts/verify_examples.py mannkendall --data-dir "$env:RUNNER_TEMP/mannkendall-demo" --python "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe"
-          if ($LASTEXITCODE -ne 0) { throw 'Mann-Kendall MCP demo failed' }
+          python -X utf8 scripts/verify_examples.py mannkendall --data-dir "$env:RUNNER_TEMP/mannkendall-verification" --python "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe"
+          if ($LASTEXITCODE -ne 0) { throw 'Mann-Kendall MCP verification failed' }

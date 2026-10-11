@@ -1,4 +1,4 @@
-"""CLI entry point for the personal remote-only lab workspace."""
+"""Paper2Agent command-line interface."""
 import argparse
 import getpass
 import json
@@ -11,7 +11,7 @@ def main(argv=None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
     p = argparse.ArgumentParser(description="Paper2Agent：论文问答与代码工具")
-    p.add_argument("--data-dir", default=str(default_data_dir()), help="Your own library/settings/results directory")
+    p.add_argument("--data-dir", default=str(default_data_dir()), help="Workspace directory for papers, settings and results")
     commands = p.add_subparsers(dest="command", required=True)
     commands.add_parser("status"); commands.add_parser("list"); commands.add_parser("history")
     add = commands.add_parser("ingest"); add.add_argument("pdf"); add.add_argument("--title", default=""); add.add_argument("--url", default="")

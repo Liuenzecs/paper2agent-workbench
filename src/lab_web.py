@@ -30,7 +30,7 @@ SAFE_ERRORS = {
     "PDF must have 1..500 pages": (400, "当前支持 1–500 页的 PDF；请拆分较长文件。"),
     "Fill in the remote API base address": (400, "请填写远程 API 基础地址。"),
     "Remote API base must be an HTTPS URL without embedded credentials": (400, "远程 API 地址必须使用 HTTPS，且不能在地址中包含密钥。"),
-    "Local model endpoints are disabled": (400, "已禁止本地模型地址，请填写远程服务的 HTTPS API 地址。"),
+    "Remote API base must use a public service address": (400, "请填写远程服务的 HTTPS API 地址。"),
     "Fill in remote model names": (400, "请填写问答和嵌入模型名称。"),
     "Install Git to fetch a repository, or scan an existing local checkout": (400, "下载源码需要安装 Git；也可以直接扫描已经下载的本机仓库。"),
     "Repository download failed; check the public URL, branch and network": (400, "源码下载失败，请检查公开仓库链接、版本和网络。"),
@@ -40,7 +40,7 @@ SAFE_ERRORS = {
     "Unknown question task": (404, "没有找到该问答任务。"),
     "Unknown answer": (404, "没有找到该问答结果。"),
     "Unknown paper": (404, "没有找到该论文。"),
-    "源码涉及本地模型或加速框架；本程序不执行，需人工另行审查。": (400, "所选源码涉及本地模型或加速框架，当前程序不执行。请改选符合 CPU 环境的工具。"),
+    "源码依赖不受支持的执行框架，请选择符合运行要求的函数。": (400, "源码依赖不受支持的执行框架，请选择符合运行要求的函数。"),
     "研究代码目录不存在。": (400, "研究代码目录不存在，请检查本机仓库路径。"),
     "未找到 LICENSE / COPYING / NOTICE；请先核实分发许可，再生成包。": (400, "仓库缺少许可文件，请先核实分发许可再生成项目。"),
     "Choose a code project generated in your personal workspace": (400, "只能测试当前个人工作区中生成的 MCP 项目。"),
@@ -188,7 +188,7 @@ def build_server(service, host="127.0.0.1", port=8765):
             elif isinstance(error, (ValueError, UnicodeError, binascii.Error)):
                 self._error(400, "invalid_input", "输入无效。请检查 PDF、论文选择和远程 API 配置。")
             else:
-                self._error(500, "service_error", "操作失败。请检查配置与本机可用空间后重试；此错误不是缺证据拒答。")
+                self._error(500, "service_error", "操作失败，请检查配置与可用空间后重试。")
 
         def do_GET(self):
             if not self._safe_request():

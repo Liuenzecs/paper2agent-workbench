@@ -1,4 +1,4 @@
-"""Personal paper workspace shared by CLI and the loopback browser service."""
+"""Paper2Agent workspace shared by the CLI and browser service."""
 from __future__ import annotations
 
 import base64
@@ -45,7 +45,7 @@ def _protect(data: bytes, decrypt=False) -> bytes:
         ok = fn(ctypes.byref(source), None, None, None, None, 1, ctypes.byref(target))
     else:
         fn.argtypes = [ctypes.POINTER(Blob), ctypes.c_wchar_p, ctypes.POINTER(Blob), ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD, ctypes.POINTER(Blob)]
-        ok = fn(ctypes.byref(source), "Paper2Agent Lab", None, None, None, 1, ctypes.byref(target))
+        ok = fn(ctypes.byref(source), "Paper2Agent", None, None, None, 1, ctypes.byref(target))
     if not ok:
         raise ValueError("Unable to access this Windows user's protected API keys")
     try:
@@ -217,7 +217,7 @@ class LabService:
                     self.jobs[job_id].update(status="completed", stage="完成", result=public)
             except Exception as exc:
                 # Never relay a provider traceback that could contain credentials.
-                message = str(exc) if isinstance(exc, ValueError) else "远程服务请求失败；请检查连接、模型名称和密钥。此次失败不算缺证据拒答。"
+                message = str(exc) if isinstance(exc, ValueError) else "远程服务请求失败，请检查连接、模型名称和密钥。"
                 with self.lock:
                     self.jobs[job_id].update(status="failed", stage="服务或配置错误", error=message, error_type=type(exc).__name__)
             finally:
