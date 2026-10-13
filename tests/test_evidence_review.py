@@ -50,6 +50,44 @@ def test_literal_anchor_membership_and_exhaustive_segments():
     bad=review(); bad.claims.append(bad.claims[0])
     assert validate_review(bad,segments,contexts,plan())
 
+
+def test_segment_sources_cannot_borrow_another_citation():
+    from evidence_review import review_payload
+    contexts=[SimpleNamespace(id='pqac-a',text=SimpleNamespace(text='First original source.')),
+              SimpleNamespace(id='pqac-b',text=SimpleNamespace(text='Second original source.'))]
+    answer='First claim (pqac-a).\nSecond claim (pqac-b).\nUncited claim.'
+    segments,payload=review_payload('Question',plan(),answer,contexts,[{'text':'Full selected manuscript.'}])
+    assert len(segments)==3
+    assert [x['citation'] for x in payload['segments'][0]['permitted_claim_sources']]==['pqac-a']
+    assert [x['citation'] for x in payload['segments'][1]['permitted_claim_sources']]==['pqac-b']
+    assert {x['citation'] for x in payload['segments'][2]['permitted_claim_sources']}=={'pqac-a','pqac-b'}
+    assert payload['coverage_sources']==[{'window':0,'text':'Full selected manuscript.'}]
+
+
+def test_mechanical_review_repair_preserves_answer_and_first_review(monkeypatch):
+    import evidence_review
+    async def run():
+        contexts=[SimpleNamespace(id='pqac-real',text=SimpleNamespace(text='An effect follows under the stated conditions.'))]
+        answer='An effect follows under the stated conditions (pqac-real).'
+        requests=[]
+        async def fake_remote(llm,instructions,payload,schema,name,trace):
+            requests.append(payload)
+            return review('invented literal anchor' if len(requests)==1 else 'under the stated conditions')
+        monkeypatch.setattr(evidence_review,'remote_json',fake_remote)
+        result=await evidence_review.review_answer(None,'Question',plan(),answer,contexts,[])
+        assert result['passed'] and result['native_answer_unchanged']
+        assert len(result['attempts'])==2 and result['attempts'][0]['mechanical_errors']
+        assert result['attempts'][0]['review']['claims'][0]['anchors'][0]['quote']=='invented literal anchor'
+        assert requests[0]['segments']==requests[1]['segments']
+        assert requests[1]['previous_invalid_review']==result['attempts'][0]['review']
+        requests.clear()
+        async def unsupported_remote(*args):
+            requests.append(args[2]);return review(verdict='unsupported')
+        monkeypatch.setattr(evidence_review,'remote_json',unsupported_remote)
+        rejected=await evidence_review.review_answer(None,'Question',plan(),answer,contexts,[])
+        assert not rejected['passed'] and len(requests)==1
+    asyncio.run(run())
+
 def test_rrf_order_is_stable_and_required_sources_are_present(tmp_path):
     async def run():
         docs,citations=await bridge.build_paperqa_docs(fake_library(tmp_path),chunk_mode='page_windows')
