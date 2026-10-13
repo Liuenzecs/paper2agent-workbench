@@ -12,11 +12,44 @@ import threading
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from paper_library import PaperLibrary, write_json
 from remote_config import prepare_remote_settings, read_credential, is_remote_configured
 
 APP_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _process_identity(pid):
+    """Distinguish a live owner from a reused process identifier."""
+    if os.name == "nt":
+        from ctypes import wintypes
+        kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+        kernel.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+        kernel.OpenProcess.restype = wintypes.HANDLE
+        kernel.GetProcessTimes.argtypes = [wintypes.HANDLE] + [ctypes.POINTER(wintypes.FILETIME)] * 4
+        kernel.CloseHandle.argtypes = [wintypes.HANDLE]
+        handle = kernel.OpenProcess(0x1000, False, int(pid))
+        if not handle:
+            return "unknown" if ctypes.get_last_error() == 5 else None
+        try:
+            times = [wintypes.FILETIME() for _ in range(4)]
+            if not kernel.GetProcessTimes(handle, *[ctypes.byref(t) for t in times]):
+                return "unknown"
+            return str((times[0].dwHighDateTime << 32) | times[0].dwLowDateTime)
+        finally:
+            kernel.CloseHandle(handle)
+    try:
+        # Linux start time is field 22, after a potentially spaced process name.
+        return Path(f"/proc/{int(pid)}/stat").read_text().rsplit(")", 1)[1].split()[19]
+    except (OSError, ValueError, IndexError):
+        try:
+            os.kill(int(pid), 0)
+            return "unknown"
+        except ProcessLookupError:
+            return None
+        except PermissionError:
+            return "unknown"
 
 
 def default_data_dir():
@@ -65,6 +98,7 @@ class LabService:
         self.settings_path = self.root / "settings.json"
         self.lock = threading.RLock()
         self.jobs = {}
+        self.owner = {"pid": os.getpid(), "identity": _process_identity(os.getpid())}
         self.tasks = queue.Queue(maxsize=8)
         identity = hashlib.sha256(str(self.root).encode()).hexdigest()[:12].upper()
         self.envs = {role: f"PAPERQA_LAB_{identity}_{role.upper()}_API_KEY" for role in ("chat", "embedding")}
@@ -113,7 +147,7 @@ class LabService:
                 "embedding_api_base": raw["embedding_config"]["kwargs"]["api_base"],
                 "provider_configured": is_remote_configured(raw),
                 "ready": is_remote_configured(raw) and all(available.values()),
-                "knowledge_status": "unreviewed", "version": "1.0.0"}
+                "knowledge_status": "unreviewed", "version": "1.1.0"}
 
     def save_settings(self, data):
         with self.lock:
@@ -127,6 +161,17 @@ class LabService:
             for name in ("llm_config", "summary_llm_config"):
                 params = raw[name]["model_list"][0]["litellm_params"]
                 params.update(api_base=base, model="openai/" + chat)
+                # Request control verified for Ark Code Plan; other model routes
+                # retain their provider defaults and independently supplied options.
+                ark_code=(urlsplit(base).hostname=='ark.cn-beijing.volces.com' and
+                          urlsplit(base).path.rstrip('/')=='/api/plan/v3' and chat=='ark-code-latest')
+                options=dict(params.get('extra_body') or {})
+                if ark_code and 'thinking' not in options:
+                    options['thinking']={'type':'disabled'}
+                elif base!=prior_bases['chat'] and not ark_code:
+                    options.pop('thinking',None)
+                if options:params['extra_body']=options
+                else:params.pop('extra_body',None)
             raw["embedding"] = "openai/" + embedding
             raw["embedding_config"]["kwargs"]["api_base"] = str(data.get("embedding_api_base") or
                 (base if "api_base" in data else raw["embedding_config"]["kwargs"]["api_base"])).strip()
@@ -160,6 +205,17 @@ class LabService:
     def inventory(self):
         return self.library.inventory("pymupdf")
 
+    def _ingest_metadata(self, path, title, source_url, filename=""):
+        digest=hashlib.sha256(path.read_bytes()).hexdigest()
+        existing=[self.library.load(p) for p in (self.library.root/digest[:24]).glob('pymupdf-*/bundle.json')]
+        prior=max(existing,key=lambda b:b['parsed_at']) if existing else {}
+        chosen_title=title.strip() or prior.get('title','')
+        if not chosen_title:
+            import pymupdf
+            with pymupdf.open(path) as document:
+                chosen_title=(document.metadata or {}).get('title') or Path(filename or path.name).stem
+        return chosen_title, source_url.strip() or prior.get('source_url','')
+
     def ingest_bytes(self, filename, content, title="", source_url=""):
         if not isinstance(content, bytes) or not 0 < len(content) <= 64 * 1024 * 1024:
             raise ValueError("PDF must be between 1 byte and 64 MB")
@@ -170,12 +226,17 @@ class LabService:
         path = incoming / (uuid.uuid4().hex + ".pdf")
         path.write_bytes(content)
         try:
-            return self.library.ingest(str(path), title or Path(filename).stem, source_url, "pymupdf")
+            with self.lock:
+                title,source_url=self._ingest_metadata(path,title,source_url,filename)
+                return self.library.ingest(str(path), title, source_url, "pymupdf")
         finally:
             path.unlink(missing_ok=True)
 
     def ingest_path(self, pdf, title="", source_url=""):
-        return self.library.ingest(str(Path(pdf).expanduser().resolve()), title, source_url, "pymupdf")
+        path=Path(pdf).expanduser().resolve()
+        with self.lock:
+            title,source_url=self._ingest_metadata(path,title,source_url)
+            return self.library.ingest(str(path), title, source_url, "pymupdf")
 
     def ask(self, question, paper_ids=None, required_paper_ids=None, answer_language="auto", progress=None):
         import asyncio
@@ -194,11 +255,12 @@ class LabService:
         if not chosen or not chosen <= known or not set(required_paper_ids or []) <= chosen:
             raise ValueError("Choose existing papers; required citations must be within that selection")
         job_id = uuid.uuid4().hex
-        job = {"job_id": job_id, "question": question, "status": "queued", "stage": "等待远程问答", "created_at": datetime.now(timezone.utc).isoformat()}
+        job = {"job_id": job_id, "question": question, "status": "queued", "stage": "等待远程问答", "created_at": datetime.now(timezone.utc).isoformat(), "owner": self.owner}
         with self.lock:
             if self.tasks.full():
                 raise ValueError("Question queue is full; please wait")
             self.jobs[job_id] = job
+            self._record_job(job_id)
             self.tasks.put_nowait((job_id, question, paper_ids, required_paper_ids, answer_language))
         return dict(job)
 
@@ -208,8 +270,10 @@ class LabService:
             def progress(stage):
                 with self.lock:
                     self.jobs[job_id]["stage"] = str(stage)
+                    self._record_job(job_id)
             with self.lock:
                 self.jobs[job_id]["status"] = "running"
+                self._record_job(job_id)
             try:
                 answer = self.ask(question, selected, required, language, progress)
                 public = self._public_answer(answer)
@@ -221,8 +285,27 @@ class LabService:
                 with self.lock:
                     self.jobs[job_id].update(status="failed", stage="服务或配置错误", error=message, error_type=type(exc).__name__)
             finally:
-                write_json(self.root / "jobs" / (job_id + ".json"), self.job(job_id))
+                with self.lock:
+                    self._record_job(job_id)
                 self.tasks.task_done()
+
+    def _record_job(self, job_id):
+        job = self.jobs[job_id]
+        # Immutable transition snapshots retain the original task state.
+        write_json(self.root / "job-events" / job_id / (uuid.uuid4().hex + ".json"),
+                   dict(job, recorded_at=datetime.now(timezone.utc).isoformat()))
+        write_json(self.root / "jobs" / (job_id + ".json"), job)
+
+    @staticmethod
+    def _effective_job(job):
+        if job.get("status") in {"queued", "running"}:
+            owner = job.get("owner", {})
+            current = _process_identity(owner["pid"]) if owner.get("pid") else None
+            if current != "unknown" and (current is None or current != owner.get("identity")):
+                # A read-only projection: never replace the interrupted raw record.
+                return dict(job, status="failed", stage="问答已中断", error_type="InterruptedTask",
+                            error="问答已中断，请重新提交。", interrupted=True)
+        return job
 
     def job(self, job_id):
         self._id(job_id)
@@ -231,7 +314,7 @@ class LabService:
                 path = self.root / "jobs" / (job_id + ".json")
                 if not path.is_file():
                     raise ValueError("Unknown question task")
-                return json.loads(path.read_text(encoding="utf-8"))
+                return self._effective_job(json.loads(path.read_text(encoding="utf-8")))
             return json.loads(json.dumps(self.jobs[job_id], ensure_ascii=False))
 
     @staticmethod
@@ -256,7 +339,8 @@ class LabService:
                 "decision": data["decision"], "citations": citations, "seconds": data.get("seconds"),
                 "coverage": data.get("source_coverage", data.get("coverage", {})), "cache": data.get("cache", {}),
                 "citation_identity_checked": data.get("citation_audit", {}).get("citation_identity_pass", False),
-                "claim_support_status": "requires_source_review", "local_models_used": False}
+                "claim_support_status": data.get("citation_audit", {}).get("claim_support_status", "requires_source_review"),
+                "local_models_used": False}
 
     def result(self, answer_id):
         self._id(answer_id)
@@ -271,7 +355,7 @@ class LabService:
         paths = sorted((self.library.root / "paperqa-answers").glob("*/result.json"), key=lambda p: p.stat().st_mtime, reverse=True)
         entries = [(p.stat().st_mtime, self.result(p.parent.name)) for p in paths[:100]]
         for path in (self.root / "jobs").glob("*.json"):
-            job = json.loads(path.read_text(encoding="utf-8"))
+            job = self._effective_job(json.loads(path.read_text(encoding="utf-8")))
             if job.get("status") == "failed":
                 entries.append((path.stat().st_mtime, {"job_id": job["job_id"],
                     "question": job.get("question", ""), "decision": "runtime_error",
@@ -304,21 +388,48 @@ class LabService:
 
     def scan_code(self, repository_path):
         from code_workbench import scan_repository
-        return scan_repository(repository_path)
+        from command_workbench import scan_command_repository
+        result=scan_repository(repository_path)
+        native=scan_command_repository(repository_path)
+        result['native_entries']=native['candidates']
+        for item in native['candidates']:
+            if Path(item['path']).suffix.lower()!='.py':
+                result['candidates'].append(dict(item,id='command:'+item['id'],supported=False,
+                    reason='需审核原生入口与参数接口。'))
+        return result
 
     def fetch_code(self, repository_url, ref=""):
         from repository_fetch import fetch_repository
         return fetch_repository(repository_url, self.root / "repositories", ref)
 
-    def build_code_mcp(self, repository_path, selections, name):
+    def build_code_mcp(self, repository_path, selections, name, contracts=None):
+        if isinstance(contracts,dict) and contracts.get('route')=='command':
+            from command_workbench import build_command_mcp
+            tools=contracts.get('tools')
+            if not isinstance(tools,dict) or not isinstance(selections,list) or not selections or set(selections)-set(tools):
+                raise ValueError('Choose tools from the reviewed native interface')
+            selected=dict(contracts,tools={key:tools[key] for key in dict.fromkeys(selections)})
+            return build_command_mcp(repository_path,selected,name,self.root/'code-projects')
         from code_workbench import build_mcp
-        return build_mcp(repository_path, selections, name, self.root / "code-projects")
+        if isinstance(contracts, dict) and isinstance(contracts.get('tools'), dict) and isinstance(selections, list):
+            contracts = dict(contracts, tools={key: value for key, value in contracts['tools'].items() if key in selections})
+        return build_mcp(repository_path, selections, name, self.root / "code-projects", contracts=contracts)
 
-    def test_code_mcp(self, project_path, tool_name, arguments, python_executable=""):
+    def test_code_mcp(self, project_path, tool_name, arguments, python_executable="", native_runtime="", r_project=""):
         import sys
         from code_workbench import test_mcp
         project = Path(project_path).expanduser().resolve(strict=True)
         allowed = (self.root / "code-projects").resolve()
         if not project.is_relative_to(allowed):
             raise ValueError("Choose a code project generated in your personal workspace")
-        return test_mcp(str(project), python_executable or sys.executable, tool_name, arguments)
+        native={}
+        if native_runtime:
+            executable=Path(native_runtime).expanduser().resolve(strict=True)
+            if not executable.is_file():raise ValueError('Choose an installed native executable')
+            native['P2A_NATIVE_RUNTIME']=str(executable)
+        if r_project:
+            native_project=Path(r_project).expanduser().resolve(strict=True)
+            if not native_project.is_dir():raise ValueError('Choose an existing R project directory')
+            native.update(P2A_R_PROJECT=str(native_project),
+                LC_ALL='English_United States.utf8' if os.name=='nt' else 'C.UTF-8')
+        return test_mcp(str(project), python_executable or sys.executable, tool_name, arguments,native_environment=native or None)

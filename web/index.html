@@ -21,7 +21,7 @@
     <section id="reading-view" class="view">
       <div class="question-card"><form id="question-form">
         <label for="question">问题</label><textarea id="question" rows="4" placeholder="输入问题" maxlength="10000" required></textarea>
-        <div class="question-options"><label class="check"><input id="compare" type="checkbox">引用全部选中论文</label><label class="language">回答语言<select id="language"><option value="auto">跟随问题</option><option value="zh">中文</option><option value="en">English</option></select></label><button id="ask-button" class="primary" type="submit">开始问答</button></div>
+        <div class="question-options"><label class="check"><input id="compare" type="checkbox">引用全部选中论文</label><label class="language" for="language">回答语言<select id="language" aria-label="回答语言"><option value="auto">跟随问题</option><option value="zh">中文</option><option value="en">English</option></select></label><button id="ask-button" class="primary" type="submit">开始问答</button></div>
       </form></div>
       <div id="job-status" class="progress" hidden role="status"><span class="spinner"></span><span id="job-message">准备中…</span><span id="job-elapsed"></span></div>
       <article id="answer-card" class="answer-card" hidden>
@@ -37,7 +37,7 @@
         <label>嵌入 API 地址<input name="embedding_api_base" type="url" placeholder="留空使用问答 API 地址"></label><label>嵌入模型<input name="embedding_model" required></label>
         <label>问答密钥<input name="chat_key" type="password" autocomplete="off" placeholder="留空保留当前密钥" spellcheck="false"></label><label>嵌入密钥<input name="embedding_key" type="password" autocomplete="off" placeholder="留空保留当前密钥" spellcheck="false"></label>
         <div class="settings-footer"><div><p id="key-state" class="hint"></p><label class="check"><input id="remember-keys" type="checkbox">加密保存密钥</label></div><button class="primary" type="submit">保存</button></div>
-      </form><p class="hint">论文片段和问题将发送至配置的 API。</p>
+      </form><p class="hint">问题和所选论文文本将发送至配置的 API。</p>
     </div></section>
     <section id="code-view" class="view" hidden><div class="panel">
       <form id="code-fetch-form" class="code-fetch">
@@ -46,9 +46,9 @@
       </form>
       <form id="code-scan-form"><label for="repository-path">本机代码目录</label><div class="inline-form"><input id="repository-path" required><button class="primary" id="scan-button" type="submit">扫描函数</button></div></form>
       <div id="code-scan-status" class="hint" role="status"></div>
-      <form id="code-build-form" hidden><div class="section-heading"><h3>选择函数</h3><span id="code-count" class="hint"></span></div><div id="code-functions" class="code-functions"></div><div class="inline-form"><label class="mcp-name">MCP 名称<input id="mcp-name" value="paper-tools" pattern="[A-Za-z][A-Za-z0-9_-]{0,63}" required></label><button id="build-button" class="primary" type="submit">生成 MCP</button></div></form>
+      <form id="code-build-form" hidden><div class="section-heading"><h3>选择工具</h3><span id="code-count" class="hint"></span></div><div id="code-functions" class="code-functions"></div><details class="interface-editor"><summary>接口定义</summary><label for="code-contracts">JSON<textarea id="code-contracts" rows="8" spellcheck="false"></textarea></label><label class="text-button">导入接口文件<input id="contracts-file" type="file" accept=".json,application/json" hidden></label><button id="apply-contracts" type="button" class="text-button">应用接口</button></details><div class="inline-form"><label class="mcp-name">MCP 名称<input id="mcp-name" value="paper-tools" pattern="[A-Za-z][A-Za-z0-9_-]{0,63}" required></label><button id="build-button" class="primary" type="submit">生成 MCP</button></div></form>
       <div id="code-result" class="code-result" hidden></div>
-      <form id="code-test-form" class="code-test" hidden><div class="section-heading"><h3>测试工具</h3></div><label for="test-tool">工具<select id="test-tool"></select></label><label for="test-python">Python 路径<input id="test-python" placeholder="留空使用当前环境"></label><label for="test-arguments">参数（JSON）<textarea id="test-arguments" rows="5" spellcheck="false">{}</textarea></label><button id="test-button" class="primary" type="submit">运行测试</button><div id="test-result" class="code-result" hidden role="status"></div></form>
+      <form id="code-test-form" class="code-test" hidden><div class="section-heading"><h3>测试工具</h3></div><label for="test-tool">工具<select id="test-tool"></select></label><label for="test-python">Python 路径<input id="test-python" placeholder="留空使用当前环境"></label><details id="native-environment" class="interface-editor" hidden><summary>原生程序环境</summary><label for="test-native-runtime">程序路径<input id="test-native-runtime"></label><label for="test-r-project">R 项目路径<input id="test-r-project"></label></details><label for="test-arguments">参数（JSON）<textarea id="test-arguments" rows="5" spellcheck="false">{}</textarea></label><button id="test-button" class="primary" type="submit">运行测试</button><div id="test-result" class="code-result" hidden role="status"></div></form>
     </div></section>
     <footer><a href="https://github.com/Liuenzecs/paper2agent-workbench" target="_blank" rel="noopener noreferrer">GitHub</a> · AGPL-3.0</footer>
   </main>

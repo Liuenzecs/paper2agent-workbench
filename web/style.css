@@ -5,3 +5,6 @@
 .code-fetch{padding-bottom:20px;border-bottom:1px solid var(--line);margin-top:24px}.code-fetch>label{display:block;font-size:12px;color:var(--muted);margin-top:16px}.code-fetch label[for=repository-ref]{max-width:400px}.code-fetch label input{margin-top:9px}
 
 .settings-grid label.check{display:flex;align-items:center;gap:7px;font-size:12px}.settings-footer>div{min-width:0}
+.interface-editor{margin:18px 0;font-size:13px}.interface-editor summary{cursor:pointer;color:var(--accent)}.interface-editor label[for=code-contracts]{display:grid;gap:8px;margin:14px 0}.interface-editor textarea{width:100%;border:1px solid var(--line);border-radius:7px;padding:12px;font-family:Consolas,monospace;font-size:13px}.answer-state.partially_answered{color:#76551f;background:#fff5dc}.answer-state.blocked_evidence_review{color:var(--danger);background:#fff1ef}
+.history{grid-template-columns:minmax(0,1fr)}.history-item{min-width:0;width:100%}.history-question{min-width:0;flex:1}.answer-heading>div{min-width:0}.answer-heading h2{overflow-wrap:anywhere}
+#native-environment>label{display:grid;gap:8px;margin:14px 0}

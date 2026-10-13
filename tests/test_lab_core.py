@@ -123,6 +123,40 @@ def test_no_cache_mode(tmp_path):
         assert not (tmp_path / "vectors.sqlite3").exists()
     asyncio.run(run())
 
+def test_successful_embedding_batches_survive_later_failure(tmp_path):
+    class Remote(FakeRemote):
+        async def embed_documents(self,texts):
+            if 'unavailable' in texts:raise RuntimeError('Remote batch failed')
+            return await super().embed_documents(texts)
+    async def run():
+        remote=Remote(name='openai/fake')
+        model=cache(tmp_path,remote,remote_batch_size=1,request_interval_seconds=0)
+        with pytest.raises(RuntimeError):await model.embed_documents(['saved','unavailable'])
+        restarted_remote=FakeRemote(name='openai/fake')
+        restarted=cache(tmp_path,restarted_remote)
+        result=await restarted.embed_documents(['saved'])
+        assert len(result)==1 and not restarted_remote.calls and restarted.stats['hits']==1
+        assert model.stats['remote_errors']==1
+    asyncio.run(run())
+
+def test_embedding_rate_limit_retry_is_bounded(tmp_path,monkeypatch):
+    import embedding_cache
+    class RateLimited(Exception):status_code=429
+    class Remote(FakeRemote):
+        async def embed_documents(self,texts):
+            self.calls.append((self.mode,list(texts)))
+            raise RateLimited('Too frequent')
+    async def no_wait(delay):return None
+    monkeypatch.setattr(embedding_cache.asyncio,'sleep',no_wait)
+    async def run():
+        remote=Remote(name='openai/fake');model=cache(tmp_path,remote,request_interval_seconds=0)
+        with pytest.raises(RateLimited):await model.embed_documents(['source'])
+        assert len(remote.calls)==2 and model.stats['remote_errors']==2
+        assert model.stats['rate_limit_retries']==1
+        with sqlite3.connect(tmp_path/'vectors.sqlite3') as con:
+            assert con.execute('SELECT count(*) FROM vectors').fetchone()[0]==0
+    asyncio.run(run())
+
 
 def test_fingerprint_excludes_key_but_includes_endpoint():
     one = remote_settings()
@@ -170,14 +204,14 @@ def test_bounded_coverage_retry_and_preserved_attempts(tmp_path, monkeypatch):
             calls.append(kwargs)
             return fake_answer()
         monkeypatch.setattr(bridge, "query_paperqa", query)
-        result = await bridge.ask_paperqa(fake_library(tmp_path), "Q", "unused", required_paper_ids=["a", "b"])
+        result = await bridge.ask_legacy_paperqa(fake_library(tmp_path), "Q", "unused", required_paper_ids=["a", "b"])
         assert result["decision"] == "insufficient_source_coverage" and len(calls) == 2
         assert result["source_coverage"]["missing_paper_ids"] == ["b"]
         originals = [json.loads(Path(p).read_text(encoding="utf-8")) for p in result["attempt_paths"]]
         assert all(r["decision"] == "answered" and r["answer"] == "fake answer" for r in originals)
         assert Path(result["result_path"]).is_file()
         assert all(c["partitioning_fn"] is not None for c in calls)
-        again = await bridge.ask_paperqa(fake_library(tmp_path), "Q", "unused")
+        again = await bridge.ask_legacy_paperqa(fake_library(tmp_path), "Q", "unused")
         assert again["result_path"] != result["result_path"]
     asyncio.run(run())
 
@@ -190,7 +224,7 @@ def test_successful_coverage_retry(tmp_path, monkeypatch):
         async def query(*args, **kwargs):
             return next(answers)
         monkeypatch.setattr(bridge, "query_paperqa", query)
-        result = await bridge.ask_paperqa(fake_library(tmp_path), "Q", "unused", required_paper_ids=["a", "b"])
+        result = await bridge.ask_legacy_paperqa(fake_library(tmp_path), "Q", "unused", required_paper_ids=["a", "b"])
         assert result["decision"] == "answered" and result["attempt_count"] == 2
         assert result["source_coverage"]["complete"]
     asyncio.run(run())
@@ -204,7 +238,7 @@ def test_refusal_and_failure_are_not_coverage_retries(tmp_path, monkeypatch, dec
         async def query(*args, **kwargs):
             return fake_answer((), decision)
         monkeypatch.setattr(bridge, "query_paperqa", query)
-        result = await bridge.ask_paperqa(fake_library(tmp_path), "Q", "unused", required_paper_ids=["a", "b"])
+        result = await bridge.ask_legacy_paperqa(fake_library(tmp_path), "Q", "unused", required_paper_ids=["a", "b"])
         assert result["decision"] == decision and result["attempt_count"] == 1
     asyncio.run(run())
 

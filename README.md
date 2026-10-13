@@ -3,14 +3,14 @@
 [![CI](https://github.com/Liuenzecs/paper2agent-workbench/actions/workflows/verify.yml/badge.svg)](https://github.com/Liuenzecs/paper2agent-workbench/actions/workflows/verify.yml)
 [![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL--3.0-blue.svg)](LICENSE)
 
-Paper2Agent 是一个连接论文阅读与研究代码的开源工作台。通过本机网页或命令行管理论文、进行带引用的问答，并将论文关联的 Python 代码转换为可调用的 MCP 工具。
+Paper2Agent 是一个连接论文阅读与研究代码的开源工作台。通过本机网页或命令行管理论文、进行带引用的问答，并将已有研究代码转换为可调用的 MCP 工具，适用于不同学科的研究流程。
 
 ## 功能
 
 - **论文库**：导入 PDF，选择检索范围，按独立工作区管理论文与问答记录。
-- **论文问答**：基于论文内容回答问题，展示引用原文与 PDF 页码，支持跨论文比较和缺证据拒答。
+- **论文问答**：结合关键词与远程嵌入检索，按问题要求检查答案、条件和引用，展示引用原文与 PDF 页码；支持跨论文比较、部分回答和缺证据拒答。
 - **API 配置**：对接 OpenAI 兼容的问答与嵌入服务，两类服务可分别配置；支持 Windows 用户加密保存密钥。
-- **代码转 MCP**：获取公开 GitHub 仓库或读取本机代码，扫描 Python 函数，生成调用原函数的 MCP 项目，测试调用并打包分发。
+- **代码转 MCP**：获取公开 GitHub 仓库或读取本机代码，转换 Python 函数及经过审核的 R、命令行入口，测试实际调用并打包分发。
 - **结果管理**：保留每次问答和工具调用记录，支持将问答导出为 Markdown 或 JSON。
 
 ## 安装
@@ -24,7 +24,7 @@ Paper2Agent 是一个连接论文阅读与研究代码的开源工作台。通�
 
 ### 获取程序
 
-从 [最新发行版](https://github.com/Liuenzecs/paper2agent-workbench/releases/latest) 下载 `Paper2Agent-1.0.0.zip` 并解压，或克隆仓库：
+从 [最新发行版](https://github.com/Liuenzecs/paper2agent-workbench/releases/latest) 下载 `Paper2Agent-1.1.0.zip` 并解压，或克隆仓库：
 
 ```powershell
 git clone https://github.com/Liuenzecs/paper2agent-workbench.git
@@ -63,7 +63,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Python "C:\Python311\pyt
 | 嵌入模型 | 服务提供的嵌入模型名称 |
 | 问答密钥、嵌入密钥 | 对应服务的 API 密钥 |
 
-问答和文本嵌入通过配置的远程 API 完成。论文片段与问题会发送至对应服务，调用费用由服务提供方收取。密钥支持在当前 Windows 用户下加密保存。
+问答和文本嵌入通过配置的远程 API 完成。问题、检索片段及所选论文的文本会发送至对应服务，调用费用由服务提供方收取。密钥支持在当前 Windows 用户下加密保存。
 
 ### 论文问答
 
@@ -80,7 +80,9 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -Python "C:\Python311\pyt
 3. 选择工具，填写 JSON 参数并运行测试。独立依赖环境可通过「Python 路径」指定。
 4. 通过 CLI 的 `code-package` 命令打包项目，在 MCP 客户端中使用生成的 `server.py`。
 
-代码转换支持具有明确参数类型的同步 Python 函数及 JSON 可表达的输入。生成项目保留原函数绑定、源文件校验值和上游许可，便于追踪与核对。
+具有明确参数类型的 Python 函数可直接选择。NumPy 数组、DataFrame、文件路径、异步函数与类方法使用绑定源码哈希的接口定义。R 和命令行工具使用经过审核的 JSON 入口与运行契约；在「接口定义」中导入契约后选择工具，并配置相应运行环境。转换范围及契约格式见 [MCP 指南](docs/MCP_USAGE.md)。
+
+生成项目保留原函数绑定、源文件校验值和上游许可。实际 MCP 调用通过并不等于科学结果已经验证；应与相同输入下的原函数完整结果进行比对。
 
 ## CLI 使用
 

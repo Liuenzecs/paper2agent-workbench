@@ -28,6 +28,8 @@ py -3.11 -m venv .venv
 
 科学回归资料与独立环境配置保存在开发仓库中，运行流程见 [CI 配置](.github/workflows/verify.yml)。
 
+`tests/test_code_independent.py` 的独立集成检查使用 `P2A_INDEPENDENT_RUN` 指定新的结果目录。SALib 科学对照另需 `P2A_SALIB_REPOSITORY` 与 `P2A_SALIB_CONTRACTS`，分别指向固定版本源码及经过审核的接口契约；需在检查环境中安装其科学依赖。
+
 ## 提交流程
 
 1. 在 Issue 或 Pull Request 中说明问题、预期行为及适用场景。

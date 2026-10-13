@@ -27,22 +27,22 @@ jobs:
       - name: Verify Vendi core and real MCP calls
         shell: pwsh
         run: |
-          python -m venv examples/vendi/mcp/.venv
-          & examples/vendi/mcp/.venv/Scripts/python.exe -m pip install -r examples/vendi/mcp/requirements-dev.txt
+          python -m venv tests/research_fixtures/vendi/mcp/.venv
+          & tests/research_fixtures/vendi/mcp/.venv/Scripts/python.exe -m pip install -r tests/research_fixtures/vendi/mcp/requirements-dev.txt
           if ($LASTEXITCODE -ne 0) { throw 'Vendi install failed' }
           $env:VENDI_VERIFICATION_OUTPUT = Join-Path $env:RUNNER_TEMP 'vendi-scientific-tests'
-          Push-Location examples/vendi/mcp
+          Push-Location tests/research_fixtures/vendi/mcp
           & .venv/Scripts/python.exe -X utf8 -m pytest tests/code/vendi_metrics -q
           $vendiTestExit = $LASTEXITCODE
           Pop-Location
           if ($vendiTestExit -ne 0) { throw 'Vendi tests failed' }
-          python -X utf8 scripts/verify_examples.py vendi --data-dir "$env:RUNNER_TEMP/vendi-verification" --python examples/vendi/mcp/.venv/Scripts/python.exe
+          python -X utf8 tests/support/verify_references.py vendi --data-dir "$env:RUNNER_TEMP/vendi-verification" --python tests/research_fixtures/vendi/mcp/.venv/Scripts/python.exe
           if ($LASTEXITCODE -ne 0) { throw 'Vendi MCP verification failed' }
       - name: Verify non-AI statistics and strict MCP inputs
         shell: pwsh
         run: |
           python -m venv "$env:RUNNER_TEMP/mannkendall-env"
-          & "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe" -m pip install -r examples/mannkendall/requirements-lock.txt
+          & "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe" -m pip install -r tests/research_fixtures/mannkendall/requirements-lock.txt
           if ($LASTEXITCODE -ne 0) { throw 'Mann-Kendall install failed' }
-          python -X utf8 scripts/verify_examples.py mannkendall --data-dir "$env:RUNNER_TEMP/mannkendall-verification" --python "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe"
+          python -X utf8 tests/support/verify_references.py mannkendall --data-dir "$env:RUNNER_TEMP/mannkendall-verification" --python "$env:RUNNER_TEMP/mannkendall-env/Scripts/python.exe"
           if ($LASTEXITCODE -ne 0) { throw 'Mann-Kendall MCP verification failed' }

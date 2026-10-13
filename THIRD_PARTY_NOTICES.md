@@ -10,8 +10,8 @@ PyMuPDF 提供 AGPL 与商业许可路径，见 [官方许可说明](https://pym
 
 | 组件 | 来源与固定版本 | 许可与保留位置 |
 | --- | --- | --- |
-| Vendi Score | Princeton Vertaix Lab，[vertaix/Vendi-Score](https://github.com/vertaix/Vendi-Score)，提交 `ff1dfdbe6356b98a6087540f215b9a9db6db7c11` | MIT；原版权声明保存在 `examples/vendi/mcp/vendor/repo/LICENSE` |
-| pyMannKendall | [mmhs013/pyMannKendall](https://github.com/mmhs013/pyMannKendall)，v1.4.3，提交 `1ff32de4c4f4b50e1d922763ae88b3cb677c52b0` | 科学源码 MIT，见 `examples/mannkendall/source/LICENSE`；类型适配器 AGPL-3.0-only |
+| Vendi Score | Princeton Vertaix Lab，[vertaix/Vendi-Score](https://github.com/vertaix/Vendi-Score)，提交 `ff1dfdbe6356b98a6087540f215b9a9db6db7c11` | MIT；原版权声明保存在 `tests/research_fixtures/vendi/mcp/vendor/repo/LICENSE` |
+| pyMannKendall | [mmhs013/pyMannKendall](https://github.com/mmhs013/pyMannKendall)，v1.4.3，提交 `1ff32de4c4f4b50e1d922763ae88b3cb677c52b0` | 科学源码 MIT，见 `tests/research_fixtures/mannkendall/source/LICENSE`；类型适配器 AGPL-3.0-only |
 | HumanEval 评估函数 | [OpenAI HumanEval](https://github.com/openai/human-eval) | MIT，见 `tests/fixtures/humaneval/LICENSE` |
 
 研究代码用于开发回归验证，原科学实现及许可保留在对应目录。Vendi MCP 适配器与其独立文档采用 MIT；工作台和 pyMannKendall 类型适配器采用 AGPL-3.0-only。

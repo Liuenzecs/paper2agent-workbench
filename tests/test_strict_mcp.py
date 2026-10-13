@@ -35,4 +35,4 @@ def test_strict_stdio_types_defaults_and_no_success_artifacts(tmp_path, monkeypa
                     await client.call_tool('ops__inspect', invalid)
             assert set((project / 'outputs').rglob('*.json')) == before
     asyncio.run(verify())
-    assert json.loads((project / 'manifest.json').read_text())['input_validation'] == 'strict_json_types'
+    assert json.loads((project / 'manifest.json').read_text(encoding='utf-8'))['input_validation'] == 'strict_json_types'

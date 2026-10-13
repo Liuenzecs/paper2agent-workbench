@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import hashlib
+import asyncio
+import time
 import importlib.metadata
 import json
 import math
@@ -55,9 +57,12 @@ class CachedRemoteEmbedding(EmbeddingModel):
     fingerprint: str
     source_fingerprints: dict[str, str] = Field(default_factory=dict, exclude=True)
     enabled: bool = True
+    remote_batch_size: int = Field(default=8,ge=1,le=64,exclude=True)
+    request_interval_seconds: float = Field(default=1.0,ge=0,le=60,exclude=True)
+    last_remote_at: float = Field(default=0,exclude=True)
     mode: EmbeddingModes = EmbeddingModes.DOCUMENT
     stats: dict[str, int] = Field(default_factory=lambda: dict(hits=0, misses=0,
-        remote_requests=0, remote_texts=0, invalid_entries=0), exclude=True)
+        remote_requests=0, remote_texts=0, invalid_entries=0,remote_errors=0,rate_limit_retries=0), exclude=True)
 
     def set_mode(self, mode):
         self.mode = EmbeddingModes(mode)
@@ -106,25 +111,38 @@ class CachedRemoteEmbedding(EmbeddingModel):
         if missing_keys:
             missing_texts = [texts[keys.index(key)] for key in missing_keys]
             self.stats["misses"] += sum(v is None for v in result)
-            self.stats["remote_requests"] += 1
-            self.stats["remote_texts"] += len(missing_texts)
             self.wrapped.set_mode(self.mode)
-            vectors = await self.wrapped.embed_documents(missing_texts)
-            if len(vectors) != len(missing_texts):
-                raise ValueError("Remote embedding response count differs from input count")
             valid = {}
-            for key, vector in zip(missing_keys, vectors):
-                vector = validate_vector(vector, dimension)
-                dimension = dimension or len(vector)
-                valid[key] = vector
-            if self.enabled:
-                with self._connect() as con:
-                    existing = con.execute("SELECT dimension FROM dimensions WHERE fingerprint=?", (self.fingerprint,)).fetchone()
-                    if existing and existing[0] != dimension:
-                        raise ValueError("Concurrent remote embedding dimension changed")
-                    con.execute("INSERT OR IGNORE INTO dimensions VALUES (?,?)", (self.fingerprint, dimension))
-                    con.executemany("INSERT OR REPLACE INTO vectors VALUES (?,?,?,?)", [
-                        (self.fingerprint, key, len(v), json.dumps(v, allow_nan=False)) for key, v in valid.items()])
+            for start in range(0,len(missing_keys),self.remote_batch_size):
+                batch_keys=missing_keys[start:start+self.remote_batch_size]
+                batch_texts=missing_texts[start:start+self.remote_batch_size]
+                for attempt in range(2):
+                    delay=self.request_interval_seconds-(time.monotonic()-self.last_remote_at)
+                    if delay>0:await asyncio.sleep(delay)
+                    self.stats['remote_requests']+=1;self.stats['remote_texts']+=len(batch_texts)
+                    try:vectors=await self.wrapped.embed_documents(batch_texts)
+                    except Exception as exc:
+                        self.last_remote_at=time.monotonic();self.stats['remote_errors']+=1
+                        if attempt==0 and (getattr(exc,'status_code',None)==429 or type(exc).__name__=='RateLimitError'):
+                            self.stats['rate_limit_retries']+=1
+                            await asyncio.sleep(4)
+                            continue
+                        raise
+                    self.last_remote_at=time.monotonic()
+                    break
+                if len(vectors)!=len(batch_texts):raise ValueError('Remote embedding response count differs from input count')
+                batch={}
+                for key,vector in zip(batch_keys,vectors):
+                    vector=validate_vector(vector,dimension);dimension=dimension or len(vector);batch[key]=vector
+                if self.enabled:
+                    with self._connect() as con:
+                        existing=con.execute('SELECT dimension FROM dimensions WHERE fingerprint=?',(self.fingerprint,)).fetchone()
+                        if existing and existing[0]!=dimension:raise ValueError('Concurrent remote embedding dimension changed')
+                        con.execute('INSERT OR IGNORE INTO dimensions VALUES (?,?)',(self.fingerprint,dimension))
+                        con.executemany('INSERT OR REPLACE INTO vectors VALUES (?,?,?,?)',[
+                            (self.fingerprint,key,len(v),json.dumps(v,allow_nan=False)) for key,v in batch.items()])
+                self.ndim=dimension
+                valid.update(batch)
             for i, key in enumerate(keys):
                 if result[i] is None:
                     result[i] = valid[key]

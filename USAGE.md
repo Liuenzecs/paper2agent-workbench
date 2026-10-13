@@ -38,7 +38,7 @@ powershell -ExecutionPolicy Bypass -File .\stop-web.ps1 -DataDir "D:\Paper2Agent
 
 在「API 设置」填写问答 API 地址、问答模型、嵌入模型和对应密钥。两类服务使用不同地址时，填写独立的嵌入 API 地址。地址使用 HTTPS，模型名称填写服务提供方支持的实际名称。
 
-接口需兼容 OpenAI `chat completions` 和 `embeddings`。问答与嵌入通过配置的远程服务完成，论文片段与问题会发送至对应服务，费用按服务提供方的规则计算。
+接口需兼容 OpenAI `chat completions` 和 `embeddings`。问答与嵌入通过配置的远程服务完成，问题、检索片段及所选论文的文本会发送至对应服务，费用按服务提供方的规则计算。
 
 密钥可通过网页密码字段或 CLI 隐藏输入设置。勾选「加密保存密钥」或使用 `--remember-keys`，可由 Windows DPAPI 保存与当前系统用户绑定的密文。未加密保存的密钥仅保留在服务进程中；更换服务地址后需重新提供对应凭据。
 
@@ -63,7 +63,9 @@ powershell -ExecutionPolicy Bypass -File .\stop-web.ps1 -DataDir "D:\Paper2Agent
 
 ### 提问与引用
 
-勾选论文，输入问题并选择回答语言。跨论文比较可勾选「引用全部选中论文」。系统检查引用覆盖，必要时扩展检索；结果区分别显示答案、证据不足、引用覆盖不足与服务错误。
+勾选论文，输入问题并选择回答语言。跨论文比较可勾选「引用全部选中论文」。系统拆分问题要求，结合关键词与远程嵌入检索，检查答案主张、引用和遗漏条件，必要时扩展检索并修复。
+
+结果区区分完整回答、部分回答、证据不足、证据核验失败、引用覆盖不足与服务错误。部分回答会说明哪些要求缺少依据。核验失败和服务错误保留记录，不能视为正确拒答。
 
 引用卡提供原文、论文标题和 PDF 页码。页码采用 PDF 页序号，便于打开对应页面核对方法条件、数值与结论。
 
@@ -111,9 +113,24 @@ powershell -ExecutionPolicy Bypass -File .\stop-web.ps1 -DataDir "D:\Paper2Agent
 
 将大写字段替换为扫描和生成结果中的实际值。`arguments.json` 是传给工具的 UTF-8 JSON 对象。网页中选择工具、填写 JSON 参数，再点击「运行测试」。默认使用程序环境；独立依赖环境可填写「Python 路径」或通过 CLI 的 `--python` 指定。
 
-代码转换支持具有明确参数类型的同步 Python 函数及 JSON 可表达的输入。复杂类型、动态依赖和其他语言需要单独适配。工具调用会执行研究代码，应结合源代码审阅与原函数结果进行验证。
+具有明确类型、JSON 可表达输入的 Python 函数可直接转换。NumPy 数组、DataFrame、文件路径、异步函数和类方法需导入经过审核的接口定义；定义绑定原源码 SHA256、参数类型及转换方式。网页使用「接口定义」导入，CLI 使用 `--contracts-file`：
 
-生成服务器启用严格 JSON 类型校验：布尔值和数字字符串不能替代数值，整数可用于浮点参数。领域约束由原函数或适配器检查。调用记录包含输入、MCP 响应、原生结果和错误；CLI 调用失败时返回非零退出码。
+```powershell
+.\paper.cmd code-mcp "REPOSITORY_PATH" --function MODULE:FUNCTION --contracts-file contracts.json --name paper-tools
+```
+
+R 和命令行工具需提供经过审核的 JSON 输入入口、固定调用参数和运行契约。扫描只发现入口候选，生成阶段只接受明确审核并绑定源码哈希的工具。选定这类工具后，在网页填写「原生程序路径」和必要的「R 项目路径」；CLI 使用：
+
+```powershell
+.\paper.cmd code-mcp "REPOSITORY_PATH" --function TOOL_KEY --contracts-file contracts.json --name paper-tools
+.\paper.cmd code-test "PROJECT_PATH" --tool TOOL_NAME --arguments-file arguments.json --native-runtime "NATIVE_PROGRAM_PATH" --r-project "R_PROJECT_PATH"
+```
+
+科学依赖需安装在选定的原生环境中。使用 R 项目库时，由审核入口激活该项目；`--r-project` 仅在入口需要时填写。接口契约与运行配置见 [MCP 指南](docs/MCP_USAGE.md)。
+
+生成服务器启用严格 JSON 类型校验：布尔值和数字字符串不能替代数值，整数可用于浮点参数。领域约束由原函数或审核的适配器检查。调用记录包含输入、MCP 响应、原生结果和错误；CLI 调用失败时返回非零退出码。命令行问答的标准输出为 JSON，进度和服务诊断写入标准错误流。
+
+问答服务或证据核验失败时，CLI 保留 JSON 结果并返回非零退出码；正确的证据不足拒答与部分回答属于正常结果。
 
 ### 打包与客户端连接
 

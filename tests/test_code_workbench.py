@@ -45,7 +45,9 @@ def test_static_scan_never_imports_and_records_rejections(repo):
     assert indexed['ops:weighted_sum']['eligible']
     assert 'Literal' in indexed['ops:weighted_sum']['parameters'][-1]['type']
     assert indexed['ops:inferred']['assumptions']
-    for symbol in ('unknown', 'async_fn', 'variadic', 'Object.public'):
+    assert indexed['ops:async_fn']['eligible']
+    assert indexed['ops:async_fn']['is_async']
+    for symbol in ('unknown', 'inferred', 'variadic', 'Object.public'):
         assert not indexed['ops:' + symbol]['eligible']
         assert indexed['ops:' + symbol]['reasons']
 

@@ -2,9 +2,12 @@
 // No remote assets, HTML injection, browser key storage, or model calls from the UI.
 const $ = (id) => document.getElementById(id);
 const state = {token: "", papers: [], selected: new Set(), activeJob: null, polling: null, scanPath: "", scanned: [], generated: null};
-const decisions = {answered: "有证据的回答", refused: "缺少证据 · 已拒答", runtime_error: "远程服务故障", insufficient_source_coverage: "引用覆盖不足"};
+state.contracts = null;
+const decisions = {answered: "有证据的回答", partially_answered: "部分回答", blocked_evidence_review: "原文核对未通过", refused: "缺少证据 · 已拒答", runtime_error: "远程服务故障", insufficient_source_coverage: "引用覆盖不足"};
 const explanations = {
   answered: "",
+  partially_answered: "部分问题缺少论文证据。",
+  blocked_evidence_review: "请查看保存的记录或重新提问。",
   refused: "论文证据不足。",
   runtime_error: "请检查 API 配置或重试。",
   insufficient_source_coverage: "未覆盖全部选中论文。"
@@ -130,7 +133,7 @@ function showAnswer(raw) {
   $("answer-question").textContent = result.question || "论文问答";
   const missing = result.coverage?.missing_paper_ids || result.source_coverage?.missing_paper_ids || [];
   const missingTitles = missing.map((paper) => state.papers.find((p) => paperId(p) === paper)?.title || paper);
-  $("answer-explanation").textContent = (explanations[decision] || explanations.runtime_error) + (missingTitles.length ? ` 尚未引用：${missingTitles.join("、")}。` : "");
+  $("answer-explanation").textContent = (explanations[decision] ?? explanations.runtime_error) + (missingTitles.length ? ` 尚未引用：${missingTitles.join("、")}。` : "");
   // Render native content only as text. Raw HTML, markdown scripts and COT are never interpreted.
   $("answer-text").textContent = result.answer || result.raw_answer || result.native_session?.answer || result.native_session?.raw_answer || result.message || "未返回答案。";
   for (const [element, format] of [["export-md", "markdown"], ["export-json", "json"]]) {
@@ -258,39 +261,71 @@ function displayReason(item) {
   const reason = item.reason || item.blocked_reason || item.reasons?.join("；") || "当前函数尚不可生成工具";
   return reason.replace(/malformed node or string[^；]*/g, "默认参数无法自动解析，需人工适配");
 }
+function renderCodeChoices(items) {
+  $("code-functions").replaceChildren(); let count = 0;
+  for (const item of items) {
+    const selection=functionId(item); if (!selection) continue;
+    const row=el("label","code-function"); const checkbox=el("input"); checkbox.type="checkbox";checkbox.value=selection;
+    const eligible=item.eligible!==false && item.supported!==false && item.can_wrap!==false;
+    checkbox.disabled=!eligible;checkbox.dataset.eligible=String(eligible);
+    const text=el("span");text.append(el("code","",selection));
+    const summary=String(item.signature || item.description || item.docstring || "现有源码入口").split(/\r?\n/)[0];
+    text.append(el("small","",summary.length>180 ? summary.slice(0,177)+"…" : summary));
+    if (!eligible) text.append(el("small","",displayReason(item)));
+    row.append(checkbox,text);$("code-functions").append(row);count++;
+  }
+  $("code-count").textContent=`${count} 个条目`;
+  return count;
+}
 $("code-scan-form").addEventListener("submit", async (event) => {
   event.preventDefault(); notice(); $("scan-button").disabled = true; $("code-build-form").hidden = true; $("code-result").hidden = true; $("code-test-form").hidden = true; state.generated = null;
   $("code-scan-status").textContent = "正在扫描…";
   state.scanPath = $("repository-path").value.trim();
+  state.contracts = null; $("code-contracts").value = "";
   try {
     const scan = await api("/api/code/scan", {repository_path: state.scanPath});
     state.scanned = listOf(scan, "candidates", "functions", "tools", "items");
-    $("code-functions").replaceChildren(); let count = 0;
-    for (const item of state.scanned) {
-      const selection = functionId(item); if (!selection) continue;
-      const row = el("label", "code-function"); const checkbox = el("input"); checkbox.type = "checkbox"; checkbox.value = selection;
-      const eligible = item.eligible !== false && item.supported !== false && item.can_wrap !== false;
-      checkbox.disabled = !eligible;
-      const text = el("span"); text.append(el("code", "", selection));
-      text.append(el("small", "", item.description || item.docstring || item.signature || "现有源码函数"));
-      if (!eligible) text.append(el("small", "", displayReason(item)));
-      row.append(checkbox, text); $("code-functions").append(row); count++;
-    }
-    $("code-count").textContent = `${count} 个函数条目`;
-    $("code-scan-status").textContent = count ? "扫描完成" : "没有可用函数。";
-    $("code-build-form").hidden = !count;
+    renderCodeChoices(state.scanned);
+    $("code-scan-status").textContent = "扫描完成";
+    $("code-build-form").hidden = false;
   } catch (error) { $("code-scan-status").textContent = "扫描未完成。"; notice(error.message); }
   finally { $("scan-button").disabled = false; }
+});
+
+$("contracts-file").addEventListener("change", async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  if (file.size > 1000000) { notice("接口文件过大。"); return; }
+  $("code-contracts").value = await file.text();
+  $("apply-contracts").click();
+});
+$("apply-contracts").addEventListener("click", () => {
+  try {
+    const value = $("code-contracts").value.trim();
+    state.contracts = value ? JSON.parse(value) : null;
+    if (state.contracts && (state.contracts.schema_version !== 1 || !state.contracts.tools || Array.isArray(state.contracts.tools))) throw new Error();
+    if (state.contracts?.route === "command") {
+      renderCodeChoices(Object.entries(state.contracts.tools).map(([name,tool]) => ({id:name,
+        description:tool.description,eligible:tool.reviewed===true,reason:"接口尚未审核。"})));
+    } else renderCodeChoices(state.scanned);
+    for (const input of $("code-functions").querySelectorAll("input")) {
+      input.disabled = input.dataset.eligible !== "true" && state.contracts?.tools?.[input.value]?.reviewed !== true;
+      if (input.disabled) input.checked = false;
+    }
+    notice();
+  } catch { state.contracts = null; notice("请输入有效的接口定义 JSON。"); }
 });
 
 $("code-build-form").addEventListener("submit", async (event) => {
   event.preventDefault(); notice();
   if (state.scanPath !== $("repository-path").value.trim()) { notice("仓库路径已改变，请重新扫描后再生成。"); return; }
   const selections = [...$("code-functions").querySelectorAll("input:checked")].map((input) => input.value);
-  if (!selections.length) { notice("请勾选至少一个现有函数。"); return; }
+  if (!selections.length) { notice("请勾选至少一个工具。"); return; }
   $("build-button").disabled = true;
   try {
-    const result = await api("/api/code/build", {repository_path: state.scanPath, selections, name: $("mcp-name").value.trim()});
+    const raw = $("code-contracts").value.trim();
+    const contracts = raw ? JSON.parse(raw) : null;
+    const result = await api("/api/code/build", {repository_path: state.scanPath, selections, name: $("mcp-name").value.trim(), contracts});
     $("code-result").replaceChildren(el("h3", "", "MCP 项目已生成"));
     const directory = result.project_path || result.output_dir || result.project_dir || result.directory || result.path;
     if (directory) $("code-result").append(el("p", "", `保存位置：${directory}`));
@@ -302,6 +337,8 @@ $("code-build-form").addEventListener("submit", async (event) => {
     const tools = listOf(result, "selected_tools", "tools").filter((tool) => typeof tool.tool_name === "string");
     if (directory && tools.length) {
       state.generated = {project_path: directory, tools};
+      $("native-environment").hidden=!tools.some(tool => tool.runtime);
+      $("test-native-runtime").value="";$("test-r-project").value="";
       $("test-tool").replaceChildren();
       for (const tool of tools) { const option = el("option", "", tool.tool_name); option.value = tool.tool_name; $("test-tool").append(option); }
       $("test-arguments").value = "{}"; $("test-result").hidden = true; $("code-test-form").hidden = false;
@@ -316,8 +353,10 @@ function showTestParameters() {
   const tool = state.generated.tools.find((t) => t.tool_name === $("test-tool").value);
   let info = $("test-parameter-info");
   if (!info) { info = el("p", "hint"); info.id = "test-parameter-info"; $("test-arguments").parentElement.after(info); }
-  const parameters = tool?.parameters || [];
-  info.textContent = parameters.length ? `源码参数：${parameters.map((p) => `${p.name}${p.required ? "（必填）" : "（可选）"}${p.annotation ? ` : ${p.annotation}` : ""}`).join("；")}。` : "该工具没有参数。";
+  const raw=tool?.parameters || [];
+  const parameters=Array.isArray(raw) ? raw : Object.entries(raw).map(([name,p])=>({name,
+    required:!Object.hasOwn(p,"default"),annotation:p.schema?.type || ""}));
+  info.textContent = parameters.length ? `参数：${parameters.map((p) => `${p.name}${p.required ? "（必填）" : "（可选）"}${p.annotation ? ` : ${p.annotation}` : ""}`).join("；")}。` : "该工具没有参数。";
 }
 $("test-tool").addEventListener("change", showTestParameters);
 $("code-test-form").addEventListener("submit", async (event) => {
@@ -332,7 +371,9 @@ $("code-test-form").addEventListener("submit", async (event) => {
   $("test-result").replaceChildren(el("p", "", "正在运行…"));
   try {
     const result = await api("/api/code/test", {project_path: state.generated.project_path, tool_name: $("test-tool").value,
-      arguments: testArguments, python_executable: $("test-python").value.trim()});
+      arguments: testArguments, python_executable: $("test-python").value.trim(),
+      native_runtime:$("native-environment").hidden ? "" : $("test-native-runtime").value.trim(),
+      r_project:$("native-environment").hidden ? "" : $("test-r-project").value.trim()});
     const labels = {completed: "调用成功", execution_error: "调用失败", timeout: "调用超时"};
     $("test-result").replaceChildren(el("h3", "", labels[result.decision] || "测试状态待核对"));
     if (result.result) $("test-result").append(el("pre", "", JSON.stringify(result.result.data?.native_result ?? result.result.data ?? result.result, null, 2)));

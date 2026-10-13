@@ -34,6 +34,9 @@ SAFE_ERRORS = {
     "Fill in remote model names": (400, "请填写问答和嵌入模型名称。"),
     "Install Git to fetch a repository, or scan an existing local checkout": (400, "下载源码需要安装 Git；也可以直接扫描已经下载的本机仓库。"),
     "Repository download failed; check the public URL, branch and network": (400, "源码下载失败，请检查公开仓库链接、版本和网络。"),
+    "Repository download failed; check the public URL, revision and network": (400, "源码下载失败，请检查公开仓库链接、版本和网络。"),
+    "Use a plain branch, tag or full commit hash": (400, "版本需填写分支、标签或完整提交哈希。"),
+    "Fetched revision does not match the requested commit": (400, "下载源码的提交与指定版本不一致；已保留失败记录。"),
     "Repository download timed out; the partial checkout is retained for inspection": (400, "源码下载超时，未完成目录已保留；请稍后重试或使用本机仓库。"),
     "Persistent keys require Windows DPAPI; use environment variables on this platform": (400, "当前系统不支持 Windows 用户加密保存，请取消勾选并使用环境变量。"),
     "Unable to access this Windows user's protected API keys": (400, "无法读取当前 Windows 用户的加密密钥，请重新配置。"),
@@ -298,10 +301,15 @@ def build_server(service, host="127.0.0.1", port=8765):
                     tool_name = data.get("tool_name", "")
                     arguments = data.get("arguments", {})
                     executable = data.get("python_executable", "")
+                    native_runtime,r_project=data.get('native_runtime',''),data.get('r_project','')
                     if (not isinstance(project_path, str) or not project_path.strip() or len(project_path) > 4096
                             or not isinstance(tool_name, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_]{0,127}", tool_name)
-                            or not isinstance(arguments, dict) or not isinstance(executable, str) or len(executable) > 4096):
+                            or not isinstance(arguments, dict) or not isinstance(executable, str) or len(executable) > 4096
+                            or any(not isinstance(v,str) or len(v)>4096 or '\x00' in v for v in [native_runtime,r_project])):
                         raise ValueError("Invalid test selection")
+                    if native_runtime or r_project:
+                        return self._json(200,service.test_code_mcp(project_path,tool_name,arguments,
+                            python_executable=executable,native_runtime=native_runtime,r_project=r_project))
                     return self._json(200, service.test_code_mcp(project_path, tool_name, arguments, python_executable=executable))
                 repository_path = data.get("repository_path", "")
                 if not isinstance(repository_path, str) or not repository_path.strip() or len(repository_path) > 4096:
@@ -313,7 +321,12 @@ def build_server(service, host="127.0.0.1", port=8765):
                     raise ValueError("Select existing functions")
                 if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]{0,63}", name):
                     raise ValueError("Invalid MCP name")
-                return self._json(201, service.build_code_mcp(repository_path, selections=selections, name=name))
+                contracts = data.get("contracts")
+                if contracts is not None and not isinstance(contracts, dict):
+                    raise ValueError("Interface definitions must be a JSON object")
+                if contracts is None:
+                    return self._json(201, service.build_code_mcp(repository_path, selections=selections, name=name))
+                return self._json(201, service.build_code_mcp(repository_path, selections=selections, name=name, contracts=contracts))
             except (BrokenPipeError, ConnectionResetError):
                 pass
             except Exception as error:

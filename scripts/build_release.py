@@ -1,5 +1,6 @@
 """Build only tracked public source, preserving byte hashes and excluding personal data."""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import re
@@ -7,10 +8,14 @@ import subprocess
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-NAME = 'Paper2Agent-1.0.0'
+VERSION = '1.1.0'
+NAME = 'Paper2Agent-' + VERSION
+parser=argparse.ArgumentParser(description='Build a source-hashed Paper2Agent distribution')
+parser.add_argument('--output-directory',type=Path,default=ROOT/'dist')
+args=parser.parse_args()
 raw_names = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-z']).decode().split('\0')
 # Development references and tests stay in Git, not in the end-user package.
-names = sorted(n for n in raw_names if n and not n.startswith(('examples/', 'tests/', 'configs/providers/')) and n not in {'src/vendi_example.py', 'src/mannkendall_example.py', 'scripts/verify_examples.py'})
+names = sorted(n for n in raw_names if n and not n.startswith(('tests/', 'configs/providers/')))
 if not names:
     raise ValueError('Stage the reviewed public source first')
 blocked_dirs = {'personal', 'library', 'incoming', 'outputs', 'verification', 'exports', 'code-projects', 'repositories', 'dist', 'tmp', '__pycache__', '.git'}
@@ -28,18 +33,19 @@ for name in names:
     if secrets.search(raw):
         raise ValueError('Credential pattern detected; value not displayed: ' + name)
     files[name] = raw
-target = ROOT / 'dist' / (NAME + '.zip')
-target.parent.mkdir(exist_ok=True)
+target = args.output_directory.resolve() / (NAME + '.zip')
+target.parent.mkdir(parents=True,exist_ok=True)
 with zipfile.ZipFile(target, 'x', zipfile.ZIP_DEFLATED) as archive:
     for name, raw in files.items():
         archive.writestr(NAME + '/' + name, raw)
 with zipfile.ZipFile(target) as archive:
     assert archive.testzip() is None
 digest = hashlib.sha256(target.read_bytes()).hexdigest()
-manifest = {'archive': target.name, 'sha256': digest, 'top_level': NAME,
+manifest = {'archive': target.name, 'sha256': digest, 'top_level': NAME,'version':VERSION,
             'files': {name: hashlib.sha256(raw).hexdigest() for name, raw in files.items()},
             'source_commit_at_build': subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD']).decode().strip(),
+            'source_changes_at_build':subprocess.check_output(['git','-C',str(ROOT),'status','--porcelain']).decode().splitlines(),
             'personal_documents_included': False, 'credentials_included': False}
-(ROOT / 'dist/1.0.0-package-manifest.json').write_text(json.dumps(manifest, indent=2), encoding='utf-8')
-(ROOT / 'dist/1.0.0-SHA256SUMS.txt').write_text(digest + '  ' + target.name + '\n', encoding='utf-8')
+(target.parent/(VERSION+'-package-manifest.json')).write_text(json.dumps(manifest, indent=2), encoding='utf-8')
+(target.parent/(VERSION+'-SHA256SUMS.txt')).write_text(digest + '  ' + target.name + '\n', encoding='utf-8')
 print(json.dumps({'archive': str(target), 'sha256': digest, 'file_count': len(files)}))

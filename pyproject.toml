@@ -1,10 +1,11 @@
 [project]
 name = "paper2agent-workbench"
-version = "1.0.0"
+version = "1.1.0"
 description = "Paper evidence and research code to MCP workbench"
 requires-python = ">=3.11,<3.12"
 license = "AGPL-3.0-only"
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["src", "tests/support"]
 testpaths = ["tests"]
+norecursedirs = ["research_fixtures"]

@@ -14,6 +14,8 @@ import uuid
 import zipfile
 from pathlib import Path
 
+from code_contracts import ContractError, check_contract, validate_value
+
 APP_ROOT = Path(__file__).resolve().parent.parent
 IGNORED = {'.git', '.hg', '.svn', '.venv', 'venv', 'env', '__pycache__', 'node_modules',
            '.tox', '.pytest_cache', '.mypy_cache', 'dist', 'build', 'tests', 'test'}
@@ -144,6 +146,31 @@ def _infer(value):
     raise WorkbenchError('缺注解且没有可确定的 JSON 标量或同类型非空 list 默认值')
 
 
+def _type_schema(expression):
+    """Translate the supported static annotation grammar without evaluating it."""
+    def convert(node):
+        if isinstance(node, ast.Constant) and node.value is None:
+            return {'type': 'null'}
+        if isinstance(node, ast.Name):
+            return {'type': {'int': 'integer', 'float': 'number', 'str': 'string', 'bool': 'boolean', 'None': 'null'}[node.id]}
+        if isinstance(node, ast.BinOp) and isinstance(node.op, ast.BitOr):
+            return {'anyOf': [convert(node.left), convert(node.right)]}
+        if isinstance(node, ast.Subscript):
+            base = ast.unparse(node.value)
+            parts = list(node.slice.elts) if isinstance(node.slice, ast.Tuple) else [node.slice]
+            if base == 'Literal':
+                values = [ast.literal_eval(x) for x in parts]
+                branches = [{'type': {bool: 'boolean', int: 'integer', float: 'number', str: 'string'}[type(v)], 'const': v} for v in values]
+                return branches[0] if len(branches) == 1 else {'anyOf': branches}
+            if base == 'dict':
+                return {'type': 'object', 'properties': {}, 'additionalProperties': convert(parts[1])}
+            if base == 'tuple' and not (len(parts) == 2 and isinstance(parts[1], ast.Constant) and parts[1].value is Ellipsis):
+                return {'type': 'array', 'prefixItems': [convert(x) for x in parts], 'items': False, 'minItems': len(parts), 'maxItems': len(parts)}
+            return {'type': 'array', 'items': convert(parts[0])}
+        raise WorkbenchError('无法生成声明类型的 JSON schema。')
+    return convert(ast.parse(expression, mode='eval').body)
+
+
 def _module(root: Path, path: Path):
     rel = path.relative_to(root).with_suffix('')
     parts = list(rel.parts)
@@ -160,8 +187,6 @@ def _candidate(root: Path, path: Path, node, module, method=False):
     reasons, assumptions, parameters = [], [], []
     if method:
         reasons.append('实例或类方法需要对象生命周期适配')
-    if isinstance(node, ast.AsyncFunctionDef):
-        reasons.append('async 函数需人工异步适配')
     if node.decorator_list:
         reasons.append('带装饰器的函数需人工确认运行时绑定')
     if module is None:
@@ -188,6 +213,7 @@ def _candidate(root: Path, path: Path, node, module, method=False):
             elif default is not None:
                 typ = _infer(item['default'])
                 assumptions.append(f'{arg.arg} 缺少注解，按原默认值推断 {typ}；需作者确认。')
+                reasons.append(f'{arg.arg}: 缺注解默认值推断需要审阅')
             else:
                 raise WorkbenchError('必需参数缺少类型注解，不能安全自动推断')
             item['type'] = typ
@@ -203,7 +229,14 @@ def _candidate(root: Path, path: Path, node, module, method=False):
             'docstring': (ast.get_docstring(node) or '')[:5000],
             'return_annotation': ast.unparse(node.returns) if node.returns else None,
             'parameters': parameters, 'eligible': not reasons, 'reasons': reasons,
-            'assumptions': list(dict.fromkeys(assumptions)), 'source_sha256': _hash(path)}
+            'assumptions': list(dict.fromkeys(assumptions)), 'source_sha256': _hash(path),
+            'is_async': isinstance(node, ast.AsyncFunctionDef), 'is_method': method,
+            'requires_manual_runtime_adapter': bool(node.decorator_list or module is None or args.vararg or args.kwarg or args.posonlyargs),
+            'contract_status': 'review_required' if reasons or assumptions else 'declared_json',
+            'review_required': bool(reasons or assumptions),
+            'contract_template': {'reviewed': False, 'source_sha256': _hash(path),
+                                  'parameters': {p['name']: {'schema': _type_schema(p['type']) if p['type'] else None} for p in parameters},
+                                  'result': {'nonfinite': 'reject'}}}
 
 
 def scan_repository(path) -> dict:
@@ -237,6 +270,14 @@ def scan_repository(path) -> dict:
                     if isinstance(member, (ast.FunctionDef, ast.AsyncFunctionDef)) and not member.name.startswith('_'):
                         c = _candidate(root, p, member, module, method=True)
                         c['id'] = f'{module or p.stem}:{n.name}.{member.name}'
+                        c['function'] = n.name + '.' + member.name
+                        c['class_name'] = n.name
+                        constructor = next((x for x in n.body if isinstance(x, ast.FunctionDef) and x.name == '__init__'), None)
+                        c['constructor_parameters'] = _candidate(root, p, constructor, module, method=True)['parameters'] if constructor else []
+                        c['constructor_restrictions'] = _reachable_execution_risks(constructor, tree) if constructor else []
+                        if constructor and (constructor.args.vararg or constructor.args.kwarg or constructor.args.posonlyargs or constructor.decorator_list):
+                            c['constructor_restrictions'].append('构造函数含动态签名或装饰器，需要独立适配。')
+                        c['contract_template']['constructor'] = {'parameters': {p['name']: {'schema': None} for p in c['constructor_parameters']}}
                         c['execution_restrictions'] = list(dict.fromkeys(global_risks + _reachable_execution_risks(member, tree)))
                         candidates.append(c)
     model_dependencies = sorted(set(model_dependencies))
@@ -247,6 +288,8 @@ def scan_repository(path) -> dict:
     return {'repository_path': str(root), 'files_scanned': len(files),
             'candidates': candidates, 'warnings': warnings, 'source_manifest': source_manifest,
             'execution_performed': False, 'validation_status': 'static_only_not_verified',
+            'contract_schema_version': 1,
+            'supported_reviewed_adapters': ['identity', 'ndarray', 'dataframe', 'path', 'explicit_instance_constructor'],
             'local_model_execution_allowed': False, 'model_dependencies': model_dependencies}
 
 
@@ -358,6 +401,11 @@ import sys
 import uuid
 from pathlib import Path
 from typing import Annotated, Literal
+from typing import Any
+from pydantic import Field, BeforeValidator
+from functools import partial
+import inspect
+import warnings
 
 # Runtime dependency policy.
 BLOCKED_MODEL_PACKAGES = {'torch', 'tensorflow', 'transformers', 'jax', 'diffusers', 'ollama',
@@ -376,6 +424,15 @@ os.environ['TRANSFORMERS_OFFLINE'] = '1'
 from fastmcp import FastMCP
 
 ROOT = Path(__file__).resolve().parent
+# Load this package's pinned adapter by path; never substitute an installed name.
+import importlib.util
+_helper_name = '_paper2agent_adapter_' + hashlib.sha256((ROOT / 'code_contracts.py').read_bytes()).hexdigest()
+_helper_spec = importlib.util.spec_from_file_location(_helper_name, ROOT / 'code_contracts.py')
+_helper = importlib.util.module_from_spec(_helper_spec)
+sys.modules[_helper_name] = _helper
+_helper_spec.loader.exec_module(_helper)
+adapt_inputs, serialize_result = _helper.adapt_inputs, _helper.serialize_result
+validate_rules, before_validate = _helper.validate_rules, _helper.before_validate
 sys.path.insert(0, str(ROOT / 'vendor' / 'repo'))
 sys.path.insert(0, str(ROOT / 'vendor' / 'repo' / 'src'))
 
@@ -396,9 +453,12 @@ def _json_native(value):
         return _json_native(value.tolist())
     raise TypeError('Upstream result cannot be safely represented as JSON: ' + type(value).__name__)
 
-def _invoke(module, symbol, kwargs, reference, source_path, source_sha256):
+async def _invoke(module, symbol, kwargs, reference, source_path, source_sha256, contract=None, constructor=None):
     # Loading source happens only when the recipient explicitly calls an MCP tool.
     pinned = json.loads((ROOT / 'manifest.json').read_text(encoding='utf-8'))
+    for filename, field in [('code_contracts.py', 'runtime_adapter_sha256'), ('contracts.json', 'contracts_sha256')]:
+        if hashlib.sha256((ROOT / filename).read_bytes()).hexdigest() != pinned[field]:
+            raise ValueError('Pinned runtime adapter or interface contract changed; no call performed.')
     vendor = (ROOT / 'vendor' / 'repo').resolve()
     for item in pinned['copied_source_files']:
         path = (vendor / item['path']).resolve()
@@ -410,20 +470,58 @@ def _invoke(module, symbol, kwargs, reference, source_path, source_sha256):
     source_module = importlib.import_module(module)
     if not getattr(source_module, '__file__', None) or Path(source_module.__file__).resolve() != expected:
         raise ValueError('Imported module origin differs from pinned source; no call performed.')
-    function = getattr(source_module, symbol)
-    result = _json_native(function(**kwargs))
-    output = ROOT / 'outputs' / uuid.uuid4().hex
-    output.mkdir(parents=True)
+    workspace = ROOT / 'workspace'
+    output = workspace / 'outputs' / uuid.uuid4().hex if contract else ROOT / 'outputs' / uuid.uuid4().hex
+    if contract:
+        for managed in (workspace, workspace / 'inputs', workspace / 'outputs'):
+            if managed.is_symlink() or ROOT not in managed.resolve().parents:
+                raise ValueError('Managed workspace root escapes the generated project.')
+    # Validating inputs and binding precede any upstream call or successful artifact.
+    if contract:
+        validate_rules(kwargs, contract.get('rules', []))
+        kwargs = adapt_inputs(kwargs, contract['parameters'], workspace, output)
+    else:
+        _json_native(kwargs)  # reject nonfinite input before the scientific function
+    if '.' in symbol:
+        class_name, method = symbol.split('.')
+        if contract is None or 'constructor' not in contract or constructor is None:
+            raise ValueError('Instance methods require an explicitly reviewed constructor contract.')
+        init_kwargs = adapt_inputs(constructor, contract['constructor']['parameters'], workspace, output)
+        instance = getattr(source_module, class_name)(**init_kwargs)
+        function = getattr(instance, method)
+    else:
+        function = getattr(source_module, symbol)
+    with warnings.catch_warnings(record=True) as captured:
+        warnings.simplefilter('always')
+        native = function(**kwargs)
+        if inspect.isawaitable(native):
+            native = await native
+    result, nonfinite_mask, returned_artifacts = serialize_result(native, contract.get('result') if contract else None, output)
+    output.mkdir(parents=True, exist_ok=True)
     result_path = output / 'native-result.json'
+    if result_path.exists() or contract and (output / 'serialization-audit.json').exists():
+        raise ValueError('Upstream used a reserved call-record filename; original files preserved.')
     result_path.write_text(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + '\\n', encoding='utf-8')
+    artifacts = [{'description': 'JSON serialization of the native upstream result', 'path': str(result_path.resolve())}]
+    if contract:
+        audit_path = output / 'serialization-audit.json'
+        audit_path.write_text(json.dumps({'nonfinite_policy': contract.get('result', {'nonfinite': 'reject'}), 'nonfinite_mask': nonfinite_mask}, ensure_ascii=False, indent=2, allow_nan=False) + '\\n', encoding='utf-8')
+        artifacts.append({'description': 'Explicit serialization policy and JSON-pointer missingness mask', 'path': str(audit_path.resolve())})
+        for path in output.rglob('*'):
+            if path.is_symlink() or output.resolve() not in path.resolve().parents:
+                raise ValueError('Upstream output escapes the managed call directory.')
+            if path.is_file() and path not in (result_path, audit_path):
+                artifacts.append({'description': 'Upstream output file', 'path': str(path.resolve())})
     return {'message': 'Upstream function completed; source result preserved without algorithm changes.',
             'reference': reference, 'native_result': result,
-            'artifacts': [{'description': 'JSON serialization of the native upstream result', 'path': str(result_path.resolve())}]}
+            'nonfinite_mask': nonfinite_mask,
+            'warnings': [{'category': type(item.message).__name__, 'message': str(item.message)} for item in captured],
+            'artifacts': artifacts}
 
 '''
 
 
-def build_mcp(repository_path, selections: list[str], name: str, output_root: Path) -> dict:
+def build_mcp(repository_path, selections: list[str], name: str, output_root: Path, contracts: dict | None = None) -> dict:
     """Generate a standalone server without importing or running selected research code."""
     root = _root(repository_path)
     out = Path(output_root).expanduser().resolve()
@@ -434,6 +532,19 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
     if not isinstance(selections, list) or not selections or not all(isinstance(s, str) for s in selections) or len(set(selections)) != len(selections):
         raise WorkbenchError('请选择至少一个不重复的 module:function。')
     scan = scan_repository(root)
+    if contracts is None:
+        reviewed = {}
+    elif not isinstance(contracts, dict) or set(contracts) != {'schema_version', 'tools'} or contracts.get('schema_version') != 1 or not isinstance(contracts.get('tools'), dict):
+        raise WorkbenchError('接口契约必须包含 schema_version:1 和 tools 对象。')
+    else:
+        reviewed = contracts['tools']
+        if set(reviewed) - set(selections):
+            raise WorkbenchError('接口契约包含未选中的函数。')
+        try:
+            contract_text = json.dumps(contracts, ensure_ascii=False, allow_nan=False)
+        except (ValueError, TypeError) as exc:
+            raise WorkbenchError('接口契约必须是有限值的 JSON 数据。') from exc
+        _secret_check(contract_text, '接口契约')
     lookup = {}
     for c in scan['candidates']:
         if c['id'] in lookup:
@@ -445,15 +556,54 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
         if identifier not in lookup or lookup[identifier] is None:
             raise WorkbenchError(f'函数不存在或模块身份有歧义：{identifier}')
         c = lookup[identifier]
-        if not c['eligible']:
+        contract = reviewed.get(identifier)
+        if contract is not None:
+            try:
+                contract = check_contract(contract)
+                if contract['source_sha256'] != c['source_sha256']:
+                    raise ContractError('Reviewed source SHA-256 differs from the scanned source.')
+                if set(contract['parameters']) != {p['name'] for p in c['parameters']}:
+                    raise ContractError('Reviewed parameters must exactly match all source parameters.')
+                if c['requires_manual_runtime_adapter']:
+                    raise ContractError('; '.join(c['reasons']))
+                for p in c['parameters']:
+                    if not p['required']:
+                        if 'default' not in p:
+                            raise ContractError('A source default cannot be represented as reviewed JSON: ' + p['name'])
+                        validate_value(p['default'], contract['parameters'][p['name']]['schema'], p['name'] + '.default')
+                if c.get('is_method'):
+                    if c.get('constructor_restrictions'):
+                        raise ContractError('; '.join(c['constructor_restrictions']))
+                    if 'constructor' not in contract:
+                        raise ContractError('Instance methods require explicit constructor parameters.')
+                    if 'constructor' in contract['parameters']:
+                        raise ContractError('Method parameter constructor conflicts with the explicit lifecycle argument.')
+                    init_params = c['constructor_parameters']
+                    declared = contract['constructor']['parameters']
+                    if set(declared) != {p['name'] for p in init_params}:
+                        raise ContractError('Constructor contract must match all source constructor parameters.')
+                elif 'constructor' in contract:
+                    raise ContractError('Module functions cannot declare constructor parameters.')
+            except (ContractError, TypeError, ValueError) as exc:
+                raise WorkbenchError(f'接口契约无效 {identifier}：{exc}') from exc
+            c['reviewed_contract'] = contract
+            c['contract_status'] = 'reviewed_source_bound'
+        elif not c['eligible']:
             raise WorkbenchError(f'暂不能自动封装 {identifier}：' + '; '.join(c['reasons']))
-        if not c['runnable']:
+        if c['execution_restrictions']:
             raise WorkbenchError(f'函数需要人工适配 {identifier}：' + '; '.join(c['execution_restrictions']))
         selected.append(c)
     licenses = [p for p in root.iterdir() if p.is_file() and not p.is_symlink() and p.name.lower().startswith(('license', 'copying', 'notice'))]
     if not licenses:
         raise WorkbenchError('未找到 LICENSE / COPYING / NOTICE；请先核实分发许可，再生成包。')
     dependencies, dependency_warnings = _dependency_declarations(root)
+    adapter_kinds = {spec.get('adapter', {}).get('kind') for c in selected for spec in c.get('reviewed_contract', {}).get('parameters', {}).values()}
+    adapter_kinds |= {spec.get('adapter', {}).get('kind') for c in selected for spec in c.get('reviewed_contract', {}).get('constructor', {}).get('parameters', {}).values()}
+    declared_names = {re.split(r'[\[<>=!~]', x, 1)[0].lower().replace('_', '-') for x in dependencies}
+    if ('ndarray' in adapter_kinds or any(rule['op'] == 'finite_moments' for c in selected for rule in c.get('reviewed_contract', {}).get('rules', []))) and 'numpy' not in declared_names:
+        dependencies.append('numpy>=1.24,<3')
+    if 'dataframe' in adapter_kinds and 'pandas' not in declared_names:
+        dependencies.append('pandas>=2,<4')
     # Review secrets before creating any deliverable directory.
     source_files, _ = _files(root)
     for p in source_files + licenses:
@@ -479,7 +629,8 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
     server = _SERVER_HEADER + f'mcp = FastMCP(name={name!r}, strict_input_validation=True)\n\n'
     tool_names = []
     for c in selected:
-        tool_name = re.sub(r'[^a-zA-Z0-9_]', '_', c['module']) + '__' + c['function']
+        contract = c.get('reviewed_contract')
+        tool_name = contract.get('tool_name') if contract and contract.get('tool_name') else re.sub(r'[^a-zA-Z0-9_]', '_', c['module']) + '__' + c['function'].replace('.', '__')
         if tool_name in tool_names:
             raise WorkbenchError('规范化后的工具名称冲突，请分别生成。')
         tool_names.append(tool_name)
@@ -489,17 +640,35 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
             if p['kind'] == 'keyword_only' and not keyword_started:
                 arguments.append('*')
                 keyword_started = True
-            text = f"{p['name']}: Annotated[{p['type']}, {p['description']!r}]"
+            schema = contract['parameters'][p['name']]['schema'] if contract else _type_schema(p['type'])
+            description = schema.get('description') or p.get('description') or f"Original source parameter {p['name']}."
+            text = (f"{p['name']}: Annotated[Any, BeforeValidator(partial(before_validate, schema={schema!r})), Field(description={description!r}, json_schema_extra={schema!r})]"
+                    if contract else f"{p['name']}: Annotated[{p['type']}, BeforeValidator(partial(before_validate, schema={schema!r})), {p['description']!r}]")
             if not p['required']:
                 text += ' = ' + repr(p['default'])
             arguments.append(text)
             bindings.append(f"{p['name']!r}: {p['name']}")
         reference = f"source://sha256/{c['source_sha256']}/{c['path']}#{c['function']}:L{c['line']}"
         doc = f"Call the original {c['module']}.{c['function']} research function.\nJSON-compatible inputs → native result and a source-traceable JSON artifact."
-        server += f"@mcp.tool()\ndef {tool_name}({', '.join(arguments)}) -> dict:\n    {doc!r}\n    return _invoke({c['module']!r}, {c['function']!r}, {{{', '.join(bindings)}}}, {reference!r}, {c['path']!r}, {c['source_sha256']!r})\n\n"
+        if contract and contract.get('description'):
+            doc += ' ' + ' '.join(contract['description'].split())
+        constructor_argument = 'None'
+        if contract and 'constructor' in contract:
+            ctor_schema = {'type': 'object', 'properties': {k: v['schema'] for k, v in contract['constructor']['parameters'].items()},
+                           'required': list(contract['constructor']['parameters']), 'additionalProperties': False}
+            # Add a required keyword-only lifecycle input even after source defaults.
+            if not keyword_started:
+                arguments.append('*')
+            arguments.append(f"constructor: Annotated[Any, BeforeValidator(partial(before_validate, schema={ctor_schema!r})), Field(description='Reviewed constructor arguments for a new instance per invocation.', json_schema_extra={ctor_schema!r})]")
+            constructor_argument = 'constructor'
+        server += f"@mcp.tool()\nasync def {tool_name}({', '.join(arguments)}) -> dict:\n    {doc!r}\n    return await _invoke({c['module']!r}, {c['function']!r}, {{{', '.join(bindings)}}}, {reference!r}, {c['path']!r}, {c['source_sha256']!r}, {contract!r}, {constructor_argument})\n\n"
         c['tool_name'] = tool_name
     server += "if __name__ == '__main__':\n    mcp.run()\n"
     (project / 'server.py').write_text(server, encoding='utf-8')
+    helper = project / 'code_contracts.py'
+    shutil.copyfile(Path(__file__).with_name('code_contracts.py'), helper)
+    shutil.copyfile(APP_ROOT/'LICENSE',project/'LICENSE')
+    (project / 'contracts.json').write_text(json.dumps({'schema_version': 1, 'tools': reviewed}, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
     requirements = ['fastmcp==4.0.3'] + dependencies
     (project / 'requirements.txt').write_text('\n'.join(requirements) + '\n', encoding='utf-8')
     manifest = {'schema_version': 1, 'name': name, 'repository_path_at_build': str(root),
@@ -508,6 +677,9 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
                 'selected_tools': selected, 'copied_source_files': copied,
                 'declared_dependencies': dependencies, 'dependency_warnings': dependency_warnings,
                 'server_sha256': _hash(project / 'server.py'), 'execution_performed': False,
+                'runtime_adapter_sha256': _hash(helper), 'contracts_sha256': _hash(project / 'contracts.json'),
+                'invocation_script': 'call_tool.py','adapter_license':'AGPL-3.0-only',
+                'license_sha256':_hash(project/'LICENSE'),
                 'verification_status': 'generated_not_executed_or_independently_verified',
                 'input_validation': 'strict_json_types',
                 'algorithm_changes': False, 'local_model_execution_allowed': False,
@@ -515,20 +687,22 @@ def build_mcp(repository_path, selections: list[str], name: str, output_root: Pa
                                      'gpu_visibility': 'disabled', 'hf_offline': True,
                                      'not_a_security_sandbox': True},
                 'source_data_files_included': False,
-                'limits': ['Python public synchronous module functions with explicit JSON contracts.',
+                'limits': ['Python public sync/async functions; reviewed ndarray, DataFrame, managed Path, and instance-method contracts.',
                            'External data, native libraries and dynamic dependencies require separate review.',
                            'Generated source runs with caller permissions only on explicit MCP invocation; static review is not a sandbox.',
                            'No claim of scientific correctness until upstream comparison and independent acceptance.']}
     (project / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     usage_template = (Path(__file__).resolve().parents[1] / 'docs/MCP_USAGE.md').read_text(encoding='utf-8')
     (project / 'USAGE.md').write_text(usage_template.replace('# MCP 工具使用指南', '# ' + name, 1), encoding='utf-8')
-    (project / 'example_call.py').write_text(
+    (project / 'call_tool.py').write_text(
         "\"\"\"Explicit recipient acceptance entry point, never run during conversion.\"\"\"\n"
         "import asyncio, json, sys\nfrom pathlib import Path\nfrom fastmcp import Client\n"
         "async def main():\n    arguments = json.loads(Path(sys.argv[2]).read_text(encoding='utf-8'))\n"
         "    async with Client(Path(__file__).with_name('server.py')) as client:\n"
         "        result = await client.call_tool(sys.argv[1], arguments)\n        print(json.dumps(result.data, ensure_ascii=False, indent=2, allow_nan=False))\n"
         "if __name__ == '__main__':\n    asyncio.run(main())\n", encoding='utf-8')
+    manifest['invocation_script_sha256'] = _hash(project / 'call_tool.py')
+    (project / 'manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     return {'project_path': str(project.resolve()), 'manifest_path': str((project / 'manifest.json').resolve()),
             'server_path': str((project / 'server.py').resolve()), 'requirements_path': str((project / 'requirements.txt').resolve()),
             'selected_tools': selected, 'source_manifest': copied, 'warnings': dependency_warnings,
@@ -543,7 +717,23 @@ def package_mcp(project_path) -> dict:
     manifest = json.loads((project / 'manifest.json').read_text(encoding='utf-8'))
     if manifest.get('schema_version') != 1 or manifest.get('server_sha256') != _hash(project / 'server.py'):
         raise WorkbenchError('服务器来源清单不匹配，需重新生成和核对。')
-    allowed = [project / p for p in ('server.py', 'requirements.txt', 'manifest.json', 'USAGE.md', 'example_call.py')]
+    invocation = manifest.get('invocation_script', 'call_tool.py' if (project / 'call_tool.py').is_file() else 'example_call.py')
+    if invocation not in {'call_tool.py', 'example_call.py'}:
+        raise WorkbenchError('调用入口文件不在支持清单中。')
+    if manifest.get('invocation_script_sha256') and _hash(project / invocation) != manifest['invocation_script_sha256']:
+        raise WorkbenchError('调用入口哈希不匹配。')
+    allowed = [project / p for p in ('server.py', 'requirements.txt', 'manifest.json', 'USAGE.md', invocation)]
+    if 'license_sha256' in manifest:
+        license_file=project/'LICENSE'
+        if license_file.is_symlink() or not license_file.is_file() or _hash(license_file)!=manifest['license_sha256']:
+            raise WorkbenchError('适配器许可文件哈希不匹配。')
+        allowed.append(license_file)
+    for filename, field in [('code_contracts.py', 'runtime_adapter_sha256'), ('contracts.json', 'contracts_sha256')]:
+        if field in manifest:
+            path = project / filename
+            if path.is_symlink() or not path.is_file() or _hash(path) != manifest[field]:
+                raise WorkbenchError('运行适配器或接口契约哈希不匹配。')
+            allowed.append(path)
     for item in manifest['copied_source_files']:
         p = project / 'vendor' / 'repo' / item['path']
         if not _inside(p.resolve(), project / 'vendor' / 'repo') or p.is_symlink() or not p.is_file() or _hash(p) != item['sha256']:
@@ -564,7 +754,7 @@ def package_mcp(project_path) -> dict:
             'verification_status': manifest['verification_status']}
 
 
-def test_mcp(project_path, python_executable, tool_name: str, arguments: dict) -> dict:
+def test_mcp(project_path, python_executable, tool_name: str, arguments: dict, native_environment: dict | None = None) -> dict:
     """Explicitly test one selected upstream function via real stdio MCP; no installation."""
     project = _root(project_path)
     interpreter = Path(python_executable).expanduser().resolve()
@@ -579,11 +769,28 @@ def test_mcp(project_path, python_executable, tool_name: str, arguments: dict) -
         raise WorkbenchError('测试工具不在生成清单中。')
     if manifest.get('server_sha256') != _hash(project / 'server.py'):
         raise WorkbenchError('服务器已改变，不能沿用原生成来源身份。')
+    for filename, field in [('code_contracts.py', 'runtime_adapter_sha256'), ('contracts.json', 'contracts_sha256')]:
+        if field in manifest:
+            p = project / filename
+            if p.is_symlink() or not p.is_file() or _hash(p) != manifest[field]:
+                raise WorkbenchError('运行适配器或接口契约哈希不匹配。')
     if not isinstance(arguments, dict):
         raise WorkbenchError('工具参数必须为 JSON 对象。')
+    native_names={'P2A_NATIVE_RUNTIME','P2A_R_PROJECT','LC_ALL'}
+    if native_environment is not None and (not isinstance(native_environment,dict) or
+        set(native_environment)-native_names or any(not isinstance(v,str) or '\x00' in v for v in native_environment.values())):
+        raise WorkbenchError('原生环境只接受程序路径、R 项目路径和区域设置。')
+    native_env={key:os.environ[key] for key in native_names if key in os.environ}
+    native_env.update(native_environment or {})
+    source_timeout=candidates[tool_name].get('timeout_seconds',180) if manifest.get('route')=='command' else 25
+    if type(source_timeout) is not int or not 1<=source_timeout<=180:
+        raise WorkbenchError('原生调用时限超出支持范围。')
+    transport_timeout=source_timeout+30 if manifest.get('route')=='command' else 25
+    process_timeout=transport_timeout+5
     serialized = json.dumps(arguments, ensure_ascii=False, allow_nan=False)
     _secret_check(serialized, '测试参数')
-    if any(re.search(r'api[_-]?key|secret|password|token', key, re.I) for key in arguments):
+    credential_fields={'apikey','secret','password','token','accesstoken','refreshtoken','authorization','clientsecret'}
+    if any(re.sub(r'[_\s-]','',key).lower() in credential_fields for key in arguments):
         raise WorkbenchError('测试参数不能包含认证密钥；请在独立远程配置中设置。')
     # Conservative static gate, no model/GPU probe or dependency import.
     for item in manifest.get('copied_source_files', []):
@@ -609,12 +816,12 @@ def test_mcp(project_path, python_executable, tool_name: str, arguments: dict) -
     runner.write_text(
         'import asyncio, json\nfrom pathlib import Path\nfrom fastmcp import Client\nfrom fastmcp.client.transports import PythonStdioTransport\n'
         f'SERVER = {str(project / "server.py")!r}\nPYTHON = {str(interpreter)!r}\nTOOL = {tool_name!r}\n'
-        f'ARGS = {str(result_dir / "arguments.json")!r}\nRESPONSE = {str(response)!r}\n'
-        'async def invoke():\n    transport = PythonStdioTransport(SERVER, python_cmd=PYTHON, cwd=str(Path(SERVER).parent))\n'
+        f'ARGS = {str(result_dir / "arguments.json")!r}\nRESPONSE = {str(response)!r}\nNATIVE_ENV = {native_env!r}\n'
+        'async def invoke():\n    transport = PythonStdioTransport(SERVER, python_cmd=PYTHON, cwd=str(Path(SERVER).parent), env=NATIVE_ENV)\n'
         '    async with Client(transport) as client:\n        inventory = await client.list_tools()\n'
         '        result = await client.call_tool(TOOL, json.loads(Path(ARGS).read_text(encoding="utf-8")))\n'
         '        Path(RESPONSE).write_text(json.dumps({"tools": [t.name for t in inventory], "data": result.data}, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")\n'
-        'async def main():\n    await asyncio.wait_for(invoke(), timeout=25)\nasyncio.run(main())\n', encoding='utf-8')
+        f'async def main():\n    await asyncio.wait_for(invoke(), timeout={transport_timeout})\nasyncio.run(main())\n', encoding='utf-8')
     record = {'tool_name': tool_name, 'arguments': arguments, 'source': candidates[tool_name],
               'python_executable': str(interpreter), 'transport': 'real_stdio_fastmcp_client',
               'scientific_validation': 'not_established_by_smoke_call', 'local_model_called': False,
@@ -622,7 +829,7 @@ def test_mcp(project_path, python_executable, tool_name: str, arguments: dict) -
     try:
         completed = subprocess.run([str(interpreter), str(runner)], cwd=str(project),
                                    capture_output=True, text=True, encoding='utf-8', errors='replace',
-                                   timeout=30, check=False)
+                                   timeout=process_timeout, check=False)
         record['exit_code'] = completed.returncode
         if completed.returncode == 0 and response.is_file():
             record['decision'] = 'completed'
@@ -633,7 +840,7 @@ def test_mcp(project_path, python_executable, tool_name: str, arguments: dict) -
             message = re.sub(r'\b(?:sk-[A-Za-z0-9_-]{16,}|ark-[A-Za-z0-9_-]{24,})\b', '[REDACTED]', message)
             record['error'] = message
     except subprocess.TimeoutExpired:
-        record.update(decision='timeout', error='MCP 调用超过 30 秒；不计成功。')
+        record.update(decision='timeout', error=f'MCP 调用超过 {process_timeout} 秒；不计成功。')
     report = result_dir / 'test-result.json'
     report.write_text(json.dumps(record, ensure_ascii=False, indent=2, allow_nan=False) + '\n', encoding='utf-8')
     record['report_path'] = str(report.resolve())
